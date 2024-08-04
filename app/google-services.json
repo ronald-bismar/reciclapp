@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "302989319460",
+    "project_id": "backend-recyclapp",
+    "storage_bucket": "backend-recyclapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:302989319460:android:909fa7c79e1528527ee7b1",
+        "android_client_info": {
+          "package_name": "com.example.reciclapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWs5-GwCNDf6Zz8rvZB_8kGek0wTB7Eaw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
