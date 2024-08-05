@@ -18,7 +18,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object ComentarioModule {
-    //Comentario
     @Provides
     @Singleton
     fun provideComentarioRepository(service: FirebaseFirestore): ComentarioRepository {

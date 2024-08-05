@@ -2,7 +2,9 @@ package com.example.reciclapp.presentation.viewmodel
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.reciclapp.data.ImageRepository
@@ -16,6 +18,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +29,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UbicacionViewModel @Inject constructor(
-    application: Application,
+    @ApplicationContext private val context: Context,
     private val registrarUbicacionDeUsuarioUseCase: RegistrarUbicacionDeUsuarioUseCase,
     private val getUbicacionDeUsuarioUseCase: GetUbicacionDeUsuarioUseCase,
     private val getLocationsAndCompradoresUseCase: GetLocationsAndCompradoresUseCase,
@@ -34,7 +37,7 @@ class UbicacionViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val fusedLocationClient: FusedLocationProviderClient =
-        LocationServices.getFusedLocationProviderClient(application)
+        LocationServices.getFusedLocationProviderClient(context)
 
     private val _ubicacionesConUsuarios =
         MutableStateFlow<MutableList<HashMap<Usuario, UbicacionGPS>>>(mutableListOf())

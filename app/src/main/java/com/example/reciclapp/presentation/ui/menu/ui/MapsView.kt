@@ -1,4 +1,7 @@
+import android.content.Context
 import android.graphics.Bitmap
+import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -9,7 +12,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.example.reciclapp.domain.entities.UbicacionGPS
-import com.example.reciclapp.domain.entities.Usuario
+import com.example.reciclapp.presentation.ui.menu.ui.MarkerComprador
+import com.example.reciclapp.presentation.ui.menu.ui.composeToBitmap
 import com.example.reciclapp.presentation.viewmodel.MarkerData
 import com.example.reciclapp.presentation.viewmodel.UbicacionViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -35,8 +39,10 @@ fun MapsView(
     val mapView = rememberMapViewWithLifecycle()
     val locationPermissionState = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
     val ubicacionesConUsuarios by ubicacionViewModel.ubicacionesConUsuarios.collectAsState()
-    val context = LocalContext.current
     var googleMap by remember { mutableStateOf<GoogleMap?>(null) }
+    val markers = ubicacionViewModel.markers.collectAsState().value
+
+    Log.d("BitmapDescriptor","BitmapDescriptor: ${markers}")
 
     // Request location permissions and fetch locations if granted
     LaunchedEffect(locationPermissionState.status) {
@@ -48,15 +54,19 @@ fun MapsView(
         }
     }
 
-    // Load user locations and images
-    LaunchedEffect(ubicacionesConUsuarios) {
+    // Move camera to my current location when it changes and is not null
+    LaunchedEffect(myCurrentLocation) {
         googleMap?.let { map ->
-            val markers = ubicacionesConUsuarios.flatMap { entry ->
-                entry.map { (usuario, ubicacion) ->
-                    MarkerData(usuario, ubicacion, null) // Set image later
-                }
+            myCurrentLocation?.let { location ->
+                val myLocationLatLng = LatLng(location.latitude, location.longitude)
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocationLatLng, 12f))
             }
-            ubicacionViewModel.loadMarkerImages(ubicacionesConUsuarios)
+        }
+    }
+
+    // Update map markers when markers change
+    LaunchedEffect(markers) {
+        googleMap?.let { map ->
             updateMapMarkers(map, markers)
         }
     }
@@ -66,6 +76,9 @@ fun MapsView(
             mapView.apply {
                 getMapAsync { map ->
                     googleMap = map
+                    if (locationPermissionState.status.isGranted) {
+                        map.isMyLocationEnabled = true
+                    }
                     myCurrentLocation?.let { location ->
                         setupMap(location, map, locationPermissionState)
                     }
@@ -78,15 +91,18 @@ fun MapsView(
 
 @OptIn(ExperimentalPermissionsApi::class)
 private fun setupMap(
-    myLocation: UbicacionGPS,
+    myLocation: UbicacionGPS?,
     googleMap: GoogleMap,
     locationPermissionState: PermissionState
 ) {
-    val location = LatLng(myLocation.latitude, myLocation.longitude)
-    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12f))
 
-    if (locationPermissionState.status.isGranted) {
-        googleMap.isMyLocationEnabled = true
+    myLocation?.let {
+        val location = LatLng(it.latitude, it.longitude)
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12f))
+
+        if (locationPermissionState.status.isGranted) {
+            googleMap.isMyLocationEnabled = true
+        }
     }
 }
 
@@ -100,17 +116,21 @@ private fun updateMapMarkers(
             .position(LatLng(markerData.ubicacion.latitude, markerData.ubicacion.longitude))
             .title("${markerData.usuario.nombre} ${markerData.usuario.apellido}")
             .snippet("Dirección: ${markerData.usuario.direccion}")
-
         markerData.bitmap?.let {
             markerOptions.icon(createCustomMarkerIcon(it))
         }
-
         googleMap.addMarker(markerOptions)
     }
 }
 
 private fun createCustomMarkerIcon(bitmap: Bitmap): BitmapDescriptor {
     return BitmapDescriptorFactory.fromBitmap(bitmap)
+}
+
+fun CustomMarkerComposable(context: Context, urlImagenPerfil: Uri): Bitmap{
+    return composeToBitmap(context){
+        MarkerComprador(urlImagenPerfil)
+    }
 }
 
 @Composable
