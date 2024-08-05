@@ -1,13 +1,11 @@
 package com.example.reciclapp.presentation.viewmodel
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.reciclapp.data.ImageRepository
+import com.example.reciclapp.util.ImageRepository
 import com.example.reciclapp.domain.entities.UbicacionGPS
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.usecases.ubicacionGPS.GetLocationsAndCompradoresUseCase

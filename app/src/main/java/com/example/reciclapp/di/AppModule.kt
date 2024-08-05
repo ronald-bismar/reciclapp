@@ -2,7 +2,7 @@ package com.example.reciclapp.di
 
 import android.app.Application
 import android.content.Context
-import com.example.reciclapp.data.ImageRepository
+import com.example.reciclapp.util.ImageRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

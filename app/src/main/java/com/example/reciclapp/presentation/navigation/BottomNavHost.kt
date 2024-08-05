@@ -1,6 +1,6 @@
 package com.example.reciclapp.presentation.navigation
 
-import MapsView
+import com.example.reciclapp.presentation.ui.menu.ui.MapsView
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
