@@ -40,11 +40,11 @@ fun PantallaPrincipal(navControllerMain: NavController) {
 
     // Elementos de navegación en el menú inferior
     val navigationItems = listOf(
-        Items_menu.Pantalla1,
-        Items_menu.Pantalla2,
-        Items_menu.Pantalla3,
-        Items_menu.Pantalla4,
-        Items_menu.Pantalla5
+        ItemsMenu.Pantalla1,
+        ItemsMenu.Pantalla2,
+        ItemsMenu.Pantalla3,
+        ItemsMenu.Pantalla4,
+        ItemsMenu.Pantalla5
     )
 
     // Configuración del Drawer de navegación
@@ -80,7 +80,9 @@ fun PantallaPrincipal(navControllerMain: NavController) {
             },
             floatingActionButton = {
                 FloatingActionButton(
-                    onClick = { scope.launch { bottomSheetState.show() } }
+                    onClick = {
+                        navControllerMain.navigate("map")
+                    }
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Abrir Bottom Sheet")
                 }

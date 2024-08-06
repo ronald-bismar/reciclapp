@@ -8,30 +8,30 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
 
-sealed class Items_menu(
+sealed class ItemsMenu(
     val icon: ImageVector,
     val title: String,
     val ruta: String
 ) {
     abstract val route: String
 
-    object Pantalla1 : Items_menu(Icons.Default.Person, "Perfil", "Perfil") {
+    data object Pantalla1 : ItemsMenu(Icons.Default.Person, "Perfil", "Perfil") {
         override val route: String = "pantalla1"
     }
 
-    object Pantalla2 : Items_menu(Icons.Default.List, "Contenidos", "Contenidos") {
+    data object Pantalla2 : ItemsMenu(Icons.Default.List, "Contenidos", "Contenidos") {
         override val route: String = "pantalla2"
     }
 
-    object Pantalla3 : Items_menu(Icons.Default.Home, "Inicio", "Inicio") {
+    data object Pantalla3 : ItemsMenu(Icons.Default.Home, "Inicio", "Inicio") {
         override val route: String = "pantalla3"
     }
 
-    object Pantalla4 : Items_menu(Icons.Default.Call, "Contacto", "Contacto") {
+    data object Pantalla4 : ItemsMenu(Icons.Default.Call, "Contacto", "Contacto") {
         override val route: String = "pantalla4"
     }
 
-    object Pantalla5 : Items_menu(Icons.Default.Star, "Premium", "Premium") {
+    data object Pantalla5 : ItemsMenu(Icons.Default.Star, "Premium", "Premium") {
         override val route: String = "pantalla5"
     }
 }

@@ -2,7 +2,9 @@ package com.example.reciclapp.presentation.ui.menu.ui
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -50,11 +52,13 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.reciclapp.util.StorageUtil
 import com.example.reciclapp.domain.entities.Usuario
+import com.example.reciclapp.presentation.animations.AnimatedTransitionDialog
 import com.example.reciclapp.presentation.ui.registro.ui.UserType
 import com.example.reciclapp.presentation.ui.registro.ui.photo_profile.SinglePhotoPicker
 import com.example.reciclapp.presentation.ui.registro.ui.showToast
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Perfil(userViewModel: UserViewModel) {
 val context = LocalContext.current
@@ -204,6 +208,7 @@ fun ActionButton(label: String, icon: ImageVector, onClick: () -> Unit) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EditProfileDialog(onDismiss: () -> Unit, user: Usuario, userViewModel: UserViewModel, context: Context) {
     var name by remember { mutableStateOf(user.nombre) }
@@ -216,67 +221,90 @@ fun EditProfileDialog(onDismiss: () -> Unit, user: Usuario, userViewModel: UserV
     var imageUrl by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
 
-    AlertDialog(
+    AnimatedTransitionDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Editar perfil") },
-        text = {
-            if (isLoading) {
-                // Muestra el CircularProgressIndicator si está en progreso
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            } else {
-                EditProfileContent(
-                    name = name,
-                    onNameChange = { name = it },
-                    lastName = lastName,
-                    onLastNameChange = { lastName = it },
-                    phone = phone,
-                    onPhoneChange = { phone = it },
-                    address = address,
-                    onAddressChange = { address = it },
-                    email = email,
-                    onEmailChange = { email = it },
-                    onImageUriChange = { imageUri = it },
-                    user = user,
-                    isVendedor = isVendedor,
-                    onIsVendedorChanged = userViewModel::onIsVendedorChanged
-                )
+        contentAlignment = Alignment.Center
+    ) {
+        if (isLoading) {
+            // Muestra el CircularProgressIndicator si está en progreso
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = Color.White,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
             }
-        },
-        confirmButton = {
-            if (!isLoading) {
-                TextButton(onClick = {
-                    isLoading = true
-                    StorageUtil.uploadToStorage(imageUri!!, context) { url ->
-                        imageUrl = url
-                        val dataUpdateUser = user.copy(
-                            nombre = name,
-                            apellido = lastName,
-                            telefono = phone.toLong(),
-                            direccion = address,
-                            correo = email,
-                            tipoDeUsuario = if (isVendedor) "vendedor" else "comprador",
-                            urlImagenPerfil = imageUrl ?: user.urlImagenPerfil
-                        )
-                        userViewModel.updateUser(dataUpdateUser)
-                        isLoading = false
-                        onDismiss()
+        } else {
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = Color.White,
+                        shape = RoundedCornerShape(8.dp) // Mismo radio de bordes
+                    )
+                    .padding(16.dp)
+            ) {
+                Column {
+                    Text(
+                        text = "Editar perfil",
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+
+                    EditProfileContent(
+                        name = name,
+                        onNameChange = { name = it },
+                        lastName = lastName,
+                        onLastNameChange = { lastName = it },
+                        phone = phone,
+                        onPhoneChange = { phone = it },
+                        address = address,
+                        onAddressChange = { address = it },
+                        email = email,
+                        onEmailChange = { email = it },
+                        onImageUriChange = { imageUri = it },
+                        user = user,
+                        isVendedor = isVendedor,
+                        onIsVendedorChanged = userViewModel::onIsVendedorChanged
+                    )
+
+                    Row(
+                        horizontalArrangement = Arrangement.End,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        TextButton(onClick = onDismiss) {
+                            Text("Cancelar")
+                        }
+                        TextButton(onClick = {
+                            isLoading = true
+                            StorageUtil.uploadToStorage(imageUri!!, context) { url ->
+                                imageUrl = url
+                                val dataUpdateUser = user.copy(
+                                    nombre = name,
+                                    apellido = lastName,
+                                    telefono = phone.toLong(),
+                                    direccion = address,
+                                    correo = email,
+                                    tipoDeUsuario = if (isVendedor) "vendedor" else "comprador",
+                                    urlImagenPerfil = imageUrl ?: user.urlImagenPerfil
+                                )
+                                userViewModel.updateUser(dataUpdateUser)
+                                isLoading = false
+                                onDismiss()
+                            }
+                        }) {
+                            Text("Guardar")
+                        }
                     }
-                }) {
-                    Text("Guardar")
-                }
-            }
-        },
-        dismissButton = {
-            if (!isLoading) {
-                TextButton(onClick = onDismiss) {
-                    Text("Cancelar")
                 }
             }
         }
-    )
+    }
 }
+
 
 
 @Composable
