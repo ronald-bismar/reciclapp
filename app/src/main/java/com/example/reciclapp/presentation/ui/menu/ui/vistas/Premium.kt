@@ -1,4 +1,4 @@
-package com.example.reciclapp.presentation.ui.menu.ui
+package com.example.reciclapp.presentation.ui.menu.ui.vistas
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
@@ -6,8 +6,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun Contenidos(){
+fun Premium(){
     Column() {
-        Text("Contenidos", style = MaterialTheme.typography.bodyMedium)
+        Text("premium", style = MaterialTheme.typography.bodyMedium)
     }
 }

@@ -9,7 +9,8 @@ data class Material(
     val cantidad: Int = 0,
     val unidadDeMedida: String = "",
     val monedaDeCompra: String = "Bs",
-    val puntos: Int = 0,
+    val puntosPorUnidad: Int = 0,
+    val puntosAcumulados: Int = 0,
     val idComprador: Int = 0
 ) {
     // Constructor sin argumentos necesario para Firebase Firestore

@@ -1,4 +1,4 @@
-package com.example.reciclapp.presentation.ui.menu.ui
+package com.example.reciclapp.presentation.ui.menu.ui.vistas
 
 import android.Manifest
 import android.app.Activity

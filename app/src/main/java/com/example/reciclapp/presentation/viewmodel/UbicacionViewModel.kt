@@ -130,5 +130,5 @@ class UbicacionViewModel @Inject constructor(
 data class MarkerData(
     val usuario: Usuario,
     val ubicacion: UbicacionGPS,
-    val bitmap: Bitmap?
+    val bitmap: Bitmap?,
 )

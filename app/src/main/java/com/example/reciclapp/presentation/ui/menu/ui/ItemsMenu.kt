@@ -19,7 +19,7 @@ sealed class ItemsMenu(
         override val route: String = "pantalla1"
     }
 
-    data object Pantalla2 : ItemsMenu(Icons.Default.List, "Contenidos", "Contenidos") {
+    data object Pantalla2 : ItemsMenu(Icons.Default.List, "Mis puntos", "Contenidos") {
         override val route: String = "pantalla2"
     }
 
@@ -27,11 +27,11 @@ sealed class ItemsMenu(
         override val route: String = "pantalla3"
     }
 
-    data object Pantalla4 : ItemsMenu(Icons.Default.Call, "Contacto", "Contacto") {
+    data object Pantalla4 : ItemsMenu(Icons.Default.Call, "Compradores", "Contacto") {
         override val route: String = "pantalla4"
     }
 
-    data object Pantalla5 : ItemsMenu(Icons.Default.Star, "Premium", "Premium") {
+    data object Pantalla5 : ItemsMenu(Icons.Default.Star, "Reciclapp", "Premium") {
         override val route: String = "pantalla5"
     }
 }

@@ -1,5 +1,7 @@
 package com.example.reciclapp.presentation.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,17 +19,18 @@ import androidx.navigation.navArgument
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.example.reciclapp.presentation.ui.login.ui.LoginScreen
 import com.example.reciclapp.presentation.ui.login.ui.LoginViewModel
-import com.example.reciclapp.presentation.ui.menu.ui.Comprador
-import com.example.reciclapp.presentation.ui.menu.ui.MapsView
+import com.example.reciclapp.presentation.ui.menu.ui.vistas.Comprador
+import com.example.reciclapp.presentation.ui.menu.ui.vistas.mapa.MapsView
 import com.example.reciclapp.presentation.ui.menu.ui.PantallaPrincipal
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroScreen
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroViewModel
 import com.example.reciclapp.presentation.ui.splash.SplashScreenContent
-import com.example.reciclapp.presentation.ui.menu.ui.Vendedor
+import com.example.reciclapp.presentation.ui.menu.ui.vistas.Vendedor
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavGraph(

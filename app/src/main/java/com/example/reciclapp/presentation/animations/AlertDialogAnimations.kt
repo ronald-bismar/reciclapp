@@ -15,6 +15,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import kotlinx.coroutines.CoroutineScope
@@ -22,20 +24,21 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.time.delay
 import java.time.Duration
 
-private const val ANIMATION_TIME = 400
+private const val ANIMATION_TIME = 200
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AnimatedTransitionDialog(
     onDismissRequest: () -> Unit,
     contentAlignment: Alignment = Alignment.Center,
+    clickPosition: Offset? = null,
     content: @Composable () -> Unit
 ) {
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val animateTrigger = remember { mutableStateOf(false) }
+
     LaunchedEffect(key1 = Unit) {
         launch {
-            delay(Duration.ofMillis(10))
             animateTrigger.value = true
         }
     }
@@ -50,9 +53,13 @@ fun AnimatedTransitionDialog(
         Box(
             contentAlignment = contentAlignment,
         ) {
-            AnimatedScaleInTransition(visible = animateTrigger.value) {
-                content()
-            }
+            AnimatedScaleInTransition(
+                visible = animateTrigger.value,
+                positionX = clickPosition?.x,
+                positionY = clickPosition?.y,
+                content = {
+                    content()
+                })
         }
     }
 }
@@ -60,15 +67,23 @@ fun AnimatedTransitionDialog(
 @Composable
 internal fun AnimatedScaleInTransition(
     visible: Boolean,
-    content: @Composable AnimatedVisibilityScope.() -> Unit
+    content: @Composable AnimatedVisibilityScope.() -> Unit,
+    positionX: Float? = null,
+    positionY: Float? = null,
 ) {
     AnimatedVisibility(
         visible = visible,
         enter = scaleIn(
-            animationSpec = tween(ANIMATION_TIME)
+            animationSpec = tween(ANIMATION_TIME),
+            transformOrigin = if (positionX != null && positionY != null) {
+                TransformOrigin(positionX, positionY)
+            } else TransformOrigin.Center
         ),
         exit = scaleOut(
-            animationSpec = tween(ANIMATION_TIME)
+            animationSpec = tween(ANIMATION_TIME),
+            transformOrigin = if (positionX != null && positionY != null) {
+                TransformOrigin(positionX, positionY)
+            } else TransformOrigin.Center
         ),
         content = content
     )

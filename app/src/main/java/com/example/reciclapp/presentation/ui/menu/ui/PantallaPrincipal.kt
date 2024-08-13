@@ -1,9 +1,11 @@
 package com.example.reciclapp.presentation.ui.menu.ui
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -11,6 +13,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.reciclapp.presentation.navigation.*
+import com.example.reciclapp.presentation.navigation.bottom.BottomNavHost
+import com.example.reciclapp.presentation.navigation.bottom.BottomSheetContent
+import com.example.reciclapp.presentation.navigation.drawer.DrawerContent
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
@@ -21,6 +26,7 @@ import kotlinx.coroutines.launch
  *
  * @param navControllerMain El NavController principal para la navegación entre pantallas.
  */
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaPrincipal(navControllerMain: NavController) {
@@ -52,7 +58,7 @@ fun PantallaPrincipal(navControllerMain: NavController) {
         drawerState = drawerState,
         drawerContent = {
             DrawerContent(
-                navController = navController,
+                mainNavController = navController,
                 onItemClick = { scope.launch { drawerState.close() } },
                 userViewModel = userViewModel
             )
@@ -80,11 +86,11 @@ fun PantallaPrincipal(navControllerMain: NavController) {
             },
             floatingActionButton = {
                 FloatingActionButton(
-                    onClick = {
-                        navControllerMain.navigate("map")
-                    }
+                    onClick = {  navControllerMain.navigate("map") },
+                    containerColor = MaterialTheme.colorScheme.primary, // Cambiar el color del botón flotante
+                    contentColor = MaterialTheme.colorScheme.onSurface // Cambiar el color del icono dentro del botón
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = "Abrir Bottom Sheet")
+                    Icon(Icons.Default.Place, contentDescription = "Abrir Bottom Sheet")
                 }
             },
             floatingActionButtonPosition = FabPosition.End

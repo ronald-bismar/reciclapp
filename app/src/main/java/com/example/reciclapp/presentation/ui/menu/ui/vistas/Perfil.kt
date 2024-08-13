@@ -1,9 +1,8 @@
-package com.example.reciclapp.presentation.ui.menu.ui
+package com.example.reciclapp.presentation.ui.menu.ui.vistas
 
 import android.content.Context
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,8 +21,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -50,27 +49,53 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.example.reciclapp.util.StorageUtil
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.animations.AnimatedTransitionDialog
+import com.example.reciclapp.presentation.ui.menu.ui.vistas.components.AddItemCardVendedor
 import com.example.reciclapp.presentation.ui.registro.ui.UserType
 import com.example.reciclapp.presentation.ui.registro.ui.photo_profile.SinglePhotoPicker
 import com.example.reciclapp.presentation.ui.registro.ui.showToast
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
+import com.example.reciclapp.util.StorageUtil
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Perfil(userViewModel: UserViewModel) {
-val context = LocalContext.current
+    val context = LocalContext.current
     val user by userViewModel.user.observeAsState()
     val updateState by userViewModel.updateUserState.observeAsState()
     var showDialog by remember { mutableStateOf(false) }
+    var showAddItemForm by remember { mutableStateOf(false) }
 
-    user?.let {
+    user?.let { user ->
         if (showDialog) {
-            EditProfileDialog(onDismiss = { showDialog = false }, user = it, userViewModel = userViewModel, context = LocalContext.current)
+            EditProfileDialog(
+                onDismiss = { showDialog = false },
+                user = user,
+                userViewModel = userViewModel,
+                context = LocalContext.current
+            )
         }
-        ProfileContent(user = it, onEditClick = { showDialog = true })
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            ProfileHeader(user)
+            ProfileActions(onEditClick = { showDialog = true })
+            ProfileDetails(user)
+            ProfileSettings(user)
+            ProfileNuevoObjetoParaVender(onEditClick = { showAddItemForm = !showAddItemForm })
+            if (showAddItemForm) {
+                // Formulario para añadir nuevo objeto vendido
+                AddItemCardVendedor { newItem ->
+
+                    showAddItemForm = false
+                }
+            }
+        }
+
     }
     updateState?.let { result ->
         when {
@@ -84,22 +109,6 @@ val context = LocalContext.current
                 userViewModel.resetUpdateState()
             }
         }
-    }
-}
-
-@Composable
-fun ProfileContent(user: Usuario, onEditClick: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        ProfileHeader(user)
-        ProfileActions(onEditClick)
-        ProfileDetails(user)
-        ProfileSettings(user)
-
     }
 }
 
@@ -138,6 +147,24 @@ fun ProfileSettings(user: Usuario) {
     ProfileItem("AccountType", user.tipoDeUsuario)
     ProfileItem("Privacy", "Public")
     ProfileItem("Notifications", "Enabled")
+}
+
+@Composable
+fun ProfileNuevoObjetoParaVender(onEditClick: () -> Unit) {
+    ProfileSection("Nuevo reciclaje para vender")
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
+        // Botón para añadir nuevo objeto vendido
+        Button(
+            onClick = { onEditClick() },
+            modifier = Modifier
+                .padding(vertical = 16.dp)
+        ) {
+            Icon(Icons.Default.Add, contentDescription = "Añadir")
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Añadir Nuevo Reciclaje Para Vender")
+        }
+    }
+
 }
 
 @Composable
@@ -210,7 +237,12 @@ fun ActionButton(label: String, icon: ImageVector, onClick: () -> Unit) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EditProfileDialog(onDismiss: () -> Unit, user: Usuario, userViewModel: UserViewModel, context: Context) {
+fun EditProfileDialog(
+    onDismiss: () -> Unit,
+    user: Usuario,
+    userViewModel: UserViewModel,
+    context: Context
+) {
     var name by remember { mutableStateOf(user.nombre) }
     var lastName by remember { mutableStateOf(user.apellido) }
     var phone by remember { mutableStateOf(user.telefono.toString()) }
@@ -231,7 +263,7 @@ fun EditProfileDialog(onDismiss: () -> Unit, user: Usuario, userViewModel: UserV
                 modifier = Modifier
                     .background(
                         color = Color.White,
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(8.dp) // Mismo radio de bordes
                     )
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
@@ -304,7 +336,6 @@ fun EditProfileDialog(onDismiss: () -> Unit, user: Usuario, userViewModel: UserV
         }
     }
 }
-
 
 
 @Composable

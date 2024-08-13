@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.reciclapp.presentation.ui.menu.ui.vistas.initiateCall
+import com.example.reciclapp.presentation.ui.menu.ui.vistas.openWhatsAppMessage
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 
 @Composable
