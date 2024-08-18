@@ -81,8 +81,8 @@ fun NavGraph(
             Vendedor(navController = navController, vendedorId = userId)
         }
         composable("map"){
-            userViewModel.user.observeAsState().value?.idUsuario?.let { it1 ->
-                MapsView(idUsuario = it1)
+            userViewModel.user.observeAsState().value?.idUsuario?.let { idUsuario ->
+                MapsView(idUsuario = idUsuario, mainNavController = navController)
             }
         }
     }

@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,24 +14,29 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -44,19 +50,28 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.animations.AnimatedTransitionDialog
+import com.example.reciclapp.presentation.animations.UserTypeAnimated
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.components.AddItemCardVendedor
-import com.example.reciclapp.presentation.ui.registro.ui.UserType
 import com.example.reciclapp.presentation.ui.registro.ui.photo_profile.SinglePhotoPicker
 import com.example.reciclapp.presentation.ui.registro.ui.showToast
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 import com.example.reciclapp.util.StorageUtil
+import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -89,13 +104,12 @@ fun Perfil(userViewModel: UserViewModel) {
             ProfileNuevoObjetoParaVender(onEditClick = { showAddItemForm = !showAddItemForm })
             if (showAddItemForm) {
                 // Formulario para añadir nuevo objeto vendido
-                AddItemCardVendedor { newItem ->
+                AddItemCardVendedor {
 
                     showAddItemForm = false
                 }
             }
         }
-
     }
     updateState?.let { result ->
         when {
@@ -117,13 +131,12 @@ fun ProfileHeader(user: Usuario) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(vertical = 16.dp)
             .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ProfilePicture(rememberAsyncImagePainter(model = user.urlImagenPerfil), 200.dp)
         }
@@ -144,7 +157,8 @@ fun ProfileDetails(user: Usuario) {
 @Composable
 fun ProfileSettings(user: Usuario) {
     ProfileSection("Settings")
-    ProfileItem("AccountType", user.tipoDeUsuario)
+    ProfileItem("AccountType",
+        user.tipoDeUsuario.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() })
     ProfileItem("Privacy", "Public")
     ProfileItem("Notifications", "Enabled")
 }
@@ -152,12 +166,10 @@ fun ProfileSettings(user: Usuario) {
 @Composable
 fun ProfileNuevoObjetoParaVender(onEditClick: () -> Unit) {
     ProfileSection("Nuevo reciclaje para vender")
-    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         // Botón para añadir nuevo objeto vendido
         Button(
-            onClick = { onEditClick() },
-            modifier = Modifier
-                .padding(vertical = 16.dp)
+            onClick = { onEditClick() }, modifier = Modifier.padding(vertical = 16.dp)
         ) {
             Icon(Icons.Default.Add, contentDescription = "Añadir")
             Spacer(modifier = Modifier.width(8.dp))
@@ -169,8 +181,7 @@ fun ProfileNuevoObjetoParaVender(onEditClick: () -> Unit) {
 
 @Composable
 fun ProfileActions(onEditClick: () -> Unit) {
-    /*ProfileSection("Actions")*/
-    ActionButton("Edit Profile", Icons.Default.Edit, onEditClick)
+    ActionButton("Editar Perfil", Icons.Default.Edit, onEditClick)
 }
 
 @Composable
@@ -179,8 +190,7 @@ fun ProfilePicture(painter: Painter, size: Dp) {
         modifier = Modifier
             .size(size)
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.surface),
-        contentAlignment = Alignment.Center
+            .background(MaterialTheme.colorScheme.surface), contentAlignment = Alignment.Center
     ) {
         Image(
             painter = painter,
@@ -205,7 +215,7 @@ fun ProfileSection(title: String) {
             text = title,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black
+            color = MaterialTheme.colorScheme.inverseSurface
         )
     }
 }
@@ -226,8 +236,7 @@ fun ProfileItem(label: String, value: String) {
 @Composable
 fun ActionButton(label: String, icon: ImageVector, onClick: () -> Unit) {
     Button(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
+        onClick = onClick, modifier = Modifier.fillMaxWidth()
     ) {
         Icon(imageVector = icon, contentDescription = null)
         Spacer(modifier = Modifier.width(8.dp))
@@ -238,56 +247,62 @@ fun ActionButton(label: String, icon: ImageVector, onClick: () -> Unit) {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EditProfileDialog(
-    onDismiss: () -> Unit,
-    user: Usuario,
-    userViewModel: UserViewModel,
-    context: Context
+    onDismiss: () -> Unit, user: Usuario, userViewModel: UserViewModel, context: Context
 ) {
     var name by remember { mutableStateOf(user.nombre) }
     var lastName by remember { mutableStateOf(user.apellido) }
     var phone by remember { mutableStateOf(user.telefono.toString()) }
     var address by remember { mutableStateOf(user.direccion) }
     var email by remember { mutableStateOf(user.correo) }
-    val isVendedor by userViewModel.isVendedor.observeAsState(false)
+    val isVendedor by userViewModel.isVendedor.observeAsState(user.tipoDeUsuario == "vendedor")
     var imageUri by remember { mutableStateOf<Uri?>(Uri.parse(user.urlImagenPerfil)) }
     var imageUrl by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
+    var showDialogChangeUser by remember { mutableStateOf(false) }
+    var showDialogAutorizeChangeUser by remember { mutableStateOf(false) }
+
+
 
     AnimatedTransitionDialog(
-        onDismissRequest = onDismiss,
-        contentAlignment = Alignment.Center
+        onDismissRequest = onDismiss, contentAlignment = Alignment.Center
     ) {
         if (isLoading) {
             // Muestra el CircularProgressIndicator si está en progreso
             Box(
                 modifier = Modifier
+                    .fillMaxWidth()  // Ocupa el 90% del ancho de la pantalla
                     .background(
-                        color = Color.White,
-                        shape = RoundedCornerShape(8.dp) // Mismo radio de bordes
+                        color = Color.White, shape = RoundedCornerShape(8.dp)
                     )
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
+                    .padding(16.dp), contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator()
             }
+        } else if (showDialogAutorizeChangeUser) {
+            VerifyEmailAndCorreoForChangeType(
+                onVerificationSuccess = {
+                    showDialogAutorizeChangeUser = false
+                    showDialogChangeUser = true
+                }
+            )
+        } else if (showDialogChangeUser) {
+            DialogChangeType(userViewModel::onIsVendedorChanged)
         } else {
             Box(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .background(
-                        color = Color.White,
-                        shape = RoundedCornerShape(8.dp) // Mismo radio de bordes
+                        color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp)
                     )
-                    .padding(16.dp)
+                    .padding(10.dp)
             ) {
                 Column {
                     Text(
                         text = "Editar perfil",
                         fontSize = 20.sp,
-                        modifier = Modifier.padding(bottom = 16.dp)
                     )
 
-                    EditProfileContent(
-                        name = name,
+                    EditProfileContent(name = name,
                         onNameChange = { name = it },
                         lastName = lastName,
                         onLastNameChange = { lastName = it },
@@ -299,13 +314,10 @@ fun EditProfileDialog(
                         onEmailChange = { email = it },
                         onImageUriChange = { imageUri = it },
                         user = user,
-                        isVendedor = isVendedor,
-                        onIsVendedorChanged = userViewModel::onIsVendedorChanged
-                    )
+                        { showDialogAutorizeChangeUser = true })
 
                     Row(
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.fillMaxWidth()
+                        horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()
                     ) {
                         TextButton(onClick = onDismiss) {
                             Text("Cancelar")
@@ -328,7 +340,7 @@ fun EditProfileDialog(
                                 onDismiss()
                             }
                         }) {
-                            Text("Guardar")
+                            Text("Actualizar")
                         }
                     }
                 }
@@ -352,8 +364,7 @@ fun EditProfileContent(
     onEmailChange: (String) -> Unit,
     onImageUriChange: (Uri?) -> Unit,
     user: Usuario,
-    isVendedor: Boolean,
-    onIsVendedorChanged: (Boolean) -> Unit
+    showDialogChangeUser: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -362,18 +373,169 @@ fun EditProfileContent(
         SinglePhotoPicker(
             user = user,
             onImageUriReady = onImageUriChange,
-            sizeImageProfile = 100,
+            sizeImageProfile = 120,
             imageDefault = Uri.parse(user.urlImagenPerfil)
         )
-        UserType(
-            Modifier.align(Alignment.CenterHorizontally),
-            isVendedor,
-            onIsVendedorChanged
-        )
-        TextField(value = name, onValueChange = onNameChange, label = { Text("Name") })
-        TextField(value = lastName, onValueChange = onLastNameChange, label = { Text("Last Name") })
-        TextField(value = phone, onValueChange = onPhoneChange, label = { Text("Phone") })
-        TextField(value = address, onValueChange = onAddressChange, label = { Text("Address") })
-        TextField(value = email, onValueChange = onEmailChange, label = { Text("Email") })
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            TextField(value = name, onValueChange = onNameChange, label = { Text("Name") })
+            TextField(value = lastName,
+                onValueChange = onLastNameChange,
+                label = { Text("Last Name") })
+            TextField(value = phone, onValueChange = onPhoneChange, label = { Text("Phone") })
+            TextField(value = address, onValueChange = onAddressChange, label = { Text("Address") })
+            TextField(value = email,
+                onValueChange = onEmailChange,
+                singleLine = true,
+                label = { Text("Email") })
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(text = "Cambiar tipo de usuario",
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 18.sp,
+                modifier = Modifier
+                    .background(
+                        MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(10.dp)
+                    )
+                    .padding(8.dp)
+                    .clickable { showDialogChangeUser() })
+        }
+
+
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun DialogChangeType(
+    onIsVendedorChanged: (Boolean) -> Unit,
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+            .background(
+                color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp)
+            )
+            .padding(20.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Deseas cambiar de:",
+                fontSize = 20.sp,
+            )
+            UserTypeAnimated(
+                onIsVendedorChanged = onIsVendedorChanged
+            )
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Edit",
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+                TextButton(onClick = {
+
+                }) {
+                    Text("Si, deseo cambiar")
+                }
+            }
+
+        }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun VerifyEmailAndCorreoForChangeType(
+    userViewModel: UserViewModel = hiltViewModel(), onVerificationSuccess: () -> Unit
+) {
+    val context = LocalContext.current
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var isPasswordVisible by remember { mutableStateOf(false) }
+    val autorizeChange = userViewModel.autorizeChangeKindUser.observeAsState()
+
+    /*LaunchedEffect(autorizeChange) {
+        if (autorizeChange.value == true) {
+            onVerificationSuccess()
+        } else {
+            showToast(context, "Los datos son incorrectos")
+        }
+        userViewModel.resetAutorizeChangeKindUser()
+    }*/
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(400.dp)
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .padding(20.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Para cambiar el tipo de usuario que eres primero necesitas validar tus datos, por favor confirma tu correo electrónico y tu contraseña",
+                textAlign = TextAlign.Justify,
+                modifier = Modifier.padding(bottom = 16.dp),
+                style = TextStyle(fontSize = 18.sp, color = Color.Gray)
+            )
+
+            TextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Correo electrónico") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            TextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Contraseña") },
+                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                trailingIcon = {
+                    IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                        Icon(
+                            painter = painterResource(id = if (isPasswordVisible) R.drawable.invisible else R.drawable.ojo),
+                            contentDescription = if (isPasswordVisible) "Ocultar contraseña" else "Mostrar contraseña"
+                        )
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Button(
+                onClick = {
+                    /*userViewModel.verifyAutorizeChangeKindUser(
+                        correo = email,
+                        password = password
+                    )*/
+                    onVerificationSuccess()
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Verificar", style = TextStyle(fontSize = 18.sp))
+            }
+        }
     }
 }

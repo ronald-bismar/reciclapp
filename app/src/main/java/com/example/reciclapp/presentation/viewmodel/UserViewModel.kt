@@ -5,15 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.reciclapp.domain.entities.Comentario
 import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.domain.usecases.comentario.CrearComentarioUseCase
 import com.example.reciclapp.domain.usecases.comprador.GetCompradoresUseCase
 import com.example.reciclapp.domain.usecases.user_preferences.DeleteSessionUserPreferencesUseCase
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.example.reciclapp.domain.usecases.usuario.ActualizarUsuarioUseCase
 import com.example.reciclapp.domain.usecases.vendedor.GetVendedoresUseCase
-import com.example.reciclapp.model.util.GenerateID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,8 +45,27 @@ class UserViewModel @Inject constructor(
     private val _isVendedor = MutableLiveData(false)
     val isVendedor: LiveData<Boolean> get() = _isVendedor
 
+    private val _autorizeChangeKindUser = MutableLiveData<Boolean>(false)
+    val autorizeChangeKindUser: LiveData<Boolean> = _autorizeChangeKindUser
+
+    private val _email = MutableLiveData<String>()
+    val email: LiveData<String> = _email
+
+    private val _password = MutableLiveData<String>()
+    val password: LiveData<String> = _password
+
     init {
         loadUserPreferences()
+    }
+
+    fun verifyAutorizeChangeKindUser(correo: String, password: String) {
+        _autorizeChangeKindUser.value =
+                    _user.value?.correo?.equals(correo) == true &&
+                    _user.value?.contrasena?.equals(password) == true
+    }
+
+    fun resetAutorizeChangeKindUser(){
+        _autorizeChangeKindUser.value = false
     }
 
     private fun loadUserPreferences() {
@@ -78,6 +94,7 @@ class UserViewModel @Inject constructor(
 
     fun onIsVendedorChanged(isVendedor: Boolean) {
         _isVendedor.value = isVendedor
+        Log.d("vendedor", "isVendedor: $isVendedor")
     }
 
     fun logOutUser() {

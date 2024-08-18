@@ -27,7 +27,7 @@ sealed class ItemsMenu(
         override val route: String = "pantalla3"
     }
 
-    data object Pantalla4 : ItemsMenu(Icons.Default.Call, "Compradores", "Contacto") {
+    data object Pantalla4 : ItemsMenu(Icons.Default.Call, "Comprador", "Contacto") {
         override val route: String = "pantalla4"
     }
 

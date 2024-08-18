@@ -3,7 +3,17 @@ package com.example.reciclapp.presentation.ui.menu.ui
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -30,7 +40,7 @@ fun MenuScreen(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(47.dp)
+            .height(62.dp)
             .background(MaterialTheme.colorScheme.primary)
     ) {
         Row(
@@ -65,19 +75,22 @@ fun CustomNavigationItem(
     isFirst: Boolean = false,
     isLast: Boolean = false
 ) {
-    val size by animateDpAsState(if (selected) 38.dp else 20.dp)
+    val size by animateDpAsState(if (selected) 48.dp else 20.dp)
     val elevation by animateDpAsState(if (selected) 10.dp else 0.dp)
-    val yOffset by animateDpAsState(if (selected) (-20).dp else 0.dp)
+    val yOffset by animateDpAsState(if (selected) (-25).dp else 0.dp)
 
-    val backgroundColor = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
-    val contentColor = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+    val backgroundColor =
+        if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+    val contentColor =
+        if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
 
     Box(
         modifier = Modifier
-            .height(47.dp)
+            .height(72.dp)
             .width(72.dp)
             .clickable(onClick = onClick)
             .background(MaterialTheme.colorScheme.primary)
+            .offset(y = yOffset) // Aplicar desplazamiento vertical con animación
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -86,24 +99,25 @@ fun CustomNavigationItem(
         ) {
             Box(
                 modifier = Modifier
-                    .size(if (selected) size + 10.dp else size)
-                    .offset(y = yOffset)
-                    .background(if (selected) Color.White else Color.Transparent, CircleShape)
-                    .padding(if (selected) 5.dp else 0.dp)
+                    .size(if (selected) size + 0.dp else size)
+                    .background(
+                        if (selected) MaterialTheme.colorScheme.surface else Color.Transparent,
+                        CircleShape
+                    ) // Color y forma de fondo
+                    .padding(if (selected) 8.dp else 0.dp)
             ) {
                 Surface(
                     color = MaterialTheme.colorScheme.primary,
                     shape = CircleShape,
                     modifier = Modifier
-                        .size(size)
-                        .align(Alignment.Center),
+                        .size(size),
                     tonalElevation = elevation
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
                             imageVector = icon,
                             contentDescription = label,
-                            tint = contentColor,
+                            tint = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.size(44.dp)
                         )
                     }
@@ -111,9 +125,9 @@ fun CustomNavigationItem(
             }
             Text(
                 text = label,
-                color = contentColor,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
-                modifier = Modifier.padding(top = if (selected) 19.dp else 4.dp),
+                modifier = Modifier.padding(top = 0.dp), // Establecer relleno
             )
         }
     }

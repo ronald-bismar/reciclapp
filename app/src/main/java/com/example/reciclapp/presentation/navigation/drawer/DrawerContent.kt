@@ -28,16 +28,16 @@ fun DrawerContent(mainNavController: NavController, onItemClick: () -> Unit, use
         modifier = Modifier
             .fillMaxWidth(0.8f)
             .fillMaxHeight()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(16.dp)
     ) {
         HeaderImage(Modifier.align(Alignment.CenterHorizontally))
         Spacer(modifier = Modifier.height(16.dp))
-        Divider()
+        HorizontalDivider()
         DrawerItem(mainNavController, "home", Icons.Default.Home, onItemClick)
         DrawerItem(mainNavController, "contact", Icons.Default.Call, onItemClick)
         DrawerItem(mainNavController, "perfil", Icons.Default.Person, onItemClick)
-        Divider(modifier = Modifier.padding(vertical = 8.dp))
+        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
         DrawerItem(mainNavController, "item1", Icons.Default.Home, onItemClick)
         DrawerItem(mainNavController, "item2", Icons.Default.Home, onItemClick)
     }

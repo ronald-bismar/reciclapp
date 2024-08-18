@@ -4,9 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,10 +15,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -56,9 +52,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.reciclapp.util.StorageUtil
 import com.example.reciclapp.R
+import com.example.reciclapp.presentation.animations.UserTypeAnimated
 import com.example.reciclapp.presentation.ui.registro.ui.photo_profile.SinglePhotoPicker
+import com.example.reciclapp.util.StorageUtil
 import kotlinx.coroutines.launch
 
 
@@ -92,14 +89,13 @@ fun RegistroScreen(viewModel: RegistroViewModel, navController: NavHostControlle
             Column(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.align(Alignment.Center)) {
+                modifier = Modifier.align(Alignment.Center)
+            ) {
                 HeaderImage(Modifier.align(Alignment.CenterHorizontally))
                 SinglePhotoPicker(onImageUriReady = { uri ->
                     imageUri = uri
                 }, sizeImageProfile = 150)
-                UserType(
-                    Modifier.align(Alignment.CenterHorizontally),
-                    isVendedor,
+                UserTypeAnimated(
                     viewModel::onIsVendedorChanged
                 )
                 NameField(name) { newName ->
@@ -342,43 +338,4 @@ fun HeaderImage(modifier: Modifier) {
             modifier = Modifier.fillMaxSize()
         )
     }
-}
-
-
-@Composable
-fun UserType(modifier: Modifier, isVendedor: Boolean, onIsVendedorChanged: (Boolean) -> Unit, offset: Int = -30) {
-
-    val compradorColor by animateColorAsState(
-        targetValue = if (isVendedor) Color.Transparent else Color.Blue,
-    )
-    val compradorTextColor by animateColorAsState(targetValue = if (isVendedor) Color.Gray else Color.White)
-
-    val vendedorColor by animateColorAsState(
-        targetValue = if (isVendedor) Color.Blue else Color.Transparent
-    )
-    val vendedorTextColor by animateColorAsState(targetValue = if (isVendedor) Color.White else Color.Gray)
-
-    Box(modifier = modifier) {
-        Row(modifier = Modifier.offset(y = offset.dp)) {
-            Text(text = "Comprador",
-                color = compradorTextColor,
-                fontSize = 18.sp,
-                modifier = Modifier
-                    .background(compradorColor, shape = RoundedCornerShape(10.dp))
-                    .padding(8.dp)
-                    .clickable { onIsVendedorChanged(false) } // Cambia a Comprador en el ViewModel
-            )
-            // Espacio para separar las opciones
-            Spacer(modifier = modifier.width(2.dp))
-            Text(text = "Vendedor",
-                color = vendedorTextColor,
-                fontSize = 18.sp,
-                modifier = Modifier
-                    .background(vendedorColor, shape = RoundedCornerShape(10.dp))
-                    .padding(8.dp)
-                    .clickable { onIsVendedorChanged(true) } // Cambia a Vendedor en el ViewModel
-            )
-        }
-    }
-
 }

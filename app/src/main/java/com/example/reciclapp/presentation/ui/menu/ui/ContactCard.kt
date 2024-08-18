@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
@@ -41,7 +42,8 @@ fun ContactCard(comprador: Usuario, viewProfile: () -> Unit, sendMessage: () -> 
                 Image(
                     painter = rememberAsyncImagePainter(model = comprador.urlImagenPerfil),
                     contentDescription = "Perfil",
-                    modifier = Modifier.size(60.dp).clip(CircleShape)
+                    modifier = Modifier.size(60.dp).clip(CircleShape),
+                    contentScale = ContentScale.Crop
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
@@ -78,7 +80,7 @@ fun ContactCard(comprador: Usuario, viewProfile: () -> Unit, sendMessage: () -> 
                     Icon(
                         imageVector = Icons.Default.Email,
                         contentDescription = "Message",
-                        tint = Color.Blue
+                        tint = Color.White
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(text = "Mensaje", color = Color.Blue)
@@ -92,7 +94,7 @@ fun ContactCard(comprador: Usuario, viewProfile: () -> Unit, sendMessage: () -> 
                     Icon(
                         imageVector = Icons.Default.Call,
                         contentDescription = "Call",
-                        tint = Color.Blue
+                        tint = Color.Green
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(text = "LLamar", color = Color.Blue)

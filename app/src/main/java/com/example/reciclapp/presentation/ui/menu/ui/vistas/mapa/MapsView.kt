@@ -43,6 +43,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.reciclapp.domain.entities.Material
 import com.example.reciclapp.domain.entities.UbicacionGPS
@@ -67,6 +68,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 @Composable
 fun MapsView(
     idUsuario: Int,
+    mainNavController: NavController,
     ubicacionViewModel: UbicacionViewModel = hiltViewModel(),
 ) {
     val myCurrentLocation by ubicacionViewModel.myCurrentLocation.collectAsState()
@@ -163,7 +165,8 @@ fun MapsView(
         if (showDialog && selectedMarker != null) {
             MarkerDialog(
                 markerData = selectedMarker!!,
-                onDismiss = { showDialog = false }
+                onDismiss = { showDialog = false },
+                mainNavController = mainNavController
             )
         }
     }
@@ -221,6 +224,7 @@ private fun createCustomMarkerIcon(bitmap: Bitmap): BitmapDescriptor {
 fun MarkerDialog(
     markerData: MarkerData,
     onDismiss: () -> Unit,
+    mainNavController: NavController,
     compradoresViewModel: CompradoresViewModel = hiltViewModel()
 ) {
 
@@ -236,7 +240,7 @@ fun MarkerDialog(
             contentAlignment = Alignment.Center
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                profileComprador(markerData.usuario, onDismiss = onDismiss, materiales = materiales)
+                profileComprador(markerData.usuario, onDismiss = onDismiss, materiales = materiales, navController = mainNavController)
 
             }
         }
@@ -244,7 +248,7 @@ fun MarkerDialog(
 }
 
 @Composable
-fun profileComprador(usuario: Usuario, materiales: List<Material>, onDismiss: () -> Unit) {
+fun profileComprador(usuario: Usuario, materiales: List<Material>, onDismiss: () -> Unit, navController: NavController) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -279,7 +283,9 @@ fun profileComprador(usuario: Usuario, materiales: List<Material>, onDismiss: ()
             Button(onClick = onDismiss, shape = RoundedCornerShape(4.dp)) {
                 Text("Cerrar")
             }
-            Button(onClick = onDismiss, shape = RoundedCornerShape(4.dp)) {
+            Button(onClick = { val profileRoute =
+                    "compradorPerfil/${usuario.idUsuario}" //vamos a pantalla perfil del comprador
+                navController.navigate(profileRoute) }, shape = RoundedCornerShape(4.dp)) {
                 Text("Contactar")
             }
         }
