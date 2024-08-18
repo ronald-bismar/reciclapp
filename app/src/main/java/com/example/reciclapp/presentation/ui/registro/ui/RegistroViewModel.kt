@@ -12,6 +12,7 @@ import com.example.reciclapp.domain.usecases.usuario.RegistrarUsuarioUseCase
 import com.example.reciclapp.model.util.GenerateID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import okhttp3.Address
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,6 +35,9 @@ class RegistroViewModel @Inject constructor(
 
     private val _phone = MutableLiveData<String>()
     val phone: LiveData<String> = _phone
+
+    private val _address = MutableLiveData<String>()
+    val address: LiveData<String> = _address
 
     private val _email = MutableLiveData<String>()
     val email: LiveData<String> = _email
@@ -59,12 +63,14 @@ class RegistroViewModel @Inject constructor(
         name: String,
         lastName: String,
         phone: String,
+        address: String,
         email: String,
         password: String
     ) {
         _name.value = name
         _lastname.value = lastName
         _phone.value = phone
+        _address.value = address
         _email.value = email
         _password.value = password
 
@@ -73,6 +79,7 @@ class RegistroViewModel @Inject constructor(
             isValidName(name) &&
                     isValidLastName(lastName) &&
                     isValidPhone(phone) &&
+                    isValidAddress(address) &&
                     isValidEmail(email) &&
                     isValidPassword(password)
     }
@@ -102,7 +109,11 @@ class RegistroViewModel @Inject constructor(
      * @return true si el formato del teléfono es válido.
      */
     private fun isValidPhone(phone: String): Boolean = Patterns.PHONE.matcher(phone).matches()
-
+    /**
+     * Validación para la direccion.
+     * @return true si la direccion no está vacía.
+     */
+    private fun isValidAddress(address: String): Boolean = address.isNotEmpty()
     /**
      * Validación para el correo electrónico.
      * @return true si el formato del correo electrónico es válido.
@@ -124,6 +135,7 @@ class RegistroViewModel @Inject constructor(
         name: String,
         lastName: String,
         phone: Long,
+        address: String,
         email: String,
         password: String, urlImagenPerfil: String
     ) {
@@ -134,6 +146,7 @@ class RegistroViewModel @Inject constructor(
                     nombre = name,
                     apellido = lastName,
                     telefono = phone,
+                    direccion = address,
                     tipoDeUsuario = if (_isVendedor.value == true) "vendedor" else "comprador",
                     correo = email,
                     contrasena = password,
@@ -170,6 +183,7 @@ class RegistroViewModel @Inject constructor(
         _name.value = ""
         _lastname.value = ""
         _phone.value = ""
+        _address.value = ""
         _email.value = ""
         _password.value = ""
         _recordEnable.value = false

@@ -3,6 +3,7 @@ package com.example.reciclapp.presentation.ui.menu.ui.vistas
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -71,6 +72,7 @@ import com.example.reciclapp.presentation.ui.registro.ui.photo_profile.SinglePho
 import com.example.reciclapp.presentation.ui.registro.ui.showToast
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 import com.example.reciclapp.util.StorageUtil
+import kotlinx.coroutines.delay
 import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -258,10 +260,11 @@ fun EditProfileDialog(
     var imageUri by remember { mutableStateOf<Uri?>(Uri.parse(user.urlImagenPerfil)) }
     var imageUrl by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
-    var showDialogChangeUser by remember { mutableStateOf(false) }
     var showDialogAutorizeChangeUser by remember { mutableStateOf(false) }
-
-
+    var showDialogChangeUser by remember { mutableStateOf(false) }
+    Log.d("vendedorPerfil", "esVendedor?: ${user.tipoDeUsuario == "vendedor"}")
+    Log.d("vendedorPerfil", "tipoDeUsuario: ${user.tipoDeUsuario}")
+    Log.d("vendedorPerfil", "isVendedor: $isVendedor")
 
     AnimatedTransitionDialog(
         onDismissRequest = onDismiss, contentAlignment = Alignment.Center
@@ -270,7 +273,7 @@ fun EditProfileDialog(
             // Muestra el CircularProgressIndicator si está en progreso
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()  // Ocupa el 90% del ancho de la pantalla
+                    .fillMaxWidth()
                     .background(
                         color = Color.White, shape = RoundedCornerShape(8.dp)
                     )
@@ -283,10 +286,24 @@ fun EditProfileDialog(
                 onVerificationSuccess = {
                     showDialogAutorizeChangeUser = false
                     showDialogChangeUser = true
+                },
+                onBackPressed = {
+                    showDialogAutorizeChangeUser = false
                 }
             )
         } else if (showDialogChangeUser) {
-            DialogChangeType(userViewModel::onIsVendedorChanged)
+            DialogChangeType(isVendedor,userViewModel::onIsVendedorChanged
+            , onBackPressed = {
+                    showDialogChangeUser = false
+                }, onUpdateUserKind = {
+                    isLoading = true
+                    val dataUpdateUser = user.copy(
+                        tipoDeUsuario = if (isVendedor) "vendedor" else "comprador",
+                    )
+                    userViewModel.updateUser(dataUpdateUser)
+                    isLoading = false
+                    showDialogChangeUser = false
+                })
         } else {
             Box(
                 modifier = Modifier
@@ -411,15 +428,31 @@ fun EditProfileContent(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DialogChangeType(
+    initKind: Boolean,
     onIsVendedorChanged: (Boolean) -> Unit,
+    onBackPressed: () -> Unit,
+    onUpdateUserKind: () -> Unit,
 ) {
+    val currentKind by remember { mutableStateOf(initKind) }
+    var newKind by remember { mutableStateOf(currentKind) }
+    var showChangeButton by remember { mutableStateOf(false) }
+
+    LaunchedEffect(newKind) {
+        showChangeButton = false
+        if (currentKind != newKind) {
+            delay(500) // Espera 500 milisegundos
+            showChangeButton = true
+        }
+    }
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp)
             .background(
-                color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp)
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(8.dp)
             )
             .padding(20.dp)
     ) {
@@ -429,52 +462,61 @@ fun DialogChangeType(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Deseas cambiar de:",
+                text = "Deseas cambiar a:",
                 fontSize = 20.sp,
             )
             UserTypeAnimated(
-                onIsVendedorChanged = onIsVendedorChanged
+                isVendedor = currentKind,
+                onIsVendedorChanged = { it ->
+                    newKind = it
+                    onIsVendedorChanged(newKind)
+                }
             )
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Edit",
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
-                TextButton(onClick = {
-
-                }) {
-                    Text("Si, deseo cambiar")
+                IconButton(onClick = { onBackPressed() }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Volver atras",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+                if (showChangeButton) {
+                    TextButton(onClick = {
+                        onUpdateUserKind()
+                    }) {
+                        Text("Si, deseo cambiar")
+                    }
                 }
             }
-
         }
     }
 }
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun VerifyEmailAndCorreoForChangeType(
-    userViewModel: UserViewModel = hiltViewModel(), onVerificationSuccess: () -> Unit
+    userViewModel: UserViewModel = hiltViewModel(),
+    onVerificationSuccess: () -> Unit,
+    onBackPressed: () -> Unit
 ) {
+
     val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
     val autorizeChange = userViewModel.autorizeChangeKindUser.observeAsState()
 
-    /*LaunchedEffect(autorizeChange) {
-        if (autorizeChange.value == true) {
-            onVerificationSuccess()
-        } else {
-            showToast(context, "Los datos son incorrectos")
+    LaunchedEffect(autorizeChange.value) {
+        when (autorizeChange.value) {
+            true -> onVerificationSuccess()
+            false -> showToast(context, "Usuario incorrecto")
+            null -> {}
         }
         userViewModel.resetAutorizeChangeKindUser()
-    }*/
+    }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -492,6 +534,14 @@ fun VerifyEmailAndCorreoForChangeType(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            IconButton(onClick = { onBackPressed() }, modifier = Modifier.align(Alignment.Start)) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Volver atras",
+                    tint = MaterialTheme.colorScheme.onSurface
+
+                )
+            }
             Text(
                 text = "Para cambiar el tipo de usuario que eres primero necesitas validar tus datos, por favor confirma tu correo electrónico y tu contraseña",
                 textAlign = TextAlign.Justify,
@@ -526,11 +576,10 @@ fun VerifyEmailAndCorreoForChangeType(
 
             Button(
                 onClick = {
-                    /*userViewModel.verifyAutorizeChangeKindUser(
+                    userViewModel.verifyAutorizeChangeKindUser(
                         correo = email,
                         password = password
-                    )*/
-                    onVerificationSuccess()
+                    )
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {

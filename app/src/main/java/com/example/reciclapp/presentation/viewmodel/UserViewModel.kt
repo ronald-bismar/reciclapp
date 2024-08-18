@@ -42,11 +42,11 @@ class UserViewModel @Inject constructor(
     private val _compradores = MutableStateFlow<List<Usuario>>(emptyList())
     val compradores: StateFlow<List<Usuario>> = _compradores
 
-    private val _isVendedor = MutableLiveData(false)
+    private val _isVendedor = MutableLiveData<Boolean>()
     val isVendedor: LiveData<Boolean> get() = _isVendedor
 
-    private val _autorizeChangeKindUser = MutableLiveData<Boolean>(false)
-    val autorizeChangeKindUser: LiveData<Boolean> = _autorizeChangeKindUser
+    private val _autorizeChangeKindUser = MutableLiveData<Boolean?>(null)
+    val autorizeChangeKindUser: LiveData<Boolean?> = _autorizeChangeKindUser
 
     private val _email = MutableLiveData<String>()
     val email: LiveData<String> = _email
@@ -60,12 +60,15 @@ class UserViewModel @Inject constructor(
 
     fun verifyAutorizeChangeKindUser(correo: String, password: String) {
         _autorizeChangeKindUser.value =
-                    _user.value?.correo?.equals(correo) == true &&
+            _user.value?.correo?.equals(correo) == true &&
                     _user.value?.contrasena?.equals(password) == true
+        Log.d("_autorizeChangeKindUser", "correo: ${_user.value?.correo}")
+        Log.d("_autorizeChangeKindUser", "contrasena: ${_user.value?.contrasena}")
+        Log.d("_autorizeChangeKindUser", "_autorizeChangeKindUser: ${_autorizeChangeKindUser.value}")
     }
 
-    fun resetAutorizeChangeKindUser(){
-        _autorizeChangeKindUser.value = false
+    fun resetAutorizeChangeKindUser() {
+        _autorizeChangeKindUser.value = null
     }
 
     private fun loadUserPreferences() {
@@ -94,7 +97,6 @@ class UserViewModel @Inject constructor(
 
     fun onIsVendedorChanged(isVendedor: Boolean) {
         _isVendedor.value = isVendedor
-        Log.d("vendedor", "isVendedor: $isVendedor")
     }
 
     fun logOutUser() {

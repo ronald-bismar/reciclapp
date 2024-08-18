@@ -1,5 +1,6 @@
 package com.example.reciclapp.presentation.animations
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -36,9 +37,10 @@ import kotlinx.coroutines.delay
  * la pestaña seleccionada visualmente.
  */
 @Composable
-fun UserTypeAnimated(onIsVendedorChanged: (Boolean) -> Unit) {
+fun UserTypeAnimated(isVendedor: Boolean = false,onIsVendedorChanged: (Boolean) -> Unit) {
+    Log.d("vendedor", "isVendedor: $isVendedor")
     // Índice de la pestaña seleccionada actualmente
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    var selectedTabIndex by remember { mutableIntStateOf(if (isVendedor) 1 else 0) }
     // Índice de la pestaña pendiente de ser seleccionada (para la animación)
     var pendingTabIndex by remember { mutableStateOf<Int?>(null) }
 
@@ -96,7 +98,7 @@ fun UserTypeAnimated(onIsVendedorChanged: (Boolean) -> Unit) {
             text = {
                 Text(
                     "Vendedor",
-                    color = if (selectedTabIndex == 1) Color.White else Color.Gray,
+                    color = if (selectedTabIndex == 1) Color.White  else Color.Gray,
                     style = TextStyle(
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold

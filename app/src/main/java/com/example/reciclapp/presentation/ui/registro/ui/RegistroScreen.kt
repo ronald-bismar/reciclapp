@@ -58,16 +58,15 @@ import com.example.reciclapp.presentation.ui.registro.ui.photo_profile.SinglePho
 import com.example.reciclapp.util.StorageUtil
 import kotlinx.coroutines.launch
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistroScreen(viewModel: RegistroViewModel, navController: NavHostController) {
     val context = LocalContext.current
     val registerState by viewModel.registerState.observeAsState()
-    val isVendedor by viewModel.isVendedor.observeAsState(false)
     val name by viewModel.name.observeAsState("")
     val lastName by viewModel.lastname.observeAsState("")
     val phone by viewModel.phone.observeAsState("")
+    val address by viewModel.address.observeAsState("")
     val email by viewModel.email.observeAsState("")
     val password by viewModel.password.observeAsState("")
     val recordEnable by viewModel.recordEnable.observeAsState(false)
@@ -80,7 +79,7 @@ fun RegistroScreen(viewModel: RegistroViewModel, navController: NavHostControlle
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
         if (isLoading) {
@@ -96,36 +95,41 @@ fun RegistroScreen(viewModel: RegistroViewModel, navController: NavHostControlle
                     imageUri = uri
                 }, sizeImageProfile = 150)
                 UserTypeAnimated(
-                    viewModel::onIsVendedorChanged
+                    onIsVendedorChanged = viewModel::onIsVendedorChanged
                 )
                 NameField(name) { newName ->
                     viewModel.onRecordChanged(
-                        newName, lastName, phone, email, password
+                        newName, lastName, phone,address, email, password
                     )
                 }
                 Spacer(modifier = Modifier.height(5.dp))
                 LastNameField(lastName) { newLastName ->
                     viewModel.onRecordChanged(
-                        name, newLastName, phone, email, password
+                        name, newLastName, phone ,address, email, password
                     )
                 }
                 Spacer(modifier = Modifier.height(5.dp))
                 PhoneField(phone) { newPhone ->
                     viewModel.onRecordChanged(
-                        name, lastName, newPhone, email, password
+                        name, lastName, newPhone, address,email, password
                     )
                 }
                 Spacer(modifier = Modifier.height(5.dp))
+                AddressField(address) { newAddress ->
+                    viewModel.onRecordChanged(
+                        name, lastName, phone,newAddress, email, password
+                    )
+                }
                 Spacer(modifier = Modifier.height(5.dp))
                 EmailField(email) { newEmail ->
                     viewModel.onRecordChanged(
-                        name, lastName, phone, newEmail, password
+                        name, lastName, phone,address, newEmail, password
                     )
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 PasswordField(password) { newPassword ->
                     viewModel.onRecordChanged(
-                        name, lastName, phone, email, newPassword
+                        name, lastName, phone,address, email, newPassword
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -135,7 +139,7 @@ fun RegistroScreen(viewModel: RegistroViewModel, navController: NavHostControlle
                         imageUrl = url
                         coroutineScope.launch {
                             viewModel.onRecordSelected(
-                                name, lastName, phone.toLong(), email, password, imageUrl ?: ""
+                                name, lastName, phone.toLong(),address, email, password, imageUrl ?: ""
                             )
                         }
                     }
@@ -314,6 +318,25 @@ fun PhoneField(phone: String, onPhoneChanged: (String) -> Unit) {
         label = { Text("Teléfono") },
         modifier = Modifier.fillMaxWidth(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+        textStyle = TextStyle(fontSize = 16.sp),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = Color.Gray,
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            unfocusedLabelColor = Color.Gray,
+            cursorColor = MaterialTheme.colorScheme.primary
+        )
+    )
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddressField(address: String, onAddressChanged: (String) -> Unit) {
+    OutlinedTextField(
+        value = address,
+        onValueChange = onAddressChanged,
+        label = { Text("Dirección") },
+        modifier = Modifier.fillMaxWidth(),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
         textStyle = TextStyle(fontSize = 16.sp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
