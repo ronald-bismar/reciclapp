@@ -61,7 +61,7 @@ fun UserTypeAnimated(isVendedor: Boolean = false,onIsVendedorChanged: (Boolean) 
                 modifier = Modifier
                     .tabIndicatorOffset(tabPositions[selectedTabIndex])
                     .background(
-                        Color.Blue,
+                        MaterialTheme.colorScheme.secondary,
                         shape = RoundedCornerShape(30.dp) // Esquina redondeada del indicador
                     )
                     .fillMaxHeight()

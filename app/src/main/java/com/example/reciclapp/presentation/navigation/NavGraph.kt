@@ -19,6 +19,8 @@ import androidx.navigation.navArgument
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.example.reciclapp.presentation.ui.login.ui.LoginScreen
 import com.example.reciclapp.presentation.ui.login.ui.LoginViewModel
+import com.example.reciclapp.presentation.ui.menu.ui.IntroductionScreen
+import com.example.reciclapp.presentation.ui.menu.ui.PantallaPresentacion
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Comprador
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.mapa.MapsView
 import com.example.reciclapp.presentation.ui.menu.ui.PantallaPrincipal
@@ -46,7 +48,8 @@ fun NavGraph(
     }
 
     LaunchedEffect(Unit) {
-        nextScreen = getNextScreen(getUserPreferencesUseCase)
+        nextScreen = "pantalla presentacion"
+//            getNextScreen(getUserPreferencesUseCase)
     }
 
     NavHost(navController = navController, startDestination = "splash") {
@@ -66,6 +69,13 @@ fun NavGraph(
         composable("menu") {
             PantallaPrincipal(navController)
         }
+        composable("pantalla presentacion") {
+            PantallaPresentacion(navController)
+        }
+        composable("introduction screen"){
+            IntroductionScreen(navController)
+        }
+
         composable(
             route = "compradorPerfil/{userId}",
             arguments = listOf(navArgument("userId") { type = NavType.IntType })

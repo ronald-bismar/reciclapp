@@ -151,7 +151,7 @@ fun RegistroScreen(viewModel: RegistroViewModel, navController: NavHostControlle
                     when {
                         result.isSuccess -> {
                             showToast(context, "Registro correcto")
-                            navController.navigate("menu")
+                            navController.navigate("pantalla presentacion")
                             viewModel.resetState()
                         }
 
