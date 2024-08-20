@@ -24,6 +24,8 @@ import com.example.reciclapp.presentation.ui.menu.ui.PantallaPresentacion
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Comprador
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.mapa.MapsView
 import com.example.reciclapp.presentation.ui.menu.ui.PantallaPrincipal
+import com.example.reciclapp.presentation.ui.menu.ui.PresentacionAppScreen
+import com.example.reciclapp.presentation.ui.menu.ui.UserTypeScreen
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroScreen
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroViewModel
 import com.example.reciclapp.presentation.ui.splash.SplashScreenContent
@@ -36,7 +38,7 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavGraph(
-    navController: NavHostController,
+    maiNavController: NavHostController,
     loginViewModel: LoginViewModel = hiltViewModel(),
     registroViewModel: RegistroViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel(),
@@ -48,32 +50,41 @@ fun NavGraph(
     }
 
     LaunchedEffect(Unit) {
-        nextScreen = "pantalla presentacion"
-//            getNextScreen(getUserPreferencesUseCase)
+        nextScreen = /*getNextScreen(getUserPreferencesUseCase)*/
+            "tipoDeUsuario"
+            /*"pantalla presentacion"*/
     }
 
-    NavHost(navController = navController, startDestination = "splash") {
+    NavHost(navController = maiNavController, startDestination = "splash") {
         composable("splash") {
             SplashScreenContent {
-                navController.navigate(nextScreen) {
+                maiNavController.navigate(nextScreen) {
                     popUpTo("splash") { inclusive = true }
                 }
             }
         }
         composable("login") {
-            LoginScreen(loginViewModel, navController)
+            LoginScreen(loginViewModel, maiNavController)
         }
         composable("registro") {
-            RegistroScreen(registroViewModel, navController)
+            RegistroScreen(registroViewModel, maiNavController)
         }
         composable("menu") {
-            PantallaPrincipal(navController)
+            PantallaPrincipal(maiNavController)
         }
         composable("pantalla presentacion") {
-            PantallaPresentacion(navController)
+            PantallaPresentacion(maiNavController)
         }
+
+        composable("presentacion app") {
+        PresentacionAppScreen(maiNavController)
+    }
         composable("introduction screen"){
-            IntroductionScreen(navController)
+            IntroductionScreen(maiNavController)
+        }
+
+        composable("tipoDeUsuario"){
+            UserTypeScreen()
         }
 
         composable(
@@ -81,18 +92,18 @@ fun NavGraph(
             arguments = listOf(navArgument("userId") { type = NavType.IntType })
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getInt("userId") ?: 0
-            Comprador(navController = navController, compradorId = userId)
+            Comprador(navController = maiNavController, compradorId = userId)
         }
         composable(
             route = "vendedorPerfil/{userId}",
             arguments = listOf(navArgument("userId") { type = NavType.IntType })
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getInt("userId") ?: 0
-            Vendedor(navController = navController, vendedorId = userId)
+            Vendedor(navController = maiNavController, vendedorId = userId)
         }
         composable("map"){
             userViewModel.user.observeAsState().value?.idUsuario?.let { idUsuario ->
-                MapsView(idUsuario = idUsuario, mainNavController = navController)
+                MapsView(idUsuario = idUsuario, mainNavController = maiNavController)
             }
         }
     }

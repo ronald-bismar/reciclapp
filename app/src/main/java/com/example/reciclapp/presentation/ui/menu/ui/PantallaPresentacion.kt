@@ -9,7 +9,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,7 +23,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -75,10 +73,15 @@ fun PantallaPresentacion(mainNavController: NavController) {
 
             LogoReciclapp()
 
-            ButtonWithBorderRadius(mainNavController = mainNavController)
+            ButtonWithBorderRadius(
+                mainNavController = mainNavController,
+                2600,
+                "presentacion app"
+            )
         }
 
-        val painterResource = painterResource (if(isSystemInDarkTheme()) R.drawable.abstract_shape_dark else R.drawable.abstract_shape_white)
+        val painterResource =
+            painterResource(if (isSystemInDarkTheme()) R.drawable.abstract_shape_dark else R.drawable.abstract_shape_white)
         Image(
             painter = painterResource,
             contentDescription = "ShapeAbstract",
@@ -124,7 +127,7 @@ fun Carousel() {
     LaunchedEffect(Unit) {
         while (true) {
             yield()
-            delay(2600)
+            delay(3000)
             pagerState.animateScrollToPage(
                 page = (pagerState.currentPage + 1) % (pagerState.pageCount)
             )
@@ -180,7 +183,8 @@ fun Carousel() {
 fun TextWithShadow() {
     // Controla la visibilidad animada del texto
     var visible by remember { mutableStateOf(false) }
-    val textColor = if(isSystemInDarkTheme()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+    val textColor =
+        if (isSystemInDarkTheme()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
 
     // Animación de opacidad
     val opacity by animateFloatAsState(
@@ -223,12 +227,19 @@ fun TextWithShadow() {
 }
 
 @Composable
-fun ButtonWithBorderRadius(mainNavController: NavController) {
+fun ButtonWithBorderRadius(
+    mainNavController: NavController,
+    durationAnimation: Long,
+    nextScreen: String
+) {
     var visible by remember { mutableStateOf(false) }
-    val animatedAlpha by animateFloatAsState(targetValue = if (visible) 1f else 0f, label = "animateFloatAsState")
+    val animatedAlpha by animateFloatAsState(
+        targetValue = if (visible) 1f else 0f,
+        label = "animateFloatAsState"
+    )
 
     LaunchedEffect(Unit) {
-        delay(2500)
+        delay(durationAnimation)
         visible = true
     }
 
@@ -242,7 +253,7 @@ fun ButtonWithBorderRadius(mainNavController: NavController) {
     ) {
         TextButton(
             onClick = {
-                mainNavController.navigate("introduction screen") {
+                mainNavController.navigate(nextScreen) {
                     // Elimina todas las pantallas anteriores, incluyendo la pantalla inicial
                     popUpTo(mainNavController.graph.startDestinationId) {
                         inclusive = true

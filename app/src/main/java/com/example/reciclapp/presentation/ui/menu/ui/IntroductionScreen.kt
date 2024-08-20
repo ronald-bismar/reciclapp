@@ -15,11 +15,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,9 +48,9 @@ fun IntroductionScreen(mainNavController: NavController) {
     )
 
     val descriptions = listOf(
-        "Registrate como Comprador o Vendedor de reciclaje",
-        "Busca las mejores ofertas por el reciclaje que tienes en casa",
-        "Registrate como comprador de reciclaje para que mas personas encuentren tu negocio"
+        "Puedes registrarte como Comprador o Vendedor de reciclaje",
+        "Como reciclador puedes buscar las mejores ofertas por el reciclaje que tienes en casa",
+        "Como comprador de reciclaje haz que mas personas encuentren tu negocio y poder ver los materiales que muchas personas venden"
     )
 
     Box(modifier = Modifier.fillMaxSize()) {

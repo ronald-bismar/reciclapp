@@ -72,7 +72,7 @@ fun SplashScreenContent(onTimeout: () -> Unit) {
             modifier = Modifier.fillMaxSize()
         )
         LaunchedEffect(Unit) {
-            delay(2900)
+            delay(2600)
             onTimeout()
         }
         Text(text = "ITBM 2024", modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 16.dp))
