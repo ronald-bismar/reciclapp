@@ -113,7 +113,7 @@ fun IntroductionScreen(mainNavController: NavController) {
                 onClick = {
                     coroutineScope.launch {
                         if (pagerState.currentPage == imageSlider.size - 1) {
-                            mainNavController.navigate("menu") {
+                            mainNavController.navigate("tipoDeUsuario") {
                                 popUpTo(mainNavController.graph.startDestinationId) {
                                     inclusive = true
                                 }

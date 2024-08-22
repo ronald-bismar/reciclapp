@@ -132,7 +132,7 @@ fun AddItemCardVendedor(onAddItem: (Producto) -> Unit) {
                         descripcionProducto = description,
                         urlImagenProducto = "R.drawable",
                         fueVendida = sold,
-                        puntos = points.toIntOrNull() ?: 0
+                        puntosPorCompra = points.toIntOrNull() ?: 0
                     )
                     onAddItem(newItem)
                 },

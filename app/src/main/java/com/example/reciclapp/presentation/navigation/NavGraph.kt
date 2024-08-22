@@ -50,8 +50,8 @@ fun NavGraph(
     }
 
     LaunchedEffect(Unit) {
-        nextScreen = /*getNextScreen(getUserPreferencesUseCase)*/
-            "tipoDeUsuario"
+        nextScreen = getNextScreen(getUserPreferencesUseCase)
+           /* "tipoDeUsuario"*/
             /*"pantalla presentacion"*/
     }
 
@@ -84,7 +84,7 @@ fun NavGraph(
         }
 
         composable("tipoDeUsuario"){
-            UserTypeScreen()
+            UserTypeScreen(maiNavController)
         }
 
         composable(

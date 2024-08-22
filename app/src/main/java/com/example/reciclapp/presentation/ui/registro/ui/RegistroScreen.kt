@@ -94,9 +94,6 @@ fun RegistroScreen(viewModel: RegistroViewModel, navController: NavHostControlle
                 SinglePhotoPicker(onImageUriReady = { uri ->
                     imageUri = uri
                 }, sizeImageProfile = 150)
-                UserTypeAnimated(
-                    onIsVendedorChanged = viewModel::onIsVendedorChanged
-                )
                 NameField(name) { newName ->
                     viewModel.onRecordChanged(
                         newName, lastName, phone,address, email, password

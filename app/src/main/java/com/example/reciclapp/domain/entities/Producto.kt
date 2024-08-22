@@ -12,10 +12,11 @@ data class Producto(
     val ubicacionProducto: String = "", // Ubicación del producto
     val monedaDeCompra: String = "Bs",
     val unidadMedida: String = "", // Unidad de medida (por kilo, por unidad, etc.)
-    val puntos: Int = 0,
+    val puntosPorCompra: Int = 0,
+    val estrellas: Int = 0,
     val fueVendida: Boolean = false,
     val idVendedor: Int = 0
 ) {
     // Constructor sin argumentos necesario para Firebase Firestore
-    constructor() : this(0, "", "", "", 0.0, "", 0, "", "", "Bs", "", 0,false, 0)
+    constructor() : this(0, "", "", "", 0.0, "", 0, "", "", "Bs", "", 0,0,false, 0)
 }
