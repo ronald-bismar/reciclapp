@@ -2,6 +2,7 @@ package com.example.reciclapp.presentation.ui.menu.ui.vistas
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -78,7 +80,7 @@ fun Vendedor(
                 ) {
                     ProfilePicture2(
                         rememberAsyncImagePainter(model = selectedVendedor.urlImagenPerfil),
-                        100.dp
+                        120.dp
                     )
                 }
             }
@@ -149,6 +151,7 @@ fun ProfilePicture2(painter: Painter, size: Dp) {
         Image(
             painter = painter,
             contentDescription = null,
+            contentScale = ContentScale.Crop,
             modifier = Modifier.size(size)
         )
     }
@@ -166,7 +169,7 @@ fun ProfileSection2(title: String) {
             text = title,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }
@@ -200,13 +203,13 @@ fun SoldItemCard(item: Producto) {
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface)
-            .padding(16.dp)
+            .padding(horizontal= 6.dp, vertical = 20.dp), verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
             painter = rememberAsyncImagePainter(model = item.urlImagenProducto),
             contentDescription = null,
             modifier = Modifier
-                .size(64.dp)
+                .size(120.dp)
                 .clip(RoundedCornerShape(8.dp))
         )
         Spacer(modifier = Modifier.width(16.dp))
@@ -223,9 +226,15 @@ fun SoldItemCard(item: Producto) {
             )
             Text(text = "Categoria: ${item.categoria}", style = MaterialTheme.typography.bodySmall)
             Text(
-                text = if (item.fueVendida) "Estado: Vendido" else "Estado: No vendido",
+                text = if (item.fueVendida) "Estado: Vendido" else "Estado: Disponible",
                 style = MaterialTheme.typography.bodySmall,
-                color = if (item.fueVendida) Color.Green else Color.Red
+                color = if (item.fueVendida) {
+                    if (isSystemInDarkTheme())
+                        Color(0xFFFF6B6B)
+                    else
+                        Color.Red
+                }
+                    else Color.Green
             )
         }
     }

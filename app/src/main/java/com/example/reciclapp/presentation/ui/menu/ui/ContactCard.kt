@@ -18,14 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.Usuario
 
 @Composable
-fun ContactCard(comprador: Usuario, viewProfile: () -> Unit, sendMessage: () -> Unit, call: () -> Unit) {
+fun ContactCard(usuario: Usuario, viewProfile: () -> Unit, sendMessage: () -> Unit, call: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -40,16 +38,16 @@ fun ContactCard(comprador: Usuario, viewProfile: () -> Unit, sendMessage: () -> 
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = rememberAsyncImagePainter(model = comprador.urlImagenPerfil),
+                    painter = rememberAsyncImagePainter(model = usuario.urlImagenPerfil),
                     contentDescription = "Perfil",
                     modifier = Modifier.size(60.dp).clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
-                    Text(text = "${comprador.nombre} ${comprador.apellido}", style = MaterialTheme.typography.bodySmall)
-                    Text(text = "Puntaje: ${comprador.puntaje}", style = MaterialTheme.typography.bodySmall)
-                    Text(text = comprador.direccion, style = MaterialTheme.typography.bodySmall)
+                    Text(text = "${usuario.nombre} ${usuario.apellido}", style = MaterialTheme.typography.bodySmall)
+                    Text(text = "Puntaje: ${usuario.puntaje}", style = MaterialTheme.typography.bodySmall)
+                    Text(text = usuario.direccion, style = MaterialTheme.typography.bodySmall)
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))

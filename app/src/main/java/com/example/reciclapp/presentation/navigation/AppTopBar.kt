@@ -55,8 +55,6 @@ import kotlinx.coroutines.launch
  *
  * @param navControllerMain Controlador de navegación principal.
  * @param navController Controlador de navegación de la pantalla actual.
- * @param showDropdownMenu Estado que indica si el menú desplegable está visible.
- * @param setShowDropdownMenu Función para actualizar el estado del menú desplegable.
  * @param drawerState Estado del cajón de navegación (drawer).
  * @param scope Alcance de las corutinas para manejar el cajón de navegación.
  */
@@ -65,15 +63,13 @@ import kotlinx.coroutines.launch
 fun AppTopBar(
     navControllerMain: NavController,
     navController: NavHostController,
-    showDropdownMenu: Boolean,
-    setShowDropdownMenu: (Boolean) -> Unit,
     drawerState: DrawerState,
     scope: CoroutineScope,
     userViewModel: UserViewModel
 ) {
     // Observa el estado del usuario y del logout
     val user by userViewModel.user.observeAsState()
-    Log.d("UserViewModel", "userViewModelAppBar: ${userViewModel}")
+    Log.d("UserViewModel", "userViewModelAppBar: $userViewModel")
 
 
     val logOutState by userViewModel.logOutState.observeAsState()
@@ -83,8 +79,6 @@ fun AppTopBar(
 
     // Estados para mostrar el menú desplegable y el diálogo
     var showMenu by remember { mutableStateOf(false) }
-    var showDialog by remember { mutableStateOf(false) }
-    val myTitle = "ReciclApp"
 
     // Barra superior de la aplicación
     TopAppBar(
@@ -188,7 +182,6 @@ fun DropdownMenuItems(navController: NavHostController, onMenuItemClick: (MenuIt
     // Lista de ítems para el menú desplegable
     val items = listOf(
         MenuItem("Mi perfil", Icons.Filled.Person, "Mi perfil"),
-        MenuItem("Cambiar usuario", Icons.Filled.Person, "Cambiar usuario"),
         MenuItem("Cerrar sesión", Icons.Filled.Face, "Cerrar sesión"),
         MenuItem("Salir", Icons.Filled.Close, "Salir")
     )
@@ -205,6 +198,7 @@ fun DropdownMenuItems(navController: NavHostController, onMenuItemClick: (MenuIt
                     "Cerrar sesión" -> {
                         userViewModel.logOutUser()
                     }
+
                     "Salir" -> context.finishAffinity()
                 }
                 onMenuItemClick(item)

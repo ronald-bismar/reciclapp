@@ -6,9 +6,20 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,21 +38,34 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -57,13 +81,15 @@ import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.Comentario
 import com.example.reciclapp.domain.entities.Material
 import com.example.reciclapp.domain.entities.Usuario
+import com.example.reciclapp.presentation.ui.registro.ui.showToast
 import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
 
 private const val REQUEST_CALL_PERMISSION = 1
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Comprador(
-    navController: NavController,
+    mainNavController: NavController,
     compradorId: Int,
     compradoresViewModel: CompradoresViewModel = hiltViewModel()
 ) {
@@ -75,16 +101,31 @@ fun Comprador(
         }
     }
 
-    val selectedComprador = compradoresViewModel.selectedComprador.collectAsState().value
+    val selectedComprador = compradoresViewModel.selectedComprador.observeAsState().value
     val materiales = compradoresViewModel.materiales.collectAsState().value
     val comentarios = compradoresViewModel.comentarios.collectAsState().value
+
+    val stateNewComment by compradoresViewModel.stateNewComment.observeAsState()
+
+    val context = LocalContext.current
+
+    LaunchedEffect(stateNewComment) {
+        if(stateNewComment?.isSuccess == true){
+            showToast(context,"Comentario añadido")
+        }else if(stateNewComment?.isFailure == true){
+            showToast(context,"No se pudo subir el comentario")
+        }
+
+        compradoresViewModel.resetState()
+    }
 
     selectedComprador?.let { comprador ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ProfileHeader(comprador.urlImagenPerfil)
             ProfileDetails3(comprador)
@@ -92,6 +133,9 @@ fun Comprador(
             SectionTitle("Objetos comprables:")
             MaterialList(materiales)
             SectionTitle("Comentarios:")
+            PuntuarUsuario(onComentarioCreado = { newComment, puntuacion  ->
+                compradoresViewModel.enviarComentario(newComment, puntuacion)
+            })
             ComentariosList(comentarios)
         }
     } ?: Box(
@@ -103,6 +147,94 @@ fun Comprador(
         CircularProgressIndicator()
     }
 }
+
+
+@Composable
+fun PuntuarUsuario(
+    onComentarioCreado: (String, Int) -> Unit
+) {
+    var comentarioTexto by remember { mutableStateOf("") }
+    var puntuacion by remember { mutableIntStateOf(0) }
+    var showCreateComment by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessHigh
+                )
+            )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 15.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            ActionButton3(
+                label = if (showCreateComment) "Cerrar" else "Puntuar Usuario",
+                icon = Icons.Default.Star,
+                onClick = { showCreateComment = !showCreateComment }
+            )
+        }
+
+        AnimatedVisibility(
+            visible = showCreateComment,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
+            Column {
+                TextField(
+                    value = comentarioTexto,
+                    onValueChange = { comentarioTexto = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("Escribe un comentario") },
+                    maxLines = 3
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text("Puntuación:")
+
+                // Estrellas para la puntuación
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    for (i in 1..5) {
+                        Icon(
+                            imageVector = if (i <= puntuacion) Icons.Rounded.Star else Icons.Rounded.Star,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clickable { puntuacion = i },
+                            tint = if (i <= puntuacion) Color.Yellow else Color.Gray
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    onClick = {
+                        if (comentarioTexto.isNotBlank() && puntuacion > 0) {
+                            onComentarioCreado(comentarioTexto, puntuacion)
+                            comentarioTexto = ""
+                            puntuacion = 0
+                            showCreateComment = false
+                        }
+                    },
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Text("Puntuar")
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 fun ProfileHeader(imageUrl: String?) {
@@ -117,7 +249,7 @@ fun ProfileHeader(imageUrl: String?) {
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ProfilePicture3(painter = rememberAsyncImagePainter(model = imageUrl), size = 100.dp)
+            ProfilePicture3(painter = rememberAsyncImagePainter(model = imageUrl), size = 150.dp)
         }
     }
 }
@@ -134,8 +266,9 @@ fun ProfilePicture3(painter: Painter, size: Dp) {
         Image(
             painter = painter,
             contentDescription = null,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
-                .size(100.dp)
+                .size(150.dp)
                 .clip(CircleShape)
         )
     }
@@ -164,7 +297,12 @@ fun SectionTitle(title: String) {
             .padding(vertical = 8.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = title, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+        Text(
+            text = title,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }
 
@@ -260,9 +398,11 @@ fun MaterialList(materiales: List<Material>) {
             .padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally
     ) {
         materiales.forEach {
+            val precio: String = if (it.precio < 1) "${it.precio}0"
+            else it.precio.toInt().toString()
             Text(
-                "${it.nombre}: ${it.monedaDeCompra} ${it.precio} por ${it.unidadDeMedida}",
-                style = MaterialTheme.typography.bodyMedium
+                "${it.nombre}: ${it.monedaDeCompra} $precio por ${it.unidadDeMedida}",
+                style = MaterialTheme.typography.bodyLarge
             )
         }
     }
@@ -304,5 +444,6 @@ fun CardComentario(item: Comentario) {
             style = MaterialTheme.typography.labelSmall,
             color = Color.LightGray
         )
+        HorizontalDivider(modifier = Modifier.fillMaxSize())
     }
 }

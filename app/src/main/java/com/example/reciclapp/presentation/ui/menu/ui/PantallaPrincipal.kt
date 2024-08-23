@@ -58,9 +58,8 @@ fun PantallaPrincipal(navControllerMain: NavController) {
         drawerState = drawerState,
         drawerContent = {
             DrawerContent(
-                mainNavController = navController,
+                mainNavController = navControllerMain,
                 onItemClick = { scope.launch { drawerState.close() } },
-                userViewModel = userViewModel
             )
         }
     ) {
@@ -70,8 +69,6 @@ fun PantallaPrincipal(navControllerMain: NavController) {
                 AppTopBar(
                     navControllerMain = navControllerMain,
                     navController = navController,
-                    showDropdownMenu = showDropdownMenu,
-                    setShowDropdownMenu = { showDropdownMenu = it },
                     drawerState = drawerState,
                     scope = scope,
                     userViewModel = userViewModel
@@ -90,14 +87,14 @@ fun PantallaPrincipal(navControllerMain: NavController) {
                     containerColor = MaterialTheme.colorScheme.primary, // Cambiar el color del botón flotante
                     contentColor = MaterialTheme.colorScheme.onSurface // Cambiar el color del icono dentro del botón
                 ) {
-                    Icon(Icons.Default.Place, contentDescription = "Abrir Bottom Sheet")
+                    Icon(Icons.Default.Place, contentDescription = "Maps View")
                 }
             },
             floatingActionButtonPosition = FabPosition.End
         ) { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
                 BottomNavHost(
-                    navController = navControllerMain,
+                    mainNavController = navControllerMain,
                     navHostController = navController,
                     userViewModel = userViewModel
                 )

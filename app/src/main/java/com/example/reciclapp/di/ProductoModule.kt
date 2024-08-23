@@ -49,4 +49,9 @@ object ProductoModule {
     fun provideListarProductosPorUsuarioUseCase(repository: ProductoRepository): ListarProductosDeVendedorUseCase {
         return ListarProductosDeVendedorUseCase(repository)
     }
+
+    @Provides
+    fun provideUpdateLikedProductoUseCase(repository: ProductoRepository): UpdateLikedProductoUseCase {
+        return UpdateLikedProductoUseCase(repository)
+    }
 }

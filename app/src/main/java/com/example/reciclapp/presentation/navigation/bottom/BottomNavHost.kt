@@ -12,13 +12,13 @@ import com.example.reciclapp.presentation.ui.menu.ui.vistas.Inicio
 import com.example.reciclapp.presentation.ui.menu.ui.ItemsMenu
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Perfil
 import com.example.reciclapp.presentation.ui.menu.ui.content.statistics.DetailedStatisticsScreen
-import com.example.reciclapp.presentation.ui.ayuda.ui.SimpleAyudaScreen
+import com.example.reciclapp.presentation.ui.menu.ui.SocialMediaScreenVendedores
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BottomNavHost(
-    navController: NavController,
+    mainNavController: NavController,
     navHostController: NavHostController,
     userViewModel: UserViewModel
 ) {
@@ -36,10 +36,10 @@ fun BottomNavHost(
             Inicio()
         }
         composable(ItemsMenu.Pantalla4.ruta) {
-            ContactListScreen(navController)
+            ContactListScreen(mainNavController)
         }
         composable(ItemsMenu.Pantalla5.ruta) {
-            SimpleAyudaScreen()
+            SocialMediaScreenVendedores(mainNavController)
         }
     }
 }

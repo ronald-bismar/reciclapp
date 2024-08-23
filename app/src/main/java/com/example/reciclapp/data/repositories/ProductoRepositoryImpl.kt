@@ -1,13 +1,13 @@
 package com.example.reciclapp.data.repositories
 
 import com.example.reciclapp.domain.entities.Producto
-import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.repositories.ProductoRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFirestore): ProductoRepository {
+class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFirestore) :
+    ProductoRepository {
     override suspend fun getProducto(idProducto: Int): Producto? {
         val snapshot = service.collection("producto")
             .document(idProducto.toString())
@@ -53,10 +53,18 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
         val productosDeVendedor = mutableListOf<Producto>()
         val querySnapshot =
             service.collection("producto").whereEqualTo("idVendedor", idVendedor).get().await()
-        for(document in querySnapshot.documents){
+        for (document in querySnapshot.documents) {
             val producto = document.toObject(Producto::class.java)
             producto?.let { productosDeVendedor.add(it) }
         }
         return productosDeVendedor
+    }
+
+    override suspend fun updateLikedProducto(producto: Producto, isLiked: Boolean) {
+        val cantidadMeGusta = if (isLiked) producto.meGusta + 1 else producto.meGusta
+        service.collection("producto")
+            .document(producto.idProducto.toString())
+            .update("meGusta", cantidadMeGusta)
+            .await()
     }
 }

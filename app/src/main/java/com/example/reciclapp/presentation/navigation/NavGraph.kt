@@ -17,19 +17,21 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
+import com.example.reciclapp.presentation.ui.ayuda.ui.SimpleAyudaScreen
 import com.example.reciclapp.presentation.ui.login.ui.LoginScreen
 import com.example.reciclapp.presentation.ui.login.ui.LoginViewModel
 import com.example.reciclapp.presentation.ui.menu.ui.IntroductionScreen
 import com.example.reciclapp.presentation.ui.menu.ui.PantallaPresentacion
-import com.example.reciclapp.presentation.ui.menu.ui.vistas.Comprador
-import com.example.reciclapp.presentation.ui.menu.ui.vistas.mapa.MapsView
 import com.example.reciclapp.presentation.ui.menu.ui.PantallaPrincipal
 import com.example.reciclapp.presentation.ui.menu.ui.PresentacionAppScreen
+import com.example.reciclapp.presentation.ui.menu.ui.SocialMediaScreenVendedores
 import com.example.reciclapp.presentation.ui.menu.ui.UserTypeScreen
+import com.example.reciclapp.presentation.ui.menu.ui.vistas.Comprador
+import com.example.reciclapp.presentation.ui.menu.ui.vistas.Vendedor
+import com.example.reciclapp.presentation.ui.menu.ui.vistas.mapa.MapsView
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroScreen
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroViewModel
 import com.example.reciclapp.presentation.ui.splash.SplashScreenContent
-import com.example.reciclapp.presentation.ui.menu.ui.vistas.Vendedor
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -38,7 +40,7 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavGraph(
-    maiNavController: NavHostController,
+    mainNavController: NavHostController,
     loginViewModel: LoginViewModel = hiltViewModel(),
     registroViewModel: RegistroViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel(),
@@ -50,41 +52,46 @@ fun NavGraph(
     }
 
     LaunchedEffect(Unit) {
-        nextScreen = getNextScreen(getUserPreferencesUseCase)
-           /* "tipoDeUsuario"*/
-            /*"pantalla presentacion"*/
+        nextScreen =
+        getNextScreen(getUserPreferencesUseCase)
+        /* "tipoDeUsuario"*/
+        /*"pantalla presentacion"*/
     }
 
-    NavHost(navController = maiNavController, startDestination = "splash") {
+    NavHost(navController = mainNavController, startDestination = "splash") {
         composable("splash") {
             SplashScreenContent {
-                maiNavController.navigate(nextScreen) {
+                mainNavController.navigate(nextScreen) {
                     popUpTo("splash") { inclusive = true }
                 }
             }
         }
+        composable("socialmediascreen") {
+            SocialMediaScreenVendedores(mainNavController)
+        }
         composable("login") {
-            LoginScreen(loginViewModel, maiNavController)
+            LoginScreen(loginViewModel, mainNavController)
         }
         composable("registro") {
-            RegistroScreen(registroViewModel, maiNavController)
+            RegistroScreen(registroViewModel, mainNavController)
         }
         composable("menu") {
-            PantallaPrincipal(maiNavController)
+            PantallaPrincipal(mainNavController)
         }
         composable("pantalla presentacion") {
-            PantallaPresentacion(maiNavController)
+            PantallaPresentacion(mainNavController)
         }
-
         composable("presentacion app") {
-        PresentacionAppScreen(maiNavController)
-    }
-        composable("introduction screen"){
-            IntroductionScreen(maiNavController)
+            PresentacionAppScreen(mainNavController)
         }
-
-        composable("tipoDeUsuario"){
-            UserTypeScreen(maiNavController)
+        composable("introduction screen") {
+            IntroductionScreen(mainNavController)
+        }
+        composable("Que es Reciclapp"){
+            SimpleAyudaScreen()
+        }
+        composable("tipoDeUsuario") {
+            UserTypeScreen(mainNavController)
         }
 
         composable(
@@ -92,18 +99,18 @@ fun NavGraph(
             arguments = listOf(navArgument("userId") { type = NavType.IntType })
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getInt("userId") ?: 0
-            Comprador(navController = maiNavController, compradorId = userId)
+            Comprador(mainNavController = mainNavController, compradorId = userId)
         }
         composable(
             route = "vendedorPerfil/{userId}",
             arguments = listOf(navArgument("userId") { type = NavType.IntType })
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getInt("userId") ?: 0
-            Vendedor(navController = maiNavController, vendedorId = userId)
+            Vendedor(navController = mainNavController, vendedorId = userId)
         }
-        composable("map"){
+        composable("map") {
             userViewModel.user.observeAsState().value?.idUsuario?.let { idUsuario ->
-                MapsView(idUsuario = idUsuario, mainNavController = maiNavController)
+                MapsView(idUsuario = idUsuario, mainNavController = mainNavController)
             }
         }
     }

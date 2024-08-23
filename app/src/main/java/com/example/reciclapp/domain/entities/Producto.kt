@@ -13,7 +13,7 @@ data class Producto(
     val monedaDeCompra: String = "Bs",
     val unidadMedida: String = "", // Unidad de medida (por kilo, por unidad, etc.)
     val puntosPorCompra: Int = 0,
-    val estrellas: Int = 0,
+    val meGusta: Int = 0,
     val fueVendida: Boolean = false,
     val idVendedor: Int = 0
 ) {

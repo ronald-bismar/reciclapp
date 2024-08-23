@@ -9,4 +9,5 @@ interface ProductoRepository {
     suspend fun eliminarProducto(idProducto: Int)
     suspend fun listarTodosLosProductos(): MutableList<Producto>
     suspend fun listarProductosPorVendedor(idVendedor: Int): MutableList<Producto> //Cuando se deba mostrar en el perfil del usuario vendedor
+    suspend fun updateLikedProducto(producto: Producto, isLiked: Boolean)
 }

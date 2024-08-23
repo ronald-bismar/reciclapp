@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    NavGraph(maiNavController = navController, getUserPreferencesUseCase = getUserPreferencesUseCase)
+                    NavGraph(mainNavController = navController, getUserPreferencesUseCase = getUserPreferencesUseCase)
                 }
             }
         }

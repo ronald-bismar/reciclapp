@@ -23,7 +23,7 @@ import com.example.reciclapp.R
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 
 @Composable
-fun DrawerContent(mainNavController: NavController, onItemClick: () -> Unit, userViewModel: UserViewModel) {
+fun DrawerContent(mainNavController: NavController, onItemClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth(0.8f)
@@ -34,7 +34,7 @@ fun DrawerContent(mainNavController: NavController, onItemClick: () -> Unit, use
         HeaderImage(Modifier.align(Alignment.CenterHorizontally))
         Spacer(modifier = Modifier.height(16.dp))
         HorizontalDivider()
-        DrawerItem(mainNavController, "home", Icons.Default.Home, onItemClick)
+        DrawerItem(mainNavController, "Que es Reciclapp", Icons.Default.Home, onItemClick)
         DrawerItem(mainNavController, "contact", Icons.Default.Call, onItemClick)
         DrawerItem(mainNavController, "perfil", Icons.Default.Person, onItemClick)
         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
