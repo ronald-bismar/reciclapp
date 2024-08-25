@@ -283,8 +283,9 @@ fun ProfileDetails3(comprador: Usuario) {
         ProfileItem3("Phone", comprador.telefono.toString())
         ProfileItem3("Address", comprador.direccion)
         ProfileItem3("Email", comprador.correo)
+        ProfileItem3("Puntos", comprador.puntaje.toString())
         Spacer(modifier = Modifier.height(10.dp))
-        Divider()
+        HorizontalDivider()
         Spacer(modifier = Modifier.height(10.dp))
     }
 }

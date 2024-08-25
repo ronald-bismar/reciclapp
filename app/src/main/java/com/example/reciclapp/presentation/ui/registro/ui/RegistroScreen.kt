@@ -4,26 +4,19 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -53,7 +46,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.reciclapp.R
-import com.example.reciclapp.presentation.animations.UserTypeAnimated
+import com.example.reciclapp.presentation.ui.menu.ui.vistas.components.HeaderImageLogoReciclapp
+import com.example.reciclapp.presentation.ui.menu.ui.vistas.components.LoadingButton
 import com.example.reciclapp.presentation.ui.registro.ui.photo_profile.SinglePhotoPicker
 import com.example.reciclapp.util.StorageUtil
 import kotlinx.coroutines.launch
@@ -90,53 +84,63 @@ fun RegistroScreen(viewModel: RegistroViewModel, navController: NavHostControlle
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.align(Alignment.Center)
             ) {
-                HeaderImage(Modifier.align(Alignment.CenterHorizontally))
+                HeaderImageLogoReciclapp(
+                    modifier = Modifier
+                        .size(width = 300.dp, height = 60.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
                 SinglePhotoPicker(onImageUriReady = { uri ->
                     imageUri = uri
                 }, sizeImageProfile = 150)
                 NameField(name) { newName ->
                     viewModel.onRecordChanged(
-                        newName, lastName, phone,address, email, password
+                        newName, lastName, phone, address, email, password
                     )
                 }
                 Spacer(modifier = Modifier.height(5.dp))
                 LastNameField(lastName) { newLastName ->
                     viewModel.onRecordChanged(
-                        name, newLastName, phone ,address, email, password
+                        name, newLastName, phone, address, email, password
                     )
                 }
                 Spacer(modifier = Modifier.height(5.dp))
                 PhoneField(phone) { newPhone ->
                     viewModel.onRecordChanged(
-                        name, lastName, newPhone, address,email, password
+                        name, lastName, newPhone, address, email, password
                     )
                 }
                 Spacer(modifier = Modifier.height(5.dp))
                 AddressField(address) { newAddress ->
                     viewModel.onRecordChanged(
-                        name, lastName, phone,newAddress, email, password
+                        name, lastName, phone, newAddress, email, password
                     )
                 }
                 Spacer(modifier = Modifier.height(5.dp))
                 EmailField(email) { newEmail ->
                     viewModel.onRecordChanged(
-                        name, lastName, phone,address, newEmail, password
+                        name, lastName, phone, address, newEmail, password
                     )
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 PasswordField(password) { newPassword ->
                     viewModel.onRecordChanged(
-                        name, lastName, phone,address, email, newPassword
+                        name, lastName, phone, address, email, newPassword
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                RegistroButton(recordEnable = recordEnable, onRecordSelected = {
+                RegistroButton(isLoading, recordEnable = recordEnable, onRecordSelected = {
                     viewModel.initLoading()
                     StorageUtil.uploadToStorage(imageUri!!, context) { url ->
                         imageUrl = url
                         coroutineScope.launch {
                             viewModel.onRecordSelected(
-                                name, lastName, phone.toLong(),address, email, password, imageUrl ?: ""
+                                name,
+                                lastName,
+                                phone.toLong(),
+                                address,
+                                email,
+                                password,
+                                imageUrl ?: ""
                             )
                         }
                     }
@@ -172,36 +176,13 @@ fun showToast(context: Context, message: String) {
 }
 
 @Composable
-fun RegistroButton(recordEnable: Boolean, onRecordSelected: () -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
-    ) {
-        Button(
-            onClick = onRecordSelected,
-            enabled = recordEnable,
-            modifier = Modifier
-                .wrapContentWidth()
-                .height(48.dp),
-            contentPadding = PaddingValues(12.dp),
-            shape = RoundedCornerShape(5.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF41A829),
-                disabledContainerColor = Color(0xFF174D11),
-                contentColor = Color.White,
-                disabledContentColor = Color.White
-            ),
-            elevation = ButtonDefaults.elevatedButtonElevation(
-                defaultElevation = 8.dp, pressedElevation = 12.dp
-            )
-        ) {
-            Text(
-                text = "Registrar",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(horizontal = 10.dp, vertical = 0.dp)
-            )
-        }
-    }
+fun RegistroButton(isLoading: Boolean, recordEnable: Boolean, onRecordSelected: () -> Unit) {
+    LoadingButton(
+        isLoading = isLoading,
+        buttonText = "Registro",
+        onClick = { onRecordSelected() },
+        enabled = recordEnable
+    )
 }
 
 @Composable
@@ -324,6 +305,7 @@ fun PhoneField(phone: String, onPhoneChanged: (String) -> Unit) {
         )
     )
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddressField(address: String, onAddressChanged: (String) -> Unit) {
@@ -342,19 +324,4 @@ fun AddressField(address: String, onAddressChanged: (String) -> Unit) {
             cursorColor = MaterialTheme.colorScheme.primary
         )
     )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun HeaderImage(modifier: Modifier) {
-    Box(
-        modifier = modifier.size(width = 300.dp, height = 60.dp)
-        //.background(Color(0xFF174D11))
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.reciclapgrandesinfondo),
-            contentDescription = "Header",
-            modifier = Modifier.fillMaxSize()
-        )
-    }
 }

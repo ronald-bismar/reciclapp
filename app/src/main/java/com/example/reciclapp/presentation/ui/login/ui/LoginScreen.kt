@@ -1,14 +1,11 @@
 package com.example.reciclapp.presentation.ui.login.ui
 
-
-import android.content.Context
-import android.widget.Toast
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,18 +13,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -40,10 +34,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -53,30 +47,31 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.Usuario
+import com.example.reciclapp.presentation.ui.menu.ui.vistas.components.HeaderImageLogoReciclapp
+import com.example.reciclapp.presentation.ui.menu.ui.vistas.components.LoadingButton
 import com.example.reciclapp.presentation.ui.registro.ui.showToast
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(viewModel: LoginViewModel, navController: NavHostController) {
-    val isLoading by viewModel.isLoading.observeAsState(false)
-    val loginState by viewModel.loginState.observeAsState()
+fun LoginScreen(loginViewModel: LoginViewModel, navController: NavHostController) {
+    val loginState by loginViewModel.loginState.observeAsState()
 
-    if (isLoading) {
-        LoadingIndicator()
-    } else {
-        LoginContent(viewModel, navController, loginState)
+    Box(modifier = Modifier.fillMaxSize()) {
+        LoginContent(loginViewModel, navController, loginState)
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginContent(viewModel: LoginViewModel, navController: NavHostController, loginState: Result<Usuario>?) {
+fun LoginContent(
+    loginViewModel: LoginViewModel,
+    navController: NavHostController,
+    loginState: Result<Usuario>?
+) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val email by viewModel.email.observeAsState("")
-    val password by viewModel.password.observeAsState("")
-    val loginEnable by viewModel.loginEnable.observeAsState(false)
+    val email by loginViewModel.email.observeAsState("")
+    val password by loginViewModel.password.observeAsState("")
+    val loginEnable by loginViewModel.loginEnable.observeAsState(false)
 
     Column(
         modifier = Modifier
@@ -85,21 +80,32 @@ fun LoginContent(viewModel: LoginViewModel, navController: NavHostController, lo
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HeaderImage()
+        HeaderImageLogoReciclapp(Modifier.size(width = 400.dp, height = 300.dp))
         Spacer(modifier = Modifier.height(16.dp))
-        EmailField(email) { viewModel.onLoginChanged(it, password) }
-        Spacer(modifier = Modifier.height(4.dp))
-        PasswordField(password) { viewModel.onLoginChanged(email, it) }
-        Spacer(modifier = Modifier.height(8.dp))
-        ForgotPasswordButton(viewModel)
-        Spacer(modifier = Modifier.height(10.dp))
-        LoginButton(loginEnable) {
-            coroutineScope.launch { viewModel.onLoginSelected(email, password) }
+        LoginTextField("Email", email, KeyboardType.Email) {
+            loginViewModel.onLoginChanged(
+                it,
+                password
+            )
         }
+        Spacer(modifier = Modifier.height(4.dp))
+        LoginTextField(
+            "Contraseña",
+            password,
+            KeyboardType.Password,
+            isPassword = true
+        ) { loginViewModel.onLoginChanged(email, it) }
+        Spacer(modifier = Modifier.height(8.dp))
+        ForgotPasswordButton(loginViewModel)
+        Spacer(modifier = Modifier.height(10.dp))
+        LoginButton(
+            loginViewModel,
+            loginEnable
+        ) { coroutineScope.launch { loginViewModel.onLoginSelected() } }
         Spacer(modifier = Modifier.height(16.dp))
         OrSeparator()
         Spacer(modifier = Modifier.height(5.dp))
-        SocialLoginButtons(viewModel)
+        SocialLoginButton("Continuar con Google", R.drawable.crome)
         Spacer(modifier = Modifier.height(16.dp))
         AccountNoButton(navController)
 
@@ -107,61 +113,53 @@ fun LoginContent(viewModel: LoginViewModel, navController: NavHostController, lo
             when {
                 result.isSuccess -> {
                     showToast(context, "Bienvenido")
-                    navController.navigate("menu")
-                    viewModel.resetState()
+                    navController.navigate("menu") {
+                        popUpTo("login") { inclusive = true }
+                    }
                 }
-                result.isFailure -> {
-                    showToast(context, "Ingreso fallido")
-                }
+
+                result.isFailure -> showToast(context, "Ingreso fallido")
             }
+            loginViewModel.resetState()
         }
     }
 }
 
-@Composable
-fun HeaderImage() {
-    Image(
-        painter = painterResource(id = R.drawable.reciclapgrandesinfondo),
-        contentDescription = "Header",
-        modifier = Modifier
-            .size(width = 500.dp, height = 300.dp)
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmailField(email: String, onValueChange: (String) -> Unit) {
-    OutlinedTextField(
-        value = email,
-        onValueChange = onValueChange,
-        label = { Text("Email") },
-        modifier = Modifier.fillMaxWidth(),
-        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-        singleLine = true,
-        textStyle = TextStyle(fontSize = 16.sp),
-        colors = TextFieldDefaults.outlinedTextFieldColors()
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun PasswordField(password: String, onValueChange: (String) -> Unit) {
+fun LoginTextField(
+    label: String,
+    value: String,
+    keyboardType: KeyboardType,
+    isPassword: Boolean = false,
+    onValueChange: (String) -> Unit
+) {
     var passwordVisibility by remember { mutableStateOf(false) }
 
     OutlinedTextField(
-        value = password,
+        value = value,
         onValueChange = onValueChange,
-        label = { Text("Contraseña") },
+        label = { Text(label) },
         modifier = Modifier.fillMaxWidth(),
-        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
         singleLine = true,
-        visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+        visualTransformation = if (isPassword && !passwordVisibility) PasswordVisualTransformation() else VisualTransformation.None,
         trailingIcon = {
-            IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
-                Icon(
-                    painter = painterResource(id = if (passwordVisibility) R.drawable.invisible else R.drawable.ojo),
-                    contentDescription = if (passwordVisibility) "Ocultar contraseña" else "Mostrar contraseña"
-                )
+            if (isPassword) {
+                IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
+                    Icon(
+                        painter = painterResource(
+                            id =
+                            if (passwordVisibility) R.drawable.invisible
+                            else R.drawable.ojo
+                        ),
+                        contentDescription =
+                        if (passwordVisibility)
+                            "Ocultar contraseña"
+                        else "Mostrar contraseña"
+                    )
+                }
             }
         },
         colors = TextFieldDefaults.outlinedTextFieldColors()
@@ -169,12 +167,12 @@ fun PasswordField(password: String, onValueChange: (String) -> Unit) {
 }
 
 @Composable
-fun ForgotPasswordButton(viewModel: LoginViewModel) {
+fun ForgotPasswordButton(loginViewModel: LoginViewModel) {
     val context = LocalContext.current
     Text(
         text = "Olvidaste la contraseña?",
         modifier = Modifier.clickable {
-            viewModel.onForgotPassword()
+            loginViewModel.onForgotPassword()
             showToast(context, "Olvidaste la contraseña?")
         },
         fontSize = 12.sp,
@@ -183,24 +181,9 @@ fun ForgotPasswordButton(viewModel: LoginViewModel) {
 }
 
 @Composable
-fun LoginButton(loginEnable: Boolean, onLoginSelected: () -> Unit) {
-    Button(
-        onClick = onLoginSelected,
-        enabled = loginEnable,
-        modifier = Modifier
-            .wrapContentWidth()
-            .height(48.dp),
-        contentPadding = PaddingValues(12.dp),
-        shape = RoundedCornerShape(5.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF41A829),
-            disabledContainerColor = Color(0xFF174D11),
-            contentColor = Color.White,
-            disabledContentColor = Color.White
-        )
-    ) {
-        Text(text = "Iniciar sesión", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-    }
+fun LoginButton(loginViewModel: LoginViewModel, loginEnable: Boolean, onLoginSelected: () -> Unit) {
+    val isLoading by loginViewModel.isLoading.observeAsState(false)
+    LoadingButton(isLoading, "Iniciar sesión", onLoginSelected, loginEnable)
 }
 
 @Composable
@@ -213,31 +196,35 @@ fun OrSeparator() {
 }
 
 @Composable
-fun SocialLoginButtons(viewModel: LoginViewModel) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly
+fun SocialLoginButton(text: String, iconRes: Int) {
+    Button(
+        onClick = { /* Acción de login social */ },
+        modifier = Modifier
+            .height(50.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color.White, Color.LightGray)
+                ),
+                shape = RoundedCornerShape(30.dp)
+            ),
+        border = BorderStroke(0.5.dp, Color.Gray),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
     ) {
-        SocialLoginButton(R.drawable.facebook, "Iniciar sesión con Facebook") { viewModel.loginWithFacebook() }
-        SocialLoginButton(R.drawable.crome, "Iniciar sesión con Chrome") { viewModel.loginWithChrome() }
-    }
-}
-
-@Composable
-fun SocialLoginButton(iconId: Int, toastMessage: String, onClick: () -> Unit) {
-    val context = LocalContext.current
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable {
-            onClick()
-            showToast(context,toastMessage)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = text, color = Color.Black, fontSize = 16.sp)
+            Icon(
+                painter = painterResource(id = iconRes),
+                contentDescription = "Icon",
+                tint = Color.Unspecified,
+                modifier = Modifier.size(28.dp)
+            )
         }
-    ) {
-        Image(
-            painter = painterResource(id = iconId),
-            contentDescription = toastMessage,
-            modifier = Modifier.size(48.dp)
-        )
     }
 }
 
@@ -251,14 +238,4 @@ fun AccountNoButton(navController: NavHostController) {
         fontSize = 12.sp,
         fontWeight = FontWeight.Bold
     )
-}
-
-@Composable
-fun LoadingIndicator() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator()
-    }
 }

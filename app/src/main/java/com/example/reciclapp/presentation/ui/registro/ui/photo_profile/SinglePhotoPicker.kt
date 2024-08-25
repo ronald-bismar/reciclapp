@@ -94,7 +94,7 @@ fun SinglePhotoPicker(
         IconButton(
             onClick = { showModalSheet = true },
             modifier = Modifier
-                .offset(x = 45.dp, y = (40).dp)
+                .offset(x = 45.dp, y = (45).dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.onSurface)
                 .size(35.dp)

@@ -1,6 +1,5 @@
 package com.example.reciclapp.presentation.ui.login.ui
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -45,28 +44,23 @@ class LoginViewModel @Inject constructor(
         android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
 
 
-    suspend fun onLoginSelected(email: String, contrasenia: String) {
+    suspend fun onLoginSelected() {
         _isLoading.value = true
-        viewModelScope.launch{
-            try {
-                val user = loginUsuarioUseCase.execute(email, contrasenia)
-                if(user != null){
+        viewModelScope.launch {
+            runCatching { //try
+                val user = loginUsuarioUseCase.execute(email.value!!, password.value!!)
+                if (user != null) {
                     saveUserUseCase.execute(user)
                     _loginState.value = Result.success(user)
-                }else {
+                } else {
                     _loginState.value = Result.failure(Exception("Usuario no encontrado"))
                 }
-            }catch(e: Exception){
+            }.onFailure { e -> //catch
                 _loginState.value = Result.failure(e)
-                Log.d("LoginUser", "resultado: $e")
-            }finally {
+            }.also { //finally
                 _isLoading.value = false
             }
         }
-    }
-
-    fun loginWithFacebook() {
-        // Implement logic for Facebook login
     }
 
     fun loginWithChrome() {
@@ -76,6 +70,7 @@ class LoginViewModel @Inject constructor(
     fun onForgotPassword() {
         // Implement logic for password reset
     }
+
     fun resetState() {
         _loginState.value = null
         _email.value = ""
