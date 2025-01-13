@@ -16,7 +16,6 @@ import com.example.reciclapp.theme.ReciclAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -26,6 +25,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        
 
         setContent {
             ReciclAppTheme {

@@ -8,11 +8,14 @@ import com.example.reciclapp.domain.entities.Producto
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.usecases.producto.ListarProductosDeVendedorUseCase
 import com.example.reciclapp.domain.usecases.producto.ListarTodosLosProductosUseCase
+import com.example.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
 import com.example.reciclapp.domain.usecases.producto.UpdateLikedProductoUseCase
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.example.reciclapp.domain.usecases.vendedor.GetVendedorUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,8 +26,12 @@ class VendedoresViewModel @Inject constructor(
     private val listarProductosDeVendedorUseCase: ListarProductosDeVendedorUseCase,
     private val getUserPreferencesUseCase: GetUserPreferencesUseCase,
     private val listarTodosLosProductosUseCase: ListarTodosLosProductosUseCase,
-    private val updateLikedProductoUseCase: UpdateLikedProductoUseCase
+    private val updateLikedProductoUseCase: UpdateLikedProductoUseCase,
+    private val registrarProductoUseCase: RegistrarProductoUseCase
 ) : ViewModel() {
+    private val _showToast = MutableSharedFlow<String>()
+    val showToast: SharedFlow<String> =_showToast
+
     init {
        /* loadUserPreferences()*/
     }
@@ -63,5 +70,12 @@ class VendedoresViewModel @Inject constructor(
     }
     fun updateLikedProducto(producto: Producto, isLiked: Boolean){
         viewModelScope.launch { updateLikedProductoUseCase.execute(producto, isLiked) }
+    }
+
+    fun registrarNuevoProducto(producto: Producto) {
+        viewModelScope.launch {
+            registrarProductoUseCase.execute(producto)
+            _showToast.emit("Producto registrado correctamente") // Emit the toast message
+        }
     }
 }
