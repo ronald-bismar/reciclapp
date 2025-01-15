@@ -180,14 +180,13 @@ fun TiposDeUsuario(modifier: Modifier, userSelected: (Boolean, String, String) -
             elevatedVendedor = false
             userSelected(elevatedComprador, textVendedor, "comprador")
         }
-        CardUser(iconsUser[1], "Vendedor", elevatedVendedor) {
+        CardUser(iconsUser[1], "Reciclador", elevatedVendedor) {
             elevatedVendedor = !elevatedVendedor
             elevatedComprador = false
             userSelected(elevatedVendedor, textComprador, "vendedor")
         }
     }
 }
-
 
 @Composable
 fun CardUser(icon: Int, type: String, isElevated: Boolean, bajarOtroCard: () -> Unit) {
@@ -200,7 +199,7 @@ fun CardUser(icon: Int, type: String, isElevated: Boolean, bajarOtroCard: () -> 
         Modifier
             .width(170.dp)
             .height(230.dp)
-            .offset(y = offsetY) // Apply the animated vertical offset
+            .offset(y = offsetY)
             .animateContentSize()
     ) {
         Card(

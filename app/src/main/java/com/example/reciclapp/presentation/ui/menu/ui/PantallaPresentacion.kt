@@ -89,7 +89,7 @@ fun PantallaPresentacion(mainNavController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .offset(y = 20.dp)
-                .align(Alignment.BottomCenter) // Alinea la imagen al fondo del Box
+                .align(Alignment.BottomCenter)
         )
     }
 }

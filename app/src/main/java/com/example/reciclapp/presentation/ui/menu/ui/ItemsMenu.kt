@@ -15,7 +15,7 @@ sealed class ItemsMenu(
 ) {
     abstract val route: String
 
-    data object Pantalla1 : ItemsMenu(Icons.Default.Person, "Perfil", "Perfil") {
+    data object Pantalla1 : ItemsMenu(Icons.Default.Person, "Noticias", "Perfil") {
         override val route: String = "pantalla1"
     }
 

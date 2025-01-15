@@ -48,8 +48,8 @@ fun IntroductionScreen(mainNavController: NavController) {
     )
 
     val descriptions = listOf(
-        "Puedes registrarte como Comprador o Vendedor de reciclaje",
-        "Como reciclador puedes buscar las mejores ofertas por el reciclaje que tienes en casa",
+        "Puedes registrarte como Comprador o Reciclador",
+        "Como reciclador puedes buscar las mejores ofertas desde la comodidad de tu casa",
         "Como comprador de reciclaje haz que mas personas encuentren tu negocio y poder ver los materiales que muchas personas venden"
     )
 

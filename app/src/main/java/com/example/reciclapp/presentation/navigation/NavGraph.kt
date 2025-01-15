@@ -27,6 +27,7 @@ import com.example.reciclapp.presentation.ui.menu.ui.PresentacionAppScreen
 import com.example.reciclapp.presentation.ui.menu.ui.SocialMediaScreenVendedores
 import com.example.reciclapp.presentation.ui.menu.ui.UserTypeScreen
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Comprador
+import com.example.reciclapp.presentation.ui.menu.ui.vistas.Perfil
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Vendedor
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.mapa.MapsView
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroScreen
@@ -90,10 +91,12 @@ fun NavGraph(
         composable("Que es Reciclapp"){
             SimpleAyudaScreen()
         }
+        composable("perfil") {
+            Perfil(userViewModel = userViewModel)
+        }
         composable("tipoDeUsuario") {
             UserTypeScreen(mainNavController)
         }
-
         composable(
             route = "compradorPerfil/{userId}",
             arguments = listOf(navArgument("userId") { type = NavType.IntType })

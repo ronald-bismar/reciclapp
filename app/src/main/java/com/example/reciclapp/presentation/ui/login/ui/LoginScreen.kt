@@ -105,7 +105,7 @@ fun LoginContent(
         Spacer(modifier = Modifier.height(16.dp))
         OrSeparator()
         Spacer(modifier = Modifier.height(5.dp))
-        SocialLoginButton("Continuar con Google", R.drawable.crome)
+    /*    SocialLoginButton("Continuar con Google", R.drawable.crome)*/
         Spacer(modifier = Modifier.height(16.dp))
         AccountNoButton(navController)
 

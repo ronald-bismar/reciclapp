@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -72,6 +73,7 @@ import com.example.reciclapp.presentation.ui.menu.ui.vistas.components.AddItemCa
 import com.example.reciclapp.presentation.ui.registro.ui.photo_profile.SinglePhotoPicker
 import com.example.reciclapp.presentation.ui.registro.ui.showToast
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
+import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 import com.example.reciclapp.util.StorageUtil
 import kotlinx.coroutines.delay
 import java.util.Locale
@@ -79,11 +81,19 @@ import java.util.Locale
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Perfil(userViewModel: UserViewModel) {
+
+    val userViewModelVendedores: VendedoresViewModel = hiltViewModel()
     val context = LocalContext.current
     val user by userViewModel.user.observeAsState()
     val updateState by userViewModel.updateUserState.observeAsState()
     var showDialog by remember { mutableStateOf(false) }
     var showAddItemForm by remember { mutableStateOf(false) }
+
+    LaunchedEffect(userViewModelVendedores) {
+        userViewModelVendedores.showToast.collect { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     user?.let { user ->
         if (showDialog) {
@@ -106,9 +116,10 @@ fun Perfil(userViewModel: UserViewModel) {
             ProfileSettings(user)
             ProfileNuevoObjetoParaVender(onEditClick = { showAddItemForm = !showAddItemForm })
             if (showAddItemForm) {
-                // Formulario para añadir nuevo objeto vendido
-                AddItemCardVendedor {
 
+                // Formulario para añadir nuevo objeto vendido
+                AddItemCardVendedor { newProduct ->
+                    userViewModelVendedores.registrarNuevoProducto(newProduct)
                     showAddItemForm = false
                 }
             }
@@ -294,7 +305,7 @@ fun EditProfileDialog(
             )
         } else if (showDialogChangeUser) {
             DialogChangeType(isVendedor,userViewModel::onIsVendedorChanged
-            , onBackPressed = {
+                , onBackPressed = {
                     showDialogChangeUser = false
                 }, onUpdateUserKind = {
                     isLoading = true
@@ -586,6 +597,6 @@ fun VerifyEmailAndCorreoForChangeType(
             ) {
                 Text("Verificar", style = TextStyle(fontSize = 18.sp))
             }
-        }
-    }
+         }
+       }
 }

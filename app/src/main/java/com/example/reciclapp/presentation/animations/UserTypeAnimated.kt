@@ -97,7 +97,7 @@ fun UserTypeAnimated(isVendedor: Boolean = false,onIsVendedorChanged: (Boolean) 
             },
             text = {
                 Text(
-                    "Vendedor",
+                    "Reciclador",
                     color = if (selectedTabIndex == 1) Color.White  else Color.Gray,
                     style = TextStyle(
                         fontSize = 20.sp,

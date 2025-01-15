@@ -3,6 +3,7 @@ package com.example.reciclapp.presentation.navigation.bottom
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -13,6 +14,8 @@ import com.example.reciclapp.presentation.ui.menu.ui.ItemsMenu
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Perfil
 import com.example.reciclapp.presentation.ui.menu.ui.content.statistics.DetailedStatisticsScreen
 import com.example.reciclapp.presentation.ui.menu.ui.SocialMediaScreenVendedores
+import com.example.reciclapp.presentation.ui.menu.ui.content.newsandtips.GlobalWasteApi
+import com.example.reciclapp.presentation.ui.menu.ui.content.newsandtips.NewsTipsScreen
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -21,13 +24,16 @@ fun BottomNavHost(
     mainNavController: NavController,
     navHostController: NavHostController,
     userViewModel: UserViewModel
+
 ) {
+    val globalWasteApi = remember { GlobalWasteApi.create() }
     NavHost(
         navController = navHostController,
         startDestination = ItemsMenu.Pantalla3.ruta
     ) {
         composable(ItemsMenu.Pantalla1.ruta) {
-            Perfil(userViewModel)
+          /*  Perfil(userViewModel)*/
+            NewsTipsScreen(api = globalWasteApi)
         }
         composable(ItemsMenu.Pantalla2.ruta) {
             DetailedStatisticsScreen()

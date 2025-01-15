@@ -156,5 +156,5 @@ private fun loadBitmapFromUri(context: Context, uri: Uri): ImageBitmap? {
     } catch (e: IOException) {
         e.printStackTrace()
         null
-    }
+        }
 }

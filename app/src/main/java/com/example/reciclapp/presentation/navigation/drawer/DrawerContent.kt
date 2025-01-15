@@ -35,11 +35,14 @@ fun DrawerContent(mainNavController: NavController, onItemClick: () -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
         HorizontalDivider()
         DrawerItem(mainNavController, "Que es Reciclapp", Icons.Default.Home, onItemClick)
-        DrawerItem(mainNavController, "contact", Icons.Default.Call, onItemClick)
+       DrawerItem(mainNavController, "contact", Icons.Default.Call, onItemClick)
         DrawerItem(mainNavController, "perfil", Icons.Default.Person, onItemClick)
+
         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-        DrawerItem(mainNavController, "item1", Icons.Default.Home, onItemClick)
+        
+       DrawerItem(mainNavController, "item1", Icons.Default.Home, onItemClick)
         DrawerItem(mainNavController, "item2", Icons.Default.Home, onItemClick)
+
     }
 }
 

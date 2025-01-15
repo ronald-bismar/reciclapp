@@ -90,7 +90,7 @@ fun CustomNavigationItem(
             .width(72.dp)
             .clickable(onClick = onClick)
             .background(MaterialTheme.colorScheme.primary)
-            .offset(y = yOffset) // Aplicar desplazamiento vertical con animación
+            .offset(y = yOffset)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -127,7 +127,7 @@ fun CustomNavigationItem(
                 text = label,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
-                modifier = Modifier.padding(top = 0.dp), // Establecer relleno
+                modifier = Modifier.padding(top = 0.dp),
             )
         }
     }

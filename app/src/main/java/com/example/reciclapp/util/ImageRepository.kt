@@ -50,7 +50,7 @@ class ImageRepository @Inject constructor(@ApplicationContext private val contex
         // Construye la solicitud de imagen utilizando Coil
         val request = ImageRequest.Builder(context)
             .data(url)
-            .size(67, 67)  // Redimensiona la imagen a 67x67 píxeles
+            .size(80, 80)  // Redimensiona la imagen a 67x67 píxeles
             .scale(Scale.FILL)
             .transformations(CircleCropTransformation())  // Aplica una transformación de recorte circular
             .build()

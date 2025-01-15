@@ -5,17 +5,39 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Body
+import retrofit2.http.Headers
 
+
+
+data class NewsTipsResult(
+    val results: List<NewsTipResponse>
+)
+
+data class ImageRequest(
+    val image: String
+)
+
+data class PredictionResponse(
+    val prediction: String,
+    val confidence: Double
+)
+
+// Retrofit interface for API endpoints
 interface GlobalWasteApi {
-    @GET("insights")
-    suspend fun getNewsTips(): ApiResponse
+    @GET("news-tips")
+    suspend fun getNewsTips(): NewsTipsResult
+
+    @POST("predict")
+    suspend fun predict(@Body imageRequest: ImageRequest): PredictionResponse
 
     companion object {
-        private const val BASE_URL = "https://global-waste-platform.p.rapidapi.com/"
+        private const val BASE_URL = "https://reciclapi-garbage-detection.p.rapidapi.com/"
 
         fun create(): GlobalWasteApi {
             val logging = HttpLoggingInterceptor().apply {
-                setLevel(HttpLoggingInterceptor.Level.BODY)
+                level = HttpLoggingInterceptor.Level.BODY
             }
 
             val client = OkHttpClient.Builder()
@@ -23,8 +45,9 @@ interface GlobalWasteApi {
                 .addInterceptor { chain ->
                     val original = chain.request()
                     val requestBuilder = original.newBuilder()
-                        .header("X-RapidAPI-Key", "YOUR_RAPIDAPI_KEY")
-                        .header("X-RapidAPI-Host", "global-waste-platform.p.rapidapi.com")
+                        .header("Content-Type", "application/json")
+                        .header("x-rapidapi-key", "a27c306b3fmsh57a2e70cface907p149c6cjsn9d2700248277")
+                        .header("x-rapidapi-host", "reciclapi-garbage-detection.p.rapidapi.com")
                     val request = requestBuilder.build()
                     chain.proceed(request)
                 }

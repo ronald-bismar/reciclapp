@@ -106,11 +106,13 @@ fun AppTopBar(
                 }
             }
             // Botón para abrir la configuración
-            IconButton(onClick = {
+        /*    IconButton(onClick = {
                 Toast.makeText(context, "Botón configurar", Toast.LENGTH_SHORT).show()
             }) {
                 Icon(imageVector = Icons.Filled.Settings, contentDescription = "Botón configurar")
             }
+
+         */
             // Botón para mostrar el menú desplegable
             IconButton(onClick = {
                 showMenu = !showMenu
@@ -181,7 +183,7 @@ fun DropdownMenuItems(navController: NavHostController, onMenuItemClick: (MenuIt
     val context = LocalContext.current as Activity
     // Lista de ítems para el menú desplegable
     val items = listOf(
-        MenuItem("Mi perfil", Icons.Filled.Person, "Mi perfil"),
+     /*   MenuItem("Mi perfil", Icons.Filled.Person, "Mi perfil"), */
         MenuItem("Cerrar sesión", Icons.Filled.Face, "Cerrar sesión"),
         MenuItem("Salir", Icons.Filled.Close, "Salir")
     )
@@ -193,7 +195,7 @@ fun DropdownMenuItems(navController: NavHostController, onMenuItemClick: (MenuIt
                 .border(1.dp, Color.White),
             onClick = {
                 when (item.text) {
-                    "Mi perfil" -> navController.navigate("perfil")
+                   /* "Mi perfil" -> navController.navigate("perfil")*/
                     "Cambiar usuario" -> navController.navigate("premium")
                     "Cerrar sesión" -> {
                         userViewModel.logOutUser()

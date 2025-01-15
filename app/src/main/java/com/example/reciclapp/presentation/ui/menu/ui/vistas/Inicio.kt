@@ -44,47 +44,47 @@ fun Inicio() {
     }
 }
 
-data class MenuItem(val title: String, val description: String, val icon: @Composable () -> Unit)
+data class MenuItem(
+    val title: String,
+    val description: String,
+    val details: String? = null, // Nuevo campo para detalles
+    val icon: @Composable () -> Unit
+)
 
 val menuItems = listOf(
     MenuItem(
-        "Resumen del Usuario", "Ver tu perfil y estadísticas de reciclaje",
-        icon = { Icon(Icons.Filled.Person, contentDescription = "User") }
-    ),
-    MenuItem(
-        "Puntos de Reciclaje Cercanos", "Encuentra los puntos de reciclaje más cercanos",
-        icon = { Icon(Icons.Filled.Place, contentDescription = "Place") }
-    ),
-    MenuItem(
-        "Noticias y Consejos de Reciclaje", "Lee las últimas noticias y consejos sobre reciclaje",
-        icon = { Icon(Icons.Filled.Info, contentDescription = "News") }
-    ),
-    MenuItem(
-        "Estadísticas de Reciclaje", "Visualiza tus estadísticas de reciclaje",
-        icon = { Icon(Icons.Filled.Email, contentDescription = "Statistics") }
-    ),
-    MenuItem(
-        "Tareas y Recompensas", "Completa tareas y gana recompensas",
+        "Tareas y Recompensas",
+        "Completa tareas y gana recompensas",
+        details = "Aquí puedes encontrar una lista de tareas que puedes completar para ganar recompensas. Las recompensas puedenincluir puntos, descuentos y más.",
         icon = { Icon(Icons.Filled.CheckCircle, contentDescription = "Tasks") }
     ),
     MenuItem(
-        "Calendario de Eventos", "Consulta eventos y actividades de reciclaje",
-        icon = { Icon(Icons.Filled.Email, contentDescription = "Calendar") }
+        "Calendario de Eventos",
+        "Consulta eventos y actividades de reciclaje",
+        details = "Mantente al día con los eventos y actividades de reciclaje en tu área. Encuentra oportunidades para participar y aprender más sobre la sostenibilidad.",
+        icon = { Icon(Icons.Filled.DateRange, contentDescription = "Calendar") } // Cambiado a Event
     ),
     MenuItem(
-        "Contribuciones de la Comunidad", "Comparte y colabora con otros en la comunidad",
-        icon = { Icon(Icons.Filled.Email, contentDescription = "Community") }
+        "Contribuciones de la Comunidad",
+        "Comparte y colabora con otros en la comunidad",
+        details = "Conéctate con otros miembros de la comunidad de reciclaje. Comparte tus ideas, consejos y experiencias para promover un estilo de vida más sostenible.",
+        icon = { Icon(Icons.Filled.Face, contentDescription = "Community") } // Cambiado a People
     ),
     MenuItem(
-        "Centro de Ayuda y Soporte", "Obtén ayuda y soporte técnico",
-        icon = { Icon(Icons.Filled.Email, contentDescription = "Help") }
+        "Centro de Ayuda y Soporte",
+        "Obtén ayuda y soporte técnico",
+        details = "Si tienes alguna pregunta o necesitas ayuda con la aplicación, visita nuestro centro de ayuda y soporte. Nuestro equipo estará encantado de ayudarte.",
+        icon = { Icon(Icons.Filled.Info, contentDescription = "Help") } // Cambiado a Help
     ),
     MenuItem(
-        "Promociones y Ofertas", "Aprovecha promociones y ofertas especiales",
-        icon = { Icon(Icons.Filled.Email, contentDescription = "Offers") }
+        "Promociones y Ofertas",
+        "Aprovecha promociones y ofertas especiales",
+        details = "Descubre promociones y ofertas especiales en productos y servicios relacionados con el reciclaje. Ahorra dinero mientras contribuyes al medio ambiente.",
+        icon = { Icon(Icons.Filled.Star, contentDescription = "Offers") } // Cambiado a LocalOffer
     ),
     MenuItem(
-        "Configuración y Preferencias", "Ajusta tus configuraciones y preferencias",
+        "Configuración y Preferencias","Ajusta tus configuraciones y preferencias",
+        details = "Personaliza tu experiencia en la aplicación ajustando tus configuraciones y preferencias. Puedes cambiar tu idioma, notificaciones y más.",
         icon = { Icon(Icons.Filled.Settings, contentDescription = "Settings") }
     )
 )
@@ -96,24 +96,28 @@ fun MenuItemCard(item: MenuItem) {
             .fillMaxWidth()
             .clickable { /* Handle item click */ }
             .shadow(4.dp, shape = MaterialTheme.shapes.medium),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(containerColor= MaterialTheme.colorScheme.surface)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f), shape = MaterialTheme.shapes.small),
-                contentAlignment = Alignment.Center
-            ) {
-                item.icon()
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f), shape = MaterialTheme.shapes.small),
+                    contentAlignment = Alignment.Center
+                ) {
+                    item.icon()
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                Column {
+                    Text(text = item.title, style = MaterialTheme.typography.titleMedium)
+                    Text(text = item.description, style = MaterialTheme.typography.bodyMedium)
+                }
             }
-            Spacer(modifier = Modifier.width(16.dp))
-            Column {
-                Text(text = item.title, style = MaterialTheme.typography.titleMedium)
-                Text(text = item.description, style = MaterialTheme.typography.bodyMedium)
+            // Mostrar detalles si están disponibles
+            item.details?.let {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = it, style = MaterialTheme.typography.bodySmall)
             }
         }
     }
