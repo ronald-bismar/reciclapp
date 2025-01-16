@@ -75,6 +75,6 @@ fun SplashScreenContent(onTimeout: () -> Unit) {
             delay(2600)
             onTimeout()
         }
-        Text(text = "ITBM 2024", modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 16.dp))
+        Text(text = "NextMacroSystem 2024-2025", modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 16.dp))
     }
 }

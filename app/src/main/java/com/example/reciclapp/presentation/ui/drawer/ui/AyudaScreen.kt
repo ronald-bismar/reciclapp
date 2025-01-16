@@ -1,4 +1,4 @@
-package com.example.reciclapp.presentation.ui.misionvision
+package com.example.reciclapp.presentation.ui.drawer.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.sp
 import com.example.reciclapp.R
 
 @Composable
-fun MisionVisionScreen() {
+fun SimpleAyudaScreen() {
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -27,7 +27,7 @@ fun MisionVisionScreen() {
         ) {
             // Título principal
             Text(
-                text = "Misión y Visión",
+                text = "Ayuda",
                 style = MaterialTheme.typography.headlineSmall.copy(
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp
@@ -35,19 +35,19 @@ fun MisionVisionScreen() {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Imagen entre el título principal y "Nuestra Misión"
+            // Imagen entre "Ayuda" y "¿Qué es ReciclApp?"
             Image(
                 painter = painterResource(id = R.drawable.reciclapgrandesinfondo), // Reemplaza con el nombre de tu imagen
-                contentDescription = "Logo de ReciclApp",
+                contentDescription = "Icono de Reciclaje",
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp)
                     .padding(bottom = 16.dp)
             )
 
-            // Subtítulo - Misión
+            // Subtítulo
             Text(
-                text = "Nuestra Misión",
+                text = "¿Qué es ReciclApp?",
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 20.sp
@@ -55,58 +55,50 @@ fun MisionVisionScreen() {
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            // Texto de la Misión
+            // Texto explicativo
             Text(
                 text = """
-                        Promover el reciclaje y la sostenibilidad ambiental mediante una aplicación intuitiva que eduque, oriente y facilite el acceso a los recursos necesarios para desechar residuos correctamente. Nuestro objetivo es concienciar a las comunidades sobre la importancia de reducir el impacto ambiental y contribuir a un planeta más limpio.
+                        ReciclApp es una aplicación móvil diseñada para ayudarte a identificar rápidamente el contenedor adecuado para reciclar diferentes tipos de residuos, como vidrio, plástico, orgánicos, entre otros. A través de un buscador intuitivo, simplemente introduces el nombre del residuo que deseas desechar, y el sistema te indicará el contenedor correcto donde debe ser reciclado.
                 """.trimIndent(),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontSize = 16.sp,
                     lineHeight = 22.sp
-                ),
-                modifier = Modifier.padding(bottom = 16.dp)
+                )
             )
-
-            // Imagen relacionada con la Misión
-            Image(
-                painter = painterResource(id = R.drawable.img_reciclando2), // Reemplaza con el nombre de tu imagen
-                contentDescription = "Imagen de Misión",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .padding(bottom = 16.dp)
-            )
-
-            // Subtítulo - Visión
-            Text(
-                text = "Nuestra Visión",
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 20.sp
-                ),
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            // Texto de la Visión
-            Text(
-                text = """
-                        Ser líderes en la promoción de prácticas sostenibles y en la generación de un impacto positivo en el medio ambiente, utilizando la tecnología como herramienta principal para conectar personas, recursos y conocimientos en torno al reciclaje y la conservación del planeta.
-                """.trimIndent(),
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontSize = 16.sp,
-                    lineHeight = 22.sp
-                ),
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            // Imagen relacionada con la Visión
             Image(
                 painter = painterResource(id = R.drawable.tachoss), // Reemplaza con el nombre de tu imagen
-                contentDescription = "Imagen de Visión",
+                contentDescription = "imagen de tachoss",
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp)
                     .padding(bottom = 16.dp)
+            )
+            Text(
+                text = """                        
+                        Además, ReciclApp aprovecha la geolocalización de tu smartphone para mostrarte los puntos de reciclaje más cercanos a tu ubicación, brindándote detalles sobre su dirección y horarios de atención.
+                """.trimIndent(),
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontSize = 16.sp,
+                    lineHeight = 22.sp
+                )
+            )
+
+            Image(
+                painter = painterResource(id = R.drawable.tienda), // Reemplaza con el nombre de tu imagen
+                contentDescription = "imagen de tachoss",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .padding(bottom = 16.dp)
+            )
+            Text(
+                text = """                        
+                        Conscientes de la importancia de mantener nuestro entorno limpio y de educar a las futuras generaciones sobre la relevancia del reciclaje, ReciclApp también te proporciona información valiosa sobre los beneficios ambientales de reciclar. La aplicación incluso te permite calificar los puntos de reciclaje que visitas, fomentando la participación activa y el compromiso con el medio ambiente.
+                """.trimIndent(),
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontSize = 16.sp,
+                    lineHeight = 22.sp
+                )
             )
         }
     }
@@ -114,6 +106,6 @@ fun MisionVisionScreen() {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewMisionVisionScreen() {
-    MisionVisionScreen()
+fun PreviewSimpleAyudaScreen() {
+    SimpleAyudaScreen()
 }

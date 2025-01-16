@@ -53,7 +53,7 @@ fun DrawerContent(mainNavController: NavController, onItemClick: () -> Unit) {
 
         DrawerItem(mainNavController, "Contactate con nosotros", Icons.Default.Call, onItemClick)
 
-        DrawerItem(mainNavController, "Calificar", Icons.Default.Star, onItemClick)
+        DrawerItem(mainNavController, "Calificanos", Icons.Default.Star, onItemClick)
 
        DrawerItem(mainNavController, "Ajustes", Icons.Default.Settings, onItemClick)
 
