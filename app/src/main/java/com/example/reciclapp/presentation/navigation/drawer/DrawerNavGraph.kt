@@ -1,5 +1,5 @@
 package com.example.reciclapp.presentation.navigation.drawer
-
+/*
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -18,6 +18,7 @@ fun DrawerNavGraph(
 ) {
     NavHost(navController = navController,
         startDestination = Screens.Home.route){
+
         composable(Screens.Home.route){
             com.meet.navigationdrawerjc.screens.HomeScreen(innerPadding = innerPadding)
         }
@@ -39,3 +40,9 @@ fun DrawerNavGraph(
         }
     }
 }
+
+sealed class Screens(val route: String) {
+    object Home : Screens("home")
+    object Notification : Screens("notification")
+    object Profile : Screens("profile")
+ */

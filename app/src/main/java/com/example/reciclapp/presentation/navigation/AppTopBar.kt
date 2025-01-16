@@ -183,7 +183,8 @@ fun DropdownMenuItems(navController: NavHostController, onMenuItemClick: (MenuIt
     val context = LocalContext.current as Activity
     // Lista de ítems para el menú desplegable
     val items = listOf(
-     /*   MenuItem("Mi perfil", Icons.Filled.Person, "Mi perfil"), */
+
+       // MenuItem("Mi perfil", Icons.Filled.Person, "Mi perfil"),
         MenuItem("Cerrar sesión", Icons.Filled.Face, "Cerrar sesión"),
         MenuItem("Salir", Icons.Filled.Close, "Salir")
     )
@@ -195,7 +196,7 @@ fun DropdownMenuItems(navController: NavHostController, onMenuItemClick: (MenuIt
                 .border(1.dp, Color.White),
             onClick = {
                 when (item.text) {
-                   /* "Mi perfil" -> navController.navigate("perfil")*/
+                //   "Mi perfil" -> navController.navigate("perfil")
                     "Cambiar usuario" -> navController.navigate("premium")
                     "Cerrar sesión" -> {
                         userViewModel.logOutUser()
