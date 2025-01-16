@@ -2,14 +2,19 @@ package com.example.reciclapp.presentation.ui.drawer.ui
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.AddCircle
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -23,6 +28,18 @@ import com.example.reciclapp.R
 @Composable
 fun CalificanosScreen() {
     val context = LocalContext.current
+    var rating by remember { mutableStateOf(0f) }
+    var showThankYouDialog by remember { mutableStateOf(false) }
+
+    // Mapa de puntuaciones y categorías
+    val rankingData = listOf(
+        5 to "Me super encanta",
+        4 to "Me encanta",
+        3 to "Me super gusta",
+        2 to "Me gusta",
+        1 to "Neutral",
+        0 to "No me gusta"
+    )
 
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -63,14 +80,26 @@ fun CalificanosScreen() {
             )
 
             // Puntuación con estrellas
-            RatingBar(rating = 4.5f)
+            RatingBar(rating = rating, onRatingChanged = { rating = it })
+
+            // Label showing rating value
+            Text(
+                text = "Puntuación: ${rating.toInt()}/5",
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontSize = 16.sp,
+                    lineHeight = 22.sp
+                ),
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Botón para enviar calificación
             Button(
                 onClick = {
-                    // Aquí puedes agregar funcionalidad para enviar la calificación
+                    showThankYouDialog = true
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1A73E8))
@@ -82,23 +111,6 @@ fun CalificanosScreen() {
                     fontSize = 16.sp
                 )
             }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Ranking de puntuaciones
-            Text(
-                text = "Ranking de Puntuaciones",
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
-                ),
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            // Lista de usuarios con sus puntuaciones
-            RankingItem(user = "Usuario 1", points = 120)
-            RankingItem(user = "Usuario 2", points = 100)
-            RankingItem(user = "Usuario 3", points = 85)
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -121,11 +133,19 @@ fun CalificanosScreen() {
                 )
             }
         }
+
+        // Agradecimiento cuando se envía la calificación
+        if (showThankYouDialog) {
+            ThankYouDialog(
+                onDismiss = { showThankYouDialog = false }
+            )
+        }
     }
 }
 
+
 @Composable
-fun RatingBar(rating: Float) {
+fun RatingBar(rating: Float, onRatingChanged: (Float) -> Unit) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         modifier = Modifier.padding(bottom = 16.dp)
@@ -134,46 +154,39 @@ fun RatingBar(rating: Float) {
             val icon = if (i <= rating) {
                 Icons.Filled.Star
             } else {
-                Icons.Filled.Star
+                Icons.Outlined.FavoriteBorder
             }
-            Icon(
-                imageVector = icon,
-                contentDescription = "Rating Star",
-                tint = Color(0xFFFFD700),
-                modifier = Modifier.size(32.dp)
-            )
+            IconButton(
+                onClick = { onRatingChanged(i.toFloat()) }
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = "Rating Star",
+                    tint = Color(0xFFFFD700),
+                    modifier = Modifier.size(32.dp)
+                )
+            }
         }
     }
 }
 
 @Composable
-fun RankingItem(user: String, points: Int) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = user,
-            style = MaterialTheme.typography.bodyMedium.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
-            ),
-            modifier = Modifier.weight(1f)
-        )
-        Text(
-            text = "$points puntos",
-            style = MaterialTheme.typography.bodyMedium.copy(
-                fontSize = 16.sp
-            ),
-            color = Color(0xFF34A853)
-        )
-    }
+fun ThankYouDialog(onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("¡Gracias por calificarnos!") },
+        text = { Text("Tu participación nos ayuda mucho a mejorar nuestra aplicación. ¡Gracias por tu apoyo!") },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Aceptar")
+            }
+        },
+        modifier = Modifier.padding(24.dp)
+    )
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewPuntuacionesScreen() {
+fun PreviewCalificarScreen() {
     CalificanosScreen()
 }
