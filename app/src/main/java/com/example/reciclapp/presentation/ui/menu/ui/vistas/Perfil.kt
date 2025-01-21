@@ -422,7 +422,7 @@ fun EditProfileContent(
                 singleLine = true,
                 label = { Text("Email") })
             Spacer(modifier = Modifier.height(20.dp))
-            Text(text = "Cambiar tipo de usuario",
+           /* Text(text = "Cambiar tipo de usuario",
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 18.sp,
                 modifier = Modifier
@@ -431,9 +431,9 @@ fun EditProfileContent(
                     )
                     .padding(8.dp)
                     .clickable { showDialogChangeUser() })
+
+            */
         }
-
-
     }
 }
 

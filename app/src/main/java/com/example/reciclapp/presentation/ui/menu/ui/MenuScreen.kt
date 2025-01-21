@@ -117,7 +117,7 @@ fun CustomNavigationItem(
                         Icon(
                             imageVector = icon,
                             contentDescription = label,
-                            tint = MaterialTheme.colorScheme.onSurface,
+                            tint = MaterialTheme.colorScheme.surface,
                             modifier = Modifier.size(44.dp)
                         )
                     }
@@ -125,7 +125,7 @@ fun CustomNavigationItem(
             }
             Text(
                 text = label,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = MaterialTheme.colorScheme.surface,
                 style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
                 modifier = Modifier.padding(top = 0.dp),
             )

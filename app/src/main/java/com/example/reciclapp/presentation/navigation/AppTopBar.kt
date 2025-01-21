@@ -27,8 +27,10 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -83,9 +85,15 @@ fun AppTopBar(
     // Barra superior de la aplicación
     TopAppBar(
         title = { Text(text = "ReciclApp") },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.surface
+        ),
         navigationIcon = {
             IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                Icon(Icons.Filled.Menu, contentDescription = "Menú")
+                Icon(Icons.Filled.Menu,
+                    tint = MaterialTheme.colorScheme.surface,
+                    contentDescription = "Menú")
             }
         },
         actions = {
@@ -105,19 +113,14 @@ fun AppTopBar(
                     )
                 }
             }
-            // Botón para abrir la configuración
-        /*    IconButton(onClick = {
-                Toast.makeText(context, "Botón configurar", Toast.LENGTH_SHORT).show()
-            }) {
-                Icon(imageVector = Icons.Filled.Settings, contentDescription = "Botón configurar")
-            }
 
-         */
             // Botón para mostrar el menú desplegable
             IconButton(onClick = {
                 showMenu = !showMenu
             }) {
-                Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "Más opciones")
+                Icon(imageVector = Icons.Filled.MoreVert,
+                    tint = MaterialTheme.colorScheme.surface,
+                    contentDescription = "Más opciones")
             }
             // Menú desplegable con opciones
             DropdownMenu(
@@ -125,7 +128,8 @@ fun AppTopBar(
                 onDismissRequest = { showMenu = false },
                 modifier = Modifier
                     .width(165.dp)
-                    .background(Color.White)
+                    .background(Color.White),
+
             ) {
                 DropdownMenuItems(
                     navController = navController,
