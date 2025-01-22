@@ -7,8 +7,9 @@ data class Comentario(
     var contenidoComentario: String = "",
     var fechaComentario: String = "",
     var puntuacion: Int = 0,
-    var idUsuarioComentado: Int = 0
+    var idUsuarioComentado: Int = 0,
+    var cantMeGusta: Int = 0
 ) {
     // Constructor sin argumentos necesario para Firebase Firestore
-    constructor() : this(0, 0, "", "", "", 0, 0)
+    constructor() : this(0, 0, "", "", "", 0, 0, 0)
 }

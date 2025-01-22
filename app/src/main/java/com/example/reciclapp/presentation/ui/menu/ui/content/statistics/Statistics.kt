@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.reciclapp.domain.entities.Material
+import com.example.reciclapp.domain.entities.ProductoReciclable
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
@@ -116,7 +116,7 @@ fun ModernChartPie(
 
 // Composable para mostrar una lista de materiales con sus puntos y porcentajes, junto con los colores del gráfico
 @Composable
-fun MaterialPointsList(materials: List<Material>, colors: List<Color>, porcentajes: Array<Float>) {
+fun MaterialPointsList(materials: List<ProductoReciclable>, colors: List<Color>, porcentajes: Array<Float>) {
     var totalPoints = 0
 
     Column(
@@ -188,7 +188,7 @@ fun MaterialPointsList(materials: List<Material>, colors: List<Color>, porcentaj
                 ) {
                     // Nombre del Material
                     Text(
-                        text = material.nombre,
+                        text = material.nombreProducto,
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onPrimary
@@ -198,7 +198,7 @@ fun MaterialPointsList(materials: List<Material>, colors: List<Color>, porcentaj
 
                     // Puntos por Unidad
                     Text(
-                        text = "${material.puntosPorUnidad} p/u",
+                        text = "${material.puntosPorCompra} p/u",
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.Normal,
                             color = MaterialTheme.colorScheme.onPrimary
@@ -208,7 +208,7 @@ fun MaterialPointsList(materials: List<Material>, colors: List<Color>, porcentaj
 
                     // Puntos Acumulados
                     Text(
-                        text = "${material.puntosAcumulados} puntos",
+                        text = "${material.puntosPorCompra} puntos",
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.Normal,
                             color = MaterialTheme.colorScheme.onPrimary
@@ -227,7 +227,7 @@ fun MaterialPointsList(materials: List<Material>, colors: List<Color>, porcentaj
                     )
                 }
 
-                totalPoints += material.puntosAcumulados
+                totalPoints += material.puntosPorCompra
             }
         }
 
@@ -249,170 +249,156 @@ fun MaterialPointsList(materials: List<Material>, colors: List<Color>, porcentaj
 @Composable
 fun DetailedStatisticsScreen() {
     val materials = listOf(
-        Material(
-            idMaterial = 1,
-            urlImagenMaterial = "url_plasticos.png",
-            nombre = "Plásticos",
-            descripcion = "Material reciclable de plásticos.",
+        ProductoReciclable(
+            idProducto = 1,
+            urlImagenProducto = "url_plasticos.png",
+            nombreProducto = "Plásticos",
+            descripcionProducto = "Material reciclable de plásticos.",
             precio = 10.0,
             cantidad = 500,
-            unidadDeMedida = "kg",
-            puntosPorUnidad = 10,
-            puntosAcumulados = 500,
-            idComprador = 1
+            unidadMedida = "kg",
+            puntosPorCompra = 10,
+            idUsuario = 1
         ),
-        Material(
-            idMaterial = 2,
-            urlImagenMaterial = "url_metales.png",
-            nombre = "Metales",
-            descripcion = "Material reciclable de metales.",
+        ProductoReciclable(
+            idProducto = 2,
+            urlImagenProducto = "url_metales.png",
+            nombreProducto = "Metales",
+            descripcionProducto = "Material reciclable de metales.",
             precio = 15.0,
             cantidad = 750,
-            unidadDeMedida = "kg",
-            puntosPorUnidad = 15,
-            puntosAcumulados = 750,
-            idComprador = 2
+            unidadMedida = "kg",
+            puntosPorCompra = 15,
+            idUsuario = 2
         ),
-        Material(
-            idMaterial = 3,
-            urlImagenMaterial = "url_papeleria.png",
-            nombre = "Papelería",
-            descripcion = "Material reciclable de papelería.",
+        ProductoReciclable(
+            idProducto = 3,
+            urlImagenProducto = "url_papeleria.png",
+            nombreProducto = "Papelería",
+            descripcionProducto = "Material reciclable de papelería.",
             precio = 5.0,
             cantidad = 300,
-            unidadDeMedida = "kg",
-            puntosPorUnidad = 5,
-            puntosAcumulados = 300,
-            idComprador = 3
+            unidadMedida = "kg",
+            puntosPorCompra = 5,
+            idUsuario = 3
         ),
-        Material(
-            idMaterial = 4,
-            urlImagenMaterial = "url_vidrieria.png",
-            nombre = "Vidriería",
-            descripcion = "Material reciclable de vidriería.",
+        ProductoReciclable(
+            idProducto = 4,
+            urlImagenProducto = "url_vidrieria.png",
+            nombreProducto = "Vidriería",
+            descripcionProducto = "Material reciclable de vidriería.",
             precio = 8.0,
             cantidad = 400,
-            unidadDeMedida = "kg",
-            puntosPorUnidad = 8,
-            puntosAcumulados = 400,
-            idComprador = 4
+            unidadMedida = "kg",
+            puntosPorCompra = 8,
+            idUsuario = 4
         ),
-        Material(
-            idMaterial = 5,
-            urlImagenMaterial = "url_textiles.png",
-            nombre = "Textiles",
-            descripcion = "Material reciclable de textiles.",
+        ProductoReciclable(
+            idProducto = 5,
+            urlImagenProducto = "url_textiles.png",
+            nombreProducto = "Textiles",
+            descripcionProducto = "Material reciclable de textiles.",
             precio = 12.0,
             cantidad = 240,
-            unidadDeMedida = "kg",
-            puntosPorUnidad = 12,
-            puntosAcumulados = 240,
-            idComprador = 5
+            unidadMedida = "kg",
+            puntosPorCompra = 12,
+            idUsuario = 5
         ),
-        Material(
-            idMaterial = 6,
-            urlImagenMaterial = "url_electronica.png",
-            nombre = "Electrónica",
-            descripcion = "Material reciclable de electrónica.",
+        ProductoReciclable(
+            idProducto = 6,
+            urlImagenProducto = "url_electronica.png",
+            nombreProducto = "Electrónica",
+            descripcionProducto = "Material reciclable de electrónica.",
             precio = 20.0,
             cantidad = 600,
-            unidadDeMedida = "kg",
-            puntosPorUnidad = 20,
-            puntosAcumulados = 600,
-            idComprador = 6
+            unidadMedida = "kg",
+            puntosPorCompra = 20,
+            idUsuario = 6
         ),
-        Material(
-            idMaterial = 7,
-            urlImagenMaterial = "url_pilas.png",
-            nombre = "Pilas y baterías",
-            descripcion = "Material reciclable de pilas y baterías.",
+        ProductoReciclable(
+            idProducto = 7,
+            urlImagenProducto = "url_pilas.png",
+            nombreProducto = "Pilas y baterías",
+            descripcionProducto = "Material reciclable de pilas y baterías.",
             precio = 25.0,
             cantidad = 125,
-            unidadDeMedida = "kg",
-            puntosPorUnidad = 25,
-            puntosAcumulados = 125,
-            idComprador = 7
+            unidadMedida = "kg",
+            puntosPorCompra = 25,
+            idUsuario = 7
         ),
-        Material(
-            idMaterial = 8,
-            urlImagenMaterial = "url_madera.png",
-            nombre = "Madera",
-            descripcion = "Material reciclable de madera.",
+        ProductoReciclable(
+            idProducto = 8,
+            urlImagenProducto = "url_madera.png",
+            nombreProducto = "Madera",
+            descripcionProducto = "Material reciclable de madera.",
             precio = 7.0,
             cantidad = 140,
-            unidadDeMedida = "kg",
-            puntosPorUnidad = 7,
-            puntosAcumulados = 140,
-            idComprador = 8
+            unidadMedida = "kg",
+            puntosPorCompra = 7,
+            idUsuario = 8
         ),
-        Material(
-            idMaterial = 9,
-            urlImagenMaterial = "url_neumaticos.png",
-            nombre = "Neumáticos",
-            descripcion = "Material reciclable de neumáticos.",
+        ProductoReciclable(
+            idProducto = 9,
+            urlImagenProducto = "url_neumaticos.png",
+            nombreProducto = "Neumáticos",
+            descripcionProducto = "Material reciclable de neumáticos.",
             precio = 18.0,
             cantidad = 90,
-            unidadDeMedida = "kg",
-            puntosPorUnidad = 18,
-            puntosAcumulados = 90,
-            idComprador = 9
+            unidadMedida = "kg",
+            puntosPorCompra = 18,
+            idUsuario = 9
         ),
-        Material(
-            idMaterial = 10,
-            urlImagenMaterial = "url_residuos.png",
-            nombre = "Residuos orgánicos",
-            descripcion = "Material reciclable de residuos orgánicos.",
+        ProductoReciclable(
+            idProducto = 10,
+            urlImagenProducto = "url_residuos.png",
+            nombreProducto = "Residuos orgánicos",
+            descripcionProducto = "Material reciclable de residuos orgánicos.",
             precio = 4.0,
             cantidad = 200,
-            unidadDeMedida = "kg",
-            puntosPorUnidad = 4,
-            puntosAcumulados = 200,
-            idComprador = 10
+            unidadMedida = "kg",
+            puntosPorCompra = 4,
+            idUsuario = 10
         ),
-        Material(
-            idMaterial = 11,
-            urlImagenMaterial = "url_aceites.png",
-            nombre = "Aceites",
-            descripcion = "Material reciclable de aceites.",
+        ProductoReciclable(
+            idProducto = 11,
+            urlImagenProducto = "url_aceites.png",
+            nombreProducto = "Aceites",
+            descripcionProducto = "Material reciclable de aceites.",
             precio = 15.0,
             cantidad = 75,
-            unidadDeMedida = "L",
-            puntosPorUnidad = 15,
-            puntosAcumulados = 75,
-            idComprador = 11
+            unidadMedida = "L",
+            puntosPorCompra = 15,
+            idUsuario = 11
         ),
-        Material(
-            idMaterial = 12,
-            urlImagenMaterial = "url_carton.png",
-            nombre = "Cartón",
-            descripcion = "Material reciclable de cartón.",
+        ProductoReciclable(
+            idProducto = 12,
+            urlImagenProducto = "url_carton.png",
+            nombreProducto = "Cartón",
+            descripcionProducto = "Material reciclable de cartón.",
             precio = 5.0,
             cantidad = 25,
-            unidadDeMedida = "kg",
-            puntosPorUnidad = 5,
-            puntosAcumulados = 25,
-            idComprador = 12
+            unidadMedida = "kg",
+            puntosPorCompra = 5,
+            idUsuario = 12
         ),
-        Material(
-            idMaterial = 13,
-            urlImagenMaterial = "url_vidrio.png",
-            nombre = "Vidrio",
-            descripcion = "Material reciclable de vidrio.",
+        ProductoReciclable(
+            idProducto = 13,
+            urlImagenProducto = "url_vidrio.png",
+            nombreProducto = "Vidrio",
+            descripcionProducto = "Material reciclable de vidrio.",
             precio = 10.0,
             cantidad = 50,
-            unidadDeMedida = "kg",
-            puntosPorUnidad = 10,
-            puntosAcumulados = 50,
-            idComprador = 13
+            unidadMedida = "kg",
+            puntosPorCompra = 10,
+            idUsuario = 13
         )
     )
 
-
-    val totalPoints = materials.sumOf { it.puntosAcumulados.toDouble() }
+    val totalPoints = materials.sumOf { it.puntosPorCompra.toDouble() }
     val porcentajes = if (totalPoints == 0.0) {
         materials.map { 0f }.toTypedArray()
     } else {
-        materials.map { (it.puntosAcumulados.toDouble() / totalPoints).toFloat() }.toTypedArray()
+        materials.map { (it.puntosPorCompra.toDouble() / totalPoints).toFloat() }.toTypedArray()
     }
     val colors = List(materials.size) { generateRandomColor() }
 
@@ -425,7 +411,7 @@ fun DetailedStatisticsScreen() {
         // Gráfico de Torta de la Distribución de Materiales con colores sincronizados
         ModernChartPie(
             porcentajes = porcentajes,
-            labels = materials.map { it.nombre }.toTypedArray(),
+            labels = materials.map { it.nombreProducto }.toTypedArray(),
             chartTitle = "Distribución de Materiales Reciclables",
             colors = colors
         )

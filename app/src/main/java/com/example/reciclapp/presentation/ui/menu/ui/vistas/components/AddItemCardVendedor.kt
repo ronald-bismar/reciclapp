@@ -39,11 +39,11 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.example.reciclapp.domain.entities.Producto
+import com.example.reciclapp.domain.entities.ProductoReciclable
 import java.io.IOException
 
 @Composable
-fun AddItemCardVendedor(onAddItem: (Producto) -> Unit) {
+fun AddItemCardVendedor(onAddItem: (ProductoReciclable) -> Unit) {
     var name by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var points by remember { mutableStateOf("") }
@@ -127,7 +127,7 @@ fun AddItemCardVendedor(onAddItem: (Producto) -> Unit) {
             Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = {
-                    val newItem = Producto(
+                    val newItem = ProductoReciclable(
                         nombreProducto = name,
                         descripcionProducto = description,
                         urlImagenProducto = "R.drawable",

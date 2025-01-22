@@ -100,7 +100,14 @@ fun AppTopBar(
         actions = {
             // Muestra la imagen del usuario si está disponible
             IconButton(onClick = {
-
+                val route = "perfil"
+                navControllerMain.navigate(route) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
             }) {
                 user?.let { user ->
                     val painter = rememberAsyncImagePainter(model = user.urlImagenPerfil)

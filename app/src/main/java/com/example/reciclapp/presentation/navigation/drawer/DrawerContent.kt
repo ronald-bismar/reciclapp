@@ -77,7 +77,7 @@ fun DrawerItem(navController: NavController, route: String, icon: ImageVector, o
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                Toast.makeText(context, "$route clicked", Toast.LENGTH_SHORT).show()
+                // Toast.makeText(context, "$route clicked", Toast.LENGTH_SHORT).show()
                 navController.navigate(route) {
                     popUpTo(navController.graph.startDestinationId) {
                         saveState = true

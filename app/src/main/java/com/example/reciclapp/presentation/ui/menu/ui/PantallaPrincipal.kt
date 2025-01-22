@@ -53,9 +53,9 @@ fun PantallaPrincipal(navControllerMain: NavController) {
         ItemsMenu.Pantalla5
     )
 
-    // Configuración del Drawer de navegación
     ModalNavigationDrawer(
         drawerState = drawerState,
+        gesturesEnabled = drawerState.isOpen, // Permite cerrar con gesto solo si está abierto
         drawerContent = {
             DrawerContent(
                 mainNavController = navControllerMain,
@@ -80,15 +80,6 @@ fun PantallaPrincipal(navControllerMain: NavController) {
                     menuItems = navigationItems,
                     userViewModel = userViewModel
                 )
-            },
-            floatingActionButton = {
-                FloatingActionButton(
-                    onClick = {  navControllerMain.navigate("map") },
-                    containerColor = MaterialTheme.colorScheme.primary, // Cambiar el color del botón flotante
-                    contentColor = MaterialTheme.colorScheme.onSurface // Cambiar el color del icono dentro del botón
-                ) {
-                    Icon(Icons.Default.Place, contentDescription = "Maps View")
-                }
             },
             floatingActionButtonPosition = FabPosition.End
         ) { innerPadding ->

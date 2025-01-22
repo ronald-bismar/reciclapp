@@ -44,7 +44,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.reciclapp.R
-import com.example.reciclapp.domain.entities.Producto
+import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 
 @Composable
@@ -80,7 +80,7 @@ fun SocialMediaScreenVendedores(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(productos) { producto ->
-                    CardSocialMediaReciclador(producto = producto, mainNavController)
+                    CardSocialMediaReciclador(productoReciclable = producto, mainNavController)
                 }
             }
         }
@@ -89,13 +89,13 @@ fun SocialMediaScreenVendedores(
 
 @Composable
 fun CardSocialMediaReciclador(
-    producto: Producto, mainNavController: NavController,
+    productoReciclable: ProductoReciclable, mainNavController: NavController,
     vendedoresViewModel: VendedoresViewModel = hiltViewModel()
 ) {
     var isLiked by remember { mutableStateOf(false) }
-    var countLikes by remember { mutableIntStateOf(producto.meGusta) }
-    val precio: String = if (producto.precio < 1) "${producto.precio}0"
-    else producto.precio.toInt().toString()
+    var countLikes by remember { mutableIntStateOf(productoReciclable.meGusta) }
+    val precio: String = if (productoReciclable.precio < 1) "${productoReciclable.precio}0"
+    else productoReciclable.precio.toInt().toString()
     Box(
         modifier = Modifier
             .padding(horizontal = 8.dp)
@@ -109,22 +109,22 @@ fun CardSocialMediaReciclador(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Text(
-                text = "Vendo ${producto.nombreProducto} para reciclar",
+                text = "Vendo ${productoReciclable.nombreProducto} para reciclar",
                 style = MaterialTheme.typography.titleLarge,
                 color = Color.Black
             )
             Text(
-                text = "Cantidad: ${producto.cantidad} ${producto.unidadMedida}",
+                text = "Cantidad: ${productoReciclable.cantidad} ${productoReciclable.unidadMedida}",
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.Gray
             )
             Text(
-                text = "Puntos por material: ${producto.puntosPorCompra}",
+                text = "Puntos por material: ${productoReciclable.puntosPorCompra}",
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.Gray
             )
             Text(
-                text = producto.descripcionProducto,
+                text = productoReciclable.descripcionProducto,
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 color = Color.Black
@@ -136,7 +136,7 @@ fun CardSocialMediaReciclador(
                 color = Color.Black
             )
             AsyncImage(
-                model = producto.urlImagenProducto,
+                model = productoReciclable.urlImagenProducto,
                 contentDescription = "Producto vendido",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -161,7 +161,7 @@ fun CardSocialMediaReciclador(
             ) {
                 IconButton(onClick = {
                     isLiked = !isLiked
-                    vendedoresViewModel.updateLikedProducto(producto, isLiked)
+                    vendedoresViewModel.updateLikedProducto(productoReciclable, isLiked)
                     countLikes = if (isLiked) countLikes + 1 else countLikes - 1
                 }, modifier = Modifier.size(24.dp)) {
                     Icon(
@@ -172,7 +172,7 @@ fun CardSocialMediaReciclador(
                 }
                 IconButton(onClick = {
                     val profileRoute =
-                        "vendedorPerfil/${producto.idVendedor}" //vamos a pantalla perfil del vendedor
+                        "vendedorPerfil/${productoReciclable.idUsuario}" //vamos a pantalla perfil del vendedor
 
                     mainNavController.navigate(profileRoute)
                 }, modifier = Modifier.size(24.dp)) {

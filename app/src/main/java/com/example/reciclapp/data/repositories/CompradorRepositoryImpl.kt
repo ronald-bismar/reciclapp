@@ -1,8 +1,7 @@
 package com.example.reciclapp.data.repositories
 
 import android.util.Log
-import com.example.reciclapp.domain.entities.Material
-import com.example.reciclapp.domain.entities.Producto
+import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.repositories.CompradorRepository
 import com.example.reciclapp.domain.usecases.material.RegistrarMaterialUseCase
@@ -56,7 +55,7 @@ class CompradorRepositoryImpl @Inject constructor(
     }
 
     override suspend fun publicarListaDeMaterialesQueCompra(
-        materiales: List<Material>,
+        materiales: List<ProductoReciclable>,
     ) {
         materiales.map { material ->
             try {
@@ -69,12 +68,12 @@ class CompradorRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun verListaDePublicacionesDeProductosEnVenta(vendedores: List<Usuario>): List<HashMap<Usuario, Producto>> {
-        val productos: List<Producto> = listarTodosLosProductosUseCase.execute()
-        val listaDeUsuariosYProductos = mutableListOf<HashMap<Usuario, Producto>>()
+    override suspend fun verListaDePublicacionesDeProductosEnVenta(vendedores: List<Usuario>): List<HashMap<Usuario, ProductoReciclable>> {
+        val productoReciclables: List<ProductoReciclable> = listarTodosLosProductosUseCase.execute()
+        val listaDeUsuariosYProductos = mutableListOf<HashMap<Usuario, ProductoReciclable>>()
 
         for (vendedor in vendedores) {
-            val productosDelVendedor = productos.filter { it.idVendedor == vendedor.idUsuario }
+            val productosDelVendedor = productoReciclables.filter { it.idUsuario == vendedor.idUsuario }
             for (producto in productosDelVendedor) {
                 val map = hashMapOf(vendedor to producto)
                 listaDeUsuariosYProductos.add(map)

@@ -9,7 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.reciclapp.domain.entities.Comentario
-import com.example.reciclapp.domain.entities.Material
+import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.usecases.comentario.ListarComentariosDeCompradorUseCase
 import com.example.reciclapp.domain.usecases.comprador.GetCompradorUseCase
@@ -49,8 +49,8 @@ class CompradoresViewModel @Inject constructor(
     private val _selectedComprador = MutableLiveData(Usuario())
     val selectedComprador: LiveData<Usuario> = _selectedComprador
 
-    private val _materiales = MutableStateFlow<MutableList<Material>>(mutableListOf())
-    val materiales: StateFlow<MutableList<Material>> = _materiales
+    private val _materiales = MutableStateFlow<MutableList<ProductoReciclable>>(mutableListOf())
+    val materiales: StateFlow<MutableList<ProductoReciclable>> = _materiales
 
     private val _comentarios = MutableStateFlow<MutableList<Comentario>>(mutableListOf())
     val comentarios: StateFlow<MutableList<Comentario>> = _comentarios

@@ -1,7 +1,6 @@
 package com.example.reciclapp.domain.repositories
 
-import com.example.reciclapp.domain.entities.Material
-import com.example.reciclapp.domain.entities.Producto
+import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 
 interface CompradorRepository {
@@ -9,7 +8,7 @@ interface CompradorRepository {
     suspend fun actualizarDatosComprador(user: Usuario)
     suspend fun eliminarComprador(idComprador: Int)
     suspend fun getCompradores(): MutableList<Usuario>
-    suspend fun publicarListaDeMaterialesQueCompra(materiales: List<Material>)
-    suspend fun verListaDePublicacionesDeProductosEnVenta(vendedores: List<Usuario>): List<HashMap<Usuario, Producto>>
+    suspend fun publicarListaDeMaterialesQueCompra(materiales: List<ProductoReciclable>)
+    suspend fun verListaDePublicacionesDeProductosEnVenta(vendedores: List<Usuario>): List<HashMap<Usuario, ProductoReciclable>>
     suspend fun hacerOfertaPorMaterialesEnVenta(precioPropuesto: Double)
 }

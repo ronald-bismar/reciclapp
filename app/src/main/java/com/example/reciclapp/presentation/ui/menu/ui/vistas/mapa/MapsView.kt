@@ -45,7 +45,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.example.reciclapp.domain.entities.Material
+import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.UbicacionGPS
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.animations.AnimatedTransitionDialog
@@ -248,7 +248,7 @@ fun MarkerDialog(
 }
 
 @Composable
-fun profileComprador(usuario: Usuario, materiales: List<Material>, onDismiss: () -> Unit, navController: NavController) {
+fun profileComprador(usuario: Usuario, materiales: List<ProductoReciclable>, onDismiss: () -> Unit, navController: NavController) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -276,7 +276,7 @@ fun profileComprador(usuario: Usuario, materiales: List<Material>, onDismiss: ()
             modifier = Modifier.padding(vertical = 10.dp)
         )
         materiales.forEach{ material ->
-            Text(text = "${material.nombre} ${material.monedaDeCompra} ${material.precio} por ${material.unidadDeMedida}", color = Color.Black)
+            Text(text = "${material.nombreProducto} ${material.monedaDeCompra} ${material.precio} por ${material.unidadMedida}", color = Color.Black)
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row (modifier = Modifier.fillMaxWidth(),verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly){
