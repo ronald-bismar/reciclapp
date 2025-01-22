@@ -96,7 +96,7 @@ fun PantallaPrincipal(navControllerMain: NavController) {
                 BottomNavHost(
                     mainNavController = navControllerMain,
                     navHostController = navController,
-                    userViewModel = userViewModel
+                    userViewModel.user?.value.let { it?.idUsuario } ?: 0
                 )
             }
         }

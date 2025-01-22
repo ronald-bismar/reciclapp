@@ -112,11 +112,6 @@ fun NavGraph(
             CalificanosScreen()
         }
 
-
-
-
-
-
         composable("perfil") {
             Perfil(userViewModel = userViewModel)
         }

@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -23,7 +24,7 @@ sealed class ItemsMenu(
         override val route: String = "pantalla2"
     }
 
-    data object Pantalla3 : ItemsMenu(Icons.Default.Home, "Inicio", "Inicio") {
+    data object Pantalla3 : ItemsMenu(Icons.Default.LocationOn, "Mapa", "map") {
         override val route: String = "pantalla3"
     }
 

@@ -9,21 +9,19 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.reciclapp.presentation.ui.menu.ui.ContactListScreen
-import com.example.reciclapp.presentation.ui.menu.ui.vistas.Inicio
 import com.example.reciclapp.presentation.ui.menu.ui.ItemsMenu
-import com.example.reciclapp.presentation.ui.menu.ui.vistas.Perfil
-import com.example.reciclapp.presentation.ui.menu.ui.content.statistics.DetailedStatisticsScreen
 import com.example.reciclapp.presentation.ui.menu.ui.SocialMediaScreenVendedores
 import com.example.reciclapp.presentation.ui.menu.ui.content.newsandtips.GlobalWasteApi
 import com.example.reciclapp.presentation.ui.menu.ui.content.newsandtips.NewsTipsScreen
-import com.example.reciclapp.presentation.viewmodel.UserViewModel
+import com.example.reciclapp.presentation.ui.menu.ui.content.statistics.DetailedStatisticsScreen
+import com.example.reciclapp.presentation.ui.menu.ui.vistas.mapa.MapsView
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BottomNavHost(
     mainNavController: NavController,
     navHostController: NavHostController,
-    userViewModel: UserViewModel
+    idUsuario: Int
 
 ) {
     val globalWasteApi = remember { GlobalWasteApi.create() }
@@ -32,14 +30,13 @@ fun BottomNavHost(
         startDestination = ItemsMenu.Pantalla3.ruta
     ) {
         composable(ItemsMenu.Pantalla1.ruta) {
-          /*  Perfil(userViewModel)*/
             NewsTipsScreen(api = globalWasteApi)
         }
         composable(ItemsMenu.Pantalla2.ruta) {
             DetailedStatisticsScreen()
         }
         composable(ItemsMenu.Pantalla3.ruta) {
-            Inicio()
+            MapsView(idUsuario, mainNavController)
         }
         composable(ItemsMenu.Pantalla4.ruta) {
             ContactListScreen(mainNavController)
