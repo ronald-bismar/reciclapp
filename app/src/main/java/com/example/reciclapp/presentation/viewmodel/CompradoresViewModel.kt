@@ -3,7 +3,6 @@ package com.example.reciclapp.presentation.viewmodel
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,7 +12,7 @@ import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.usecases.comentario.ListarComentariosDeCompradorUseCase
 import com.example.reciclapp.domain.usecases.comprador.GetCompradorUseCase
-import com.example.reciclapp.domain.usecases.material.ListarMaterialesPorCompradorUseCase
+import com.example.reciclapp.domain.usecases.producto.ListarMaterialesPorCompradorUseCase
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.example.reciclapp.domain.usecases.vendedor.ComentarACompradorUseCase
 import com.example.reciclapp.model.util.GenerateID
@@ -40,7 +39,6 @@ class CompradoresViewModel @Inject constructor(
     init {
         loadMyUserPreferences()
         Log.d("MyUser", "MyUser: $myUser")
-
     }
 
     private val _myUser = MutableLiveData(Usuario())

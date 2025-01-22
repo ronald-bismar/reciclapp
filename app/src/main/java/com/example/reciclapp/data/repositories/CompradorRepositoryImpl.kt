@@ -4,15 +4,15 @@ import android.util.Log
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.repositories.CompradorRepository
-import com.example.reciclapp.domain.usecases.material.RegistrarMaterialUseCase
 import com.example.reciclapp.domain.usecases.producto.ListarTodosLosProductosUseCase
+import com.example.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class CompradorRepositoryImpl @Inject constructor(
     private val service: FirebaseFirestore,
-    private val registrarMaterialUseCase: RegistrarMaterialUseCase,
+    private val registrarProductoUseCase: RegistrarProductoUseCase,
     private val listarTodosLosProductosUseCase: ListarTodosLosProductosUseCase
 ) : CompradorRepository {
 
@@ -59,7 +59,7 @@ class CompradorRepositoryImpl @Inject constructor(
     ) {
         materiales.map { material ->
             try {
-                registrarMaterialUseCase.execute(material)
+                registrarProductoUseCase.execute(material)
                 Result.success(material)
             } catch (e: Exception) {
                 Result.failure(e)

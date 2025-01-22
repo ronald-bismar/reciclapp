@@ -1,6 +1,5 @@
 package com.example.reciclapp.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -62,9 +61,6 @@ class UserViewModel @Inject constructor(
         _autorizeChangeKindUser.value =
             _user.value?.correo?.equals(correo) == true &&
                     _user.value?.contrasena?.equals(password) == true
-        Log.d("_autorizeChangeKindUser", "correo: ${_user.value?.correo}")
-        Log.d("_autorizeChangeKindUser", "contrasena: ${_user.value?.contrasena}")
-        Log.d("_autorizeChangeKindUser", "_autorizeChangeKindUser: ${_autorizeChangeKindUser.value}")
     }
 
     fun resetAutorizeChangeKindUser() {

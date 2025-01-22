@@ -2,6 +2,7 @@ package com.example.reciclapp.di
 
 import com.example.reciclapp.data.repositories.ProductoRepositoryImpl
 import com.example.reciclapp.domain.repositories.ProductoRepository
+import com.example.reciclapp.domain.usecases.producto.ListarMaterialesPorCompradorUseCase
 import com.example.reciclapp.domain.usecases.producto.*
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -53,5 +54,15 @@ object ProductoModule {
     @Provides
     fun provideUpdateLikedProductoUseCase(repository: ProductoRepository): UpdateLikedProductoUseCase {
         return UpdateLikedProductoUseCase(repository)
+    }
+
+    @Provides
+    fun provideEliminarMaterialUseCase(repository: ProductoRepository): EliminarProductoUseCase {
+        return EliminarProductoUseCase(repository)
+    }
+
+    @Provides
+    fun provideListarMaterialesUseCase(repository: ProductoRepository): ListarMaterialesPorCompradorUseCase {
+        return ListarMaterialesPorCompradorUseCase(repository)
     }
 }
