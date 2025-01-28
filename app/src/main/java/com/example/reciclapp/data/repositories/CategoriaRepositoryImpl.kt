@@ -29,6 +29,22 @@ class CategoriaRepositoryImpl @Inject constructor(private val service: FirebaseF
         return true
     }
 
+    override suspend fun agregarCategorias(categorias: List<Categoria>): Boolean {
+        try {
+            for (categoria in categorias) {
+                service.collection("categorias")
+                    .document(categoria.idCategoria.toString())
+                    .set(categoria)
+                    .await()
+            }
+            return true
+        } catch (e: Exception) {
+            Log.e("CategoriaRepository", "Error al agregar categorías: ${e.message}")
+            return false
+        }
+    }
+
+
     override suspend fun actualizarCategoria(categoria: Categoria): Boolean {
         service.collection("categorias").document(categoria.idCategoria.toString()).set(categoria).await()
         return true

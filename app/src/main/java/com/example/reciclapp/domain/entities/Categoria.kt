@@ -6,5 +6,5 @@ data class Categoria(
     var unidadDeMedida: String = "",
     var puntosPorTransaccion: Int = 0,
     var descripcionCategoria: String = "",
-    var productosDeCategoria: MutableList<ProductoReciclable> = mutableListOf()
+    var productosDeCategoria: MutableList<String> = mutableListOf()
 )

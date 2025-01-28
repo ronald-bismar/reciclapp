@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Menu
@@ -95,6 +96,19 @@ fun AppTopBar(
             }
         },
         actions = {
+            IconButton(onClick = {
+                navControllerMain.navigate("AñadirProductoReciclable") {
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }) {
+                Icon(imageVector = Icons.Filled.Add,
+                    tint = MaterialTheme.colorScheme.surface,
+                    contentDescription = "Subir nuevo producto")
+            }
             // Muestra la imagen del usuario si está disponible
             IconButton(onClick = {
                 val route = "perfil"

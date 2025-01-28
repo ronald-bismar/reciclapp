@@ -35,6 +35,7 @@ import com.example.reciclapp.presentation.ui.menu.ui.vistas.Perfil
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Vendedor
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.mapa.MapsView
 import com.example.reciclapp.presentation.ui.drawer.ui.MisionVisionScreen
+import com.example.reciclapp.presentation.ui.menu.ui.vistas.components.AddItemCardVendedor
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroScreen
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroViewModel
 import com.example.reciclapp.presentation.ui.splash.SplashScreenContent
@@ -135,6 +136,9 @@ fun NavGraph(
             userViewModel.user.observeAsState().value?.idUsuario?.let { idUsuario ->
                 MapsView(idUsuario = idUsuario, mainNavController = mainNavController)
             }
+        }
+        composable("AñadirProductoReciclable") {
+            AddItemCardVendedor ({})
         }
     }
 }
