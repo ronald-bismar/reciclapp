@@ -1,5 +1,6 @@
 package com.example.reciclapp.presentation.navigation
 
+import AddItemCardVendedor
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,7 +36,6 @@ import com.example.reciclapp.presentation.ui.menu.ui.vistas.Perfil
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Vendedor
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.mapa.MapsView
 import com.example.reciclapp.presentation.ui.drawer.ui.MisionVisionScreen
-import com.example.reciclapp.presentation.ui.menu.ui.vistas.components.AddItemCardVendedor
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroScreen
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroViewModel
 import com.example.reciclapp.presentation.ui.splash.SplashScreenContent

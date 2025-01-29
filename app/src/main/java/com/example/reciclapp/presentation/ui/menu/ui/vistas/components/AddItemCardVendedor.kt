@@ -1,252 +1,364 @@
-package com.example.reciclapp.presentation.ui.menu.ui.vistas.components
-
-import android.content.Context
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.outlined.AccountBox
+import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.reciclapp.domain.entities.Categoria
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.util.ListOfCategorias
-import java.io.IOException
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddItemCardVendedor(onSubmit: (ProductoReciclable) -> Unit) {
-    var name by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var price by remember { mutableStateOf("") }
-    var quantity by remember { mutableStateOf("") }
-    var location by remember { mutableStateOf("") }
+fun AddItemCardVendedor(
+    onSubmit: (ProductoReciclable) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var cantidad by remember { mutableStateOf("20") }
+    var precio by remember { mutableStateOf("10") }
     var selectedCategory by remember { mutableStateOf<Categoria?>(null) }
     var selectedProduct by remember { mutableStateOf<String?>(null) }
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
-    var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
-    val context = LocalContext.current
-
-    val galleryLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            uri?.let {
-                imageUri = it
-                imageBitmap = loadBitmapFromUri(context, it)
-            }
-        }
+    var expandedCategory by remember { mutableStateOf(false) }
+    var expandedUnidad by remember { mutableStateOf(false) }
+    var selectedUnidad by remember { mutableStateOf("Kilogramos (Kg)") }
+    var imageUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
+    var showPointsInfo by remember { mutableStateOf(false) }
+    var detalles by remember { mutableStateOf("") }
 
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .shadow(4.dp, shape = RoundedCornerShape(8.dp)),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            .padding(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
-            // Título del formulario
+            // Título
             Text(
-                text = "Publicar Producto Reciclable",
+                text = "Producto reciclable a la venta",
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(bottom = 16.dp)
+                fontWeight = FontWeight.Bold
             )
 
-            // Campo: Nombre del producto
-            TextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text("Nombre del Producto") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Campo: Descripción del producto
-            TextField(
-                value = description,
-                onValueChange = { description = it },
-                label = { Text("Descripción") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Dropdown: Selección de categoría
-            var expandedCategory by remember { mutableStateOf(false) }
-            Box(modifier = Modifier.fillMaxWidth()) {
-                TextButton(
-                    onClick = { expandedCategory = true },
-                    modifier = Modifier.fillMaxWidth()
+            // Puntos por transacción
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(selectedCategory?.nombre ?: "Seleccionar Categoría")
+                    Text(
+                        "30",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color(0xFFFFB74D)
+                    )
+                    Text(
+                        " puntos por transacción!",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
-                DropdownMenu(
+            }
+
+            // Categoría y Producto
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // Dropdown Categoría
+                ExposedDropdownMenuBox(
                     expanded = expandedCategory,
-                    onDismissRequest = { expandedCategory = false }
+                    onExpandedChange = { expandedCategory = it },
+                    modifier = Modifier.weight(1f)
                 ) {
-                    ListOfCategorias.categorias.forEach { categoria ->
-                        DropdownMenuItem(
-                            onClick = {
-                                selectedCategory = categoria
-                                expandedCategory = false
-                                selectedProduct = null // Resetear producto al cambiar categoría
-                            }
-                        ) {
-                            Text(categoria.nombre)
-                        }
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = selectedCategory?.nombre ?: "",
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Categoría") },
+                        trailingIcon = { Icon(Icons.Filled.KeyboardArrowDown, "expandir") },
+                        modifier = Modifier.menuAnchor(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            unfocusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedLabelColor = MaterialTheme.colorScheme.primary
+                        )
+                    )
 
-            // Dropdown: Selección de producto (dependiente de la categoría)
-            var expandedProduct by remember { mutableStateOf(false) }
-            if (selectedCategory != null) {
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    TextButton(
-                        onClick = { expandedProduct = true },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(selectedProduct ?: "Seleccionar Producto")
-                    }
                     DropdownMenu(
-                        expanded = expandedProduct,
-                        onDismissRequest = { expandedProduct = false }
+                        expanded = expandedCategory,
+                        onDismissRequest = { expandedCategory = false }
                     ) {
-                        selectedCategory?.productosDeCategoria?.forEach { producto ->
+                        ListOfCategorias.categorias.forEach { categoria ->
                             DropdownMenuItem(
+                                text = { Text(categoria.nombre) },
                                 onClick = {
-                                    selectedProduct = producto
-                                    expandedProduct = false
+                                    selectedCategory = categoria
+                                    expandedCategory = false
                                 }
-                            ) {
-                                Text(producto)
+                            )
+                        }
+                    }
+                }
+
+                // Dropdown Producto
+                if (selectedCategory != null) {
+                    ExposedDropdownMenuBox(
+                        expanded = expandedUnidad,
+                        onExpandedChange = { expandedUnidad = it },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        OutlinedTextField(
+                            value = selectedProduct ?: "",
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Producto") },
+                            trailingIcon = { Icon(Icons.Filled.KeyboardArrowDown, "expandir") },
+                            modifier = Modifier.menuAnchor(),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                unfocusedBorderColor = MaterialTheme.colorScheme.primary,
+                                unfocusedLabelColor = MaterialTheme.colorScheme.primary
+                            )
+                        )
+
+                        DropdownMenu(
+                            expanded = expandedUnidad,
+                            onDismissRequest = { expandedUnidad = false }
+                        ) {
+                            selectedCategory!!.productosDeCategoria.forEach { producto ->
+                                DropdownMenuItem(
+                                    text = { Text(producto) },
+                                    onClick = {
+                                        selectedProduct = producto
+                                        expandedUnidad = false
+                                    }
+                                )
                             }
                         }
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
 
-            // Campo: Precio
-            TextField(
-                value = price,
-                onValueChange = { price = it },
-                label = { Text("Precio (Bs)") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Campo: Cantidad
-            TextField(
-                value = quantity,
-                onValueChange = { quantity = it },
-                label = { Text("Cantidad") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Campo: Ubicación
-            TextField(
-                value = location,
-                onValueChange = { location = it },
-                label = { Text("Ubicación") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Botón: Seleccionar imagen
-            Button(onClick = { galleryLauncher.launch("image/*") }) {
-                Text("Seleccionar Imagen")
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Mostrar imagen seleccionada
-            imageBitmap?.let { bitmap ->
-                Image(
-                    bitmap = bitmap,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(128.dp)
-                        .clip(RoundedCornerShape(8.dp))
+            // Cantidad y Unidad de medida
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedTextField(
+                    value = cantidad,
+                    onValueChange = { cantidad = it },
+                    label = { Text("Cantidad") },
+                    modifier = Modifier.weight(1f),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
+
+                ExposedDropdownMenuBox(
+                    expanded = expandedUnidad,
+                    onExpandedChange = { expandedUnidad = it },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    OutlinedTextField(
+                        value = selectedUnidad,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Unidad de medida") },
+                        trailingIcon = { Icon(Icons.Filled.KeyboardArrowDown, "expandir") },
+                        modifier = Modifier.menuAnchor()
+                    )
+
+                    DropdownMenu(
+                        expanded = expandedUnidad,
+                        onDismissRequest = { expandedUnidad = false }
+                    ) {
+                        listOf("Kilogramos (Kg)", "Gramos (g)", "Toneladas (T)").forEach { unidad ->
+                            DropdownMenuItem(
+                                text = { Text(unidad) },
+                                onClick = {
+                                    selectedUnidad = unidad
+                                    expandedUnidad = false
+                                }
+                            )
+                        }
+                    }
+                }
             }
 
-            // Botón: Enviar formulario
+            // Precio
+            OutlinedTextField(
+                value = precio,
+                onValueChange = { precio = it },
+                label = { Text("Precio") },
+                prefix = { Text("Bs. ") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
+
+            // Puntos por compra
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Column(modifier = Modifier.padding(12.dp)) {
+                    Text(
+                        "Puntos por compra",
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                    Text(
+                        "10 puntos",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                    TextButton(
+                        onClick = { showPointsInfo = !showPointsInfo }
+                    ) {
+                        Text("¿En qué consiste los puntos por compra?")
+                    }
+                }
+            }
+
+            // Panel de imágenes
+            ImagePickerPanel(
+                imageUris = imageUris,
+                onImagesSelected = { imageUris = it }
+            )
+
+            // Detalles adicionales
+            OutlinedTextField(
+                value = detalles,
+                onValueChange = { detalles = it },
+                label = { Text("Algún detalle que quieras adicionar?") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                minLines = 3
+            )
+
+            // Botón de publicar
             Button(
                 onClick = {
-                    val newProduct = ProductoReciclable(
-                        nombreProducto = name,
-                        descripcionProducto = description,
-                        precio = price.toDoubleOrNull() ?: 0.0,
-                        cantidad = quantity.toIntOrNull() ?: 0,
-                        ubicacionProducto = location,
+                    // Crear y enviar el producto
+                    val producto = ProductoReciclable(
+                        nombreProducto = selectedProduct ?: "",
+                        descripcionProducto = detalles,
+                        precio = precio.toDoubleOrNull() ?: 0.0,
+                        cantidad = cantidad.toIntOrNull() ?: 0,
                         categoria = selectedCategory?.nombre ?: "",
-                        urlImagenProducto = imageUri.toString()
+                        urlImagenProducto = imageUris.firstOrNull()?.toString() ?: ""
                     )
-                    onSubmit(newProduct)
+                    onSubmit(producto)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
-                enabled = name.isNotEmpty() && description.isNotEmpty() && selectedCategory != null
+                    .padding(vertical = 16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             ) {
-                Text("Publicar Producto")
+                Text("Publicar material")
             }
         }
     }
 }
 
-private fun loadBitmapFromUri(context: Context, uri: Uri): ImageBitmap? {
-    return try {
-        val bitmap = if (Build.VERSION.SDK_INT < 28) {
-            MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
-        } else {
-            val source = ImageDecoder.createSource(context.contentResolver, uri)
-            ImageDecoder.decodeBitmap(source)
+@Composable
+private fun ImagePickerPanel(
+    imageUris: List<Uri>,
+    onImagesSelected: (List<Uri>) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents()
+    ) { uris ->
+        onImagesSelected(uris.take(3))
+    }
+
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .height(200.dp),
+        shape = RoundedCornerShape(8.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (imageUris.isEmpty()) {
+                Icon(
+                    imageVector = Icons.Outlined.Image,
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    "Toca para agregar fotos",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            } else {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(imageUris) { uri ->
+                        AsyncImage(
+                            model = uri,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(160.dp)
+                                .clip(RoundedCornerShape(8.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }
+            }
+
+            TextButton(
+                onClick = { galleryLauncher.launch("image/*") }
+            ) {
+                Text(if (imageUris.isEmpty()) "Agregar fotos" else "Cambiar fotos")
+            }
         }
-        bitmap.asImageBitmap()
-    } catch (e: IOException) {
-        e.printStackTrace()
-        null
-        }
+    }
 }

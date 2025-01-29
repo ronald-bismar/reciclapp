@@ -1,5 +1,6 @@
 package com.example.reciclapp.presentation.ui.menu.ui.vistas
 
+import AddItemCardVendedor
 import android.content.Context
 import android.net.Uri
 import android.os.Build
@@ -69,7 +70,6 @@ import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.animations.AnimatedTransitionDialog
 import com.example.reciclapp.presentation.animations.UserTypeAnimated
-import com.example.reciclapp.presentation.ui.menu.ui.vistas.components.AddItemCardVendedor
 import com.example.reciclapp.presentation.ui.registro.ui.photo_profile.SinglePhotoPicker
 import com.example.reciclapp.presentation.ui.registro.ui.showToast
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
@@ -118,10 +118,10 @@ fun Perfil(userViewModel: UserViewModel) {
             if (showAddItemForm) {
 
                 // Formulario para añadir nuevo objeto vendido
-                AddItemCardVendedor { newProduct ->
+                AddItemCardVendedor(onSubmit = { newProduct ->
                     userViewModelVendedores.registrarNuevoProducto(newProduct)
                     showAddItemForm = false
-                }
+                }, modifier = Modifier.padding(10.dp))
             }
         }
     }
