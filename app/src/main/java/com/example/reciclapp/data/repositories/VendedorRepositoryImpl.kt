@@ -2,8 +2,7 @@ package com.example.reciclapp.data.repositories
 
 import android.util.Log
 import com.example.reciclapp.domain.entities.Comentario
-import com.example.reciclapp.domain.entities.Material
-import com.example.reciclapp.domain.entities.Producto
+import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.UbicacionGPS
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.repositories.VendedorRepository
@@ -45,9 +44,9 @@ class VendedorRepositoryImpl @Inject constructor(
         return vendedores
     }
 
-    override suspend fun publicarProducto(producto: Producto, user: Usuario) {
+    override suspend fun publicarProducto(productoReciclable: ProductoReciclable, user: Usuario) {
         try {
-            registrarProductoUseCase.execute(producto)
+            registrarProductoUseCase.execute(productoReciclable)
         } catch (e: Exception) {
             Log.d("Exception", "No se pudo publicar el producto $e")
         }
@@ -69,12 +68,12 @@ class VendedorRepositoryImpl @Inject constructor(
         // Se lista a los compradores que dan un precio más alto por el material
 
         // Precio en general (la suma de todos sus materiales que compra)
-        val materiales = mutableListOf<Material>()
+        val materiales = mutableListOf<ProductoReciclable>()
         val querySnapshot = service.collection("material")
             .get()
             .await()
         for (document in querySnapshot.documents) {
-            val material = document.toObject(Material::class.java)
+            val material = document.toObject(ProductoReciclable::class.java)
             material?.let { materiales.add(it) }
         }
 
@@ -83,7 +82,7 @@ class VendedorRepositoryImpl @Inject constructor(
 
         // Calcular la suma de los precios para cada idComprador
         for (material in materiales) {
-            val idComprador = material.idComprador
+            val idComprador = material.idUsuario
             val precioMaterial = material.precio
 
             sumasPorComprador[idComprador] = sumasPorComprador.getOrDefault(idComprador, 0.0) + precioMaterial

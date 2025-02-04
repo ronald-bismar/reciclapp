@@ -35,6 +35,7 @@ import com.example.reciclapp.presentation.ui.menu.ui.vistas.Perfil
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Vendedor
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.mapa.MapsView
 import com.example.reciclapp.presentation.ui.drawer.ui.MisionVisionScreen
+import com.example.reciclapp.presentation.ui.menu.ui.vistas.components.AddItemCardVendedor
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroScreen
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroViewModel
 import com.example.reciclapp.presentation.ui.splash.SplashScreenContent
@@ -43,7 +44,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavGraph(
     mainNavController: NavHostController,
@@ -112,11 +112,6 @@ fun NavGraph(
             CalificanosScreen()
         }
 
-
-
-
-
-
         composable("perfil") {
             Perfil(userViewModel = userViewModel)
         }
@@ -141,6 +136,9 @@ fun NavGraph(
             userViewModel.user.observeAsState().value?.idUsuario?.let { idUsuario ->
                 MapsView(idUsuario = idUsuario, mainNavController = mainNavController)
             }
+        }
+        composable("AñadirProductoReciclable") {
+            AddItemCardVendedor ({})
         }
     }
 }

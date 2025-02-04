@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.example.reciclapp.domain.entities.Producto
+import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 
 @Composable
@@ -188,7 +188,7 @@ fun ProfileItem2(label: String, value: String) {
 }
 
 @Composable
-fun SoldItemsList(soldItems: List<Producto>) {
+fun SoldItemsList(soldItems: List<ProductoReciclable>) {
     Column {
         soldItems.forEach { item ->
             SoldItemCard(item)
@@ -198,7 +198,7 @@ fun SoldItemsList(soldItems: List<Producto>) {
 }
 
 @Composable
-fun SoldItemCard(item: Producto) {
+fun SoldItemCard(item: ProductoReciclable) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

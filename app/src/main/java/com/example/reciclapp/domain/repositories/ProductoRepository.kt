@@ -1,13 +1,15 @@
 package com.example.reciclapp.domain.repositories
 
-import com.example.reciclapp.domain.entities.Producto
+import com.example.reciclapp.domain.entities.ProductoReciclable
 
 interface ProductoRepository {
-    suspend fun getProducto(idProducto: Int): Producto?
-    suspend fun registrarProducto(producto: Producto)
-    suspend fun actualizarProducto(producto: Producto)
+    suspend fun getProducto(idProducto: Int): ProductoReciclable?
+    suspend fun registrarProducto(productoReciclable: ProductoReciclable)
+    suspend fun actualizarProducto(productoReciclable: ProductoReciclable)
     suspend fun eliminarProducto(idProducto: Int)
-    suspend fun listarTodosLosProductos(): MutableList<Producto>
-    suspend fun listarProductosPorVendedor(idVendedor: Int): MutableList<Producto> //Cuando se deba mostrar en el perfil del usuario vendedor
-    suspend fun updateLikedProducto(producto: Producto, isLiked: Boolean)
+    suspend fun listarTodosLosProductos(): MutableList<ProductoReciclable>
+    suspend fun listarProductosPorVendedor(idVendedor: Int): MutableList<ProductoReciclable> //Cuando se deba mostrar en el perfil del usuario vendedor
+    suspend fun updateLikedProducto(productoReciclable: ProductoReciclable, isLiked: Boolean)
+    suspend fun listarMaterialesPorComprador(idComprador: Int): MutableList<ProductoReciclable>
+    suspend fun registrarProductos(materiales: List<ProductoReciclable>)
 }

@@ -170,11 +170,8 @@ fun ProfileDetails(user: Usuario) {
 
 @Composable
 fun ProfileSettings(user: Usuario) {
-    ProfileSection("Settings")
     ProfileItem("AccountType",
         user.tipoDeUsuario.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() })
-    ProfileItem("Privacy", "Public")
-    ProfileItem("Notifications", "Enabled")
 }
 
 @Composable

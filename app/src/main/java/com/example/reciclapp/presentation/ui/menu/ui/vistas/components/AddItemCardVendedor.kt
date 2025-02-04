@@ -8,6 +8,7 @@ import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,12 +19,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,15 +43,20 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.example.reciclapp.domain.entities.Producto
+import com.example.reciclapp.domain.entities.Categoria
+import com.example.reciclapp.domain.entities.ProductoReciclable
+import com.example.reciclapp.util.ListOfCategorias
 import java.io.IOException
 
 @Composable
-fun AddItemCardVendedor(onAddItem: (Producto) -> Unit) {
+fun AddItemCardVendedor(onSubmit: (ProductoReciclable) -> Unit) {
     var name by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
-    var points by remember { mutableStateOf("") }
-    var sold by remember { mutableStateOf(false) }
+    var price by remember { mutableStateOf("") }
+    var quantity by remember { mutableStateOf("") }
+    var location by remember { mutableStateOf("") }
+    var selectedCategory by remember { mutableStateOf<Categoria?>(null) }
+    var selectedProduct by remember { mutableStateOf<String?>(null) }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
     val context = LocalContext.current
@@ -70,40 +79,128 @@ fun AddItemCardVendedor(onAddItem: (Producto) -> Unit) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
+            // Título del formulario
             Text(
-                text = "Añadir Nuevo Objeto",
+                text = "Publicar Producto Reciclable",
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
-            Spacer(modifier = Modifier.height(8.dp))
+
+            // Campo: Nombre del producto
             TextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Nombre del Objeto") },
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            TextField(
-                value = description,
-                onValueChange = { description = it },
-                label = { Text("Descripción del Objeto") },
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            TextField(
-                value = points,
-                onValueChange = { points = it },
-                label = { Text("Puntos") },
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth()
+                label = { Text("Nombre del Producto") },
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text)
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Image selection button
+            // Campo: Descripción del producto
+            TextField(
+                value = description,
+                onValueChange = { description = it },
+                label = { Text("Descripción") },
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Dropdown: Selección de categoría
+            var expandedCategory by remember { mutableStateOf(false) }
+            Box(modifier = Modifier.fillMaxWidth()) {
+                TextButton(
+                    onClick = { expandedCategory = true },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(selectedCategory?.nombre ?: "Seleccionar Categoría")
+                }
+                DropdownMenu(
+                    expanded = expandedCategory,
+                    onDismissRequest = { expandedCategory = false }
+                ) {
+                    ListOfCategorias.categorias.forEach { categoria ->
+                        DropdownMenuItem(
+                            onClick = {
+                                selectedCategory = categoria
+                                expandedCategory = false
+                                selectedProduct = null // Resetear producto al cambiar categoría
+                            }
+                        ) {
+                            Text(categoria.nombre)
+                        }
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Dropdown: Selección de producto (dependiente de la categoría)
+            var expandedProduct by remember { mutableStateOf(false) }
+            if (selectedCategory != null) {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    TextButton(
+                        onClick = { expandedProduct = true },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(selectedProduct ?: "Seleccionar Producto")
+                    }
+                    DropdownMenu(
+                        expanded = expandedProduct,
+                        onDismissRequest = { expandedProduct = false }
+                    ) {
+                        selectedCategory?.productosDeCategoria?.forEach { producto ->
+                            DropdownMenuItem(
+                                onClick = {
+                                    selectedProduct = producto
+                                    expandedProduct = false
+                                }
+                            ) {
+                                Text(producto)
+                            }
+                        }
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Campo: Precio
+            TextField(
+                value = price,
+                onValueChange = { price = it },
+                label = { Text("Precio (Bs)") },
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Campo: Cantidad
+            TextField(
+                value = quantity,
+                onValueChange = { quantity = it },
+                label = { Text("Cantidad") },
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Campo: Ubicación
+            TextField(
+                value = location,
+                onValueChange = { location = it },
+                label = { Text("Ubicación") },
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Botón: Seleccionar imagen
             Button(onClick = { galleryLauncher.launch("image/*") }) {
                 Text("Seleccionar Imagen")
             }
             Spacer(modifier = Modifier.height(8.dp))
+
+            // Mostrar imagen seleccionada
             imageBitmap?.let { bitmap ->
                 Image(
                     bitmap = bitmap,
@@ -114,31 +211,26 @@ fun AddItemCardVendedor(onAddItem: (Producto) -> Unit) {
                 )
             }
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = sold,
-                    onCheckedChange = { sold = it }
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Vendido")
-            }
-            Spacer(modifier = Modifier.height(8.dp))
+            // Botón: Enviar formulario
             Button(
                 onClick = {
-                    val newItem = Producto(
+                    val newProduct = ProductoReciclable(
                         nombreProducto = name,
                         descripcionProducto = description,
-                        urlImagenProducto = "R.drawable",
-                        fueVendida = sold,
-                        puntosPorCompra = points.toIntOrNull() ?: 0
+                        precio = price.toDoubleOrNull() ?: 0.0,
+                        cantidad = quantity.toIntOrNull() ?: 0,
+                        ubicacionProducto = location,
+                        categoria = selectedCategory?.nombre ?: "",
+                        urlImagenProducto = imageUri.toString()
                     )
-                    onAddItem(newItem)
+                    onSubmit(newProduct)
                 },
-                modifier = Modifier.align(Alignment.End)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                enabled = name.isNotEmpty() && description.isNotEmpty() && selectedCategory != null
             ) {
-                Text("Añadir")
+                Text("Publicar Producto")
             }
         }
     }

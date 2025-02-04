@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.reciclapp.domain.entities.Producto
+import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.usecases.producto.ListarProductosDeVendedorUseCase
 import com.example.reciclapp.domain.usecases.producto.ListarTodosLosProductosUseCase
@@ -42,8 +42,8 @@ class VendedoresViewModel @Inject constructor(
     private val _selectedVendedor = MutableStateFlow<Usuario?>(null)
     val selectedVendedor: StateFlow<Usuario?> = _selectedVendedor
 
-    private val _productos = MutableStateFlow<MutableList<Producto>>(mutableListOf())
-    val productos: StateFlow<MutableList<Producto>> = _productos
+    private val _productos = MutableStateFlow<MutableList<ProductoReciclable>>(mutableListOf())
+    val productos: StateFlow<MutableList<ProductoReciclable>> = _productos
 
     fun fetchVendedorById(idVendedor: Int) {
         viewModelScope.launch {
@@ -68,13 +68,13 @@ class VendedoresViewModel @Inject constructor(
             _productos.value = listarTodosLosProductosUseCase.execute().toMutableList()
         }
     }
-    fun updateLikedProducto(producto: Producto, isLiked: Boolean){
-        viewModelScope.launch { updateLikedProductoUseCase.execute(producto, isLiked) }
+    fun updateLikedProducto(productoReciclable: ProductoReciclable, isLiked: Boolean){
+        viewModelScope.launch { updateLikedProductoUseCase.execute(productoReciclable, isLiked) }
     }
 
-    fun registrarNuevoProducto(producto: Producto) {
+    fun registrarNuevoProducto(productoReciclable: ProductoReciclable) {
         viewModelScope.launch {
-            registrarProductoUseCase.execute(producto)
+            registrarProductoUseCase.execute(productoReciclable)
             _showToast.emit("Producto registrado correctamente") // Emit the toast message
         }
     }

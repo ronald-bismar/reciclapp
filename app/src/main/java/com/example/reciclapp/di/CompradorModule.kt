@@ -9,8 +9,8 @@ import com.example.reciclapp.domain.usecases.comprador.GetCompradoresUseCase
 import com.example.reciclapp.domain.usecases.comprador.HacerOfertaPorMaterialesEnVentaUseCase
 import com.example.reciclapp.domain.usecases.comprador.PublicarListaDeMaterialesQueCompraUseCase
 import com.example.reciclapp.domain.usecases.comprador.VerListaDePublicacionesDeProductosEnVentaUseCase
-import com.example.reciclapp.domain.usecases.material.RegistrarMaterialUseCase
 import com.example.reciclapp.domain.usecases.producto.ListarTodosLosProductosUseCase
+import com.example.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -23,8 +23,8 @@ import javax.inject.Singleton
 object CompradorModule {
     @Singleton
     @Provides
-    fun provideCompradorRepository(service: FirebaseFirestore, registrarMaterialUseCase: RegistrarMaterialUseCase, listarTodosLosProductosUseCase: ListarTodosLosProductosUseCase): CompradorRepository {
-        return CompradorRepositoryImpl(service, registrarMaterialUseCase, listarTodosLosProductosUseCase)
+    fun provideCompradorRepository(service: FirebaseFirestore, registrarProductoUseCase: RegistrarProductoUseCase, listarTodosLosProductosUseCase: ListarTodosLosProductosUseCase): CompradorRepository {
+        return CompradorRepositoryImpl(service, registrarProductoUseCase, listarTodosLosProductosUseCase)
     }
 
     @Provides

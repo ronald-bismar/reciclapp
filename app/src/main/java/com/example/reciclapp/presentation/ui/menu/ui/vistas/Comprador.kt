@@ -79,7 +79,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.Comentario
-import com.example.reciclapp.domain.entities.Material
+import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.ui.registro.ui.showToast
 import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
@@ -391,7 +391,7 @@ fun ComentariosList(comentarios: List<Comentario>) {
 }
 
 @Composable
-fun MaterialList(materiales: List<Material>) {
+fun MaterialList(materiales: List<ProductoReciclable>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -402,7 +402,7 @@ fun MaterialList(materiales: List<Material>) {
             val precio: String = if (it.precio < 1) "${it.precio}0"
             else it.precio.toInt().toString()
             Text(
-                "${it.nombre}: ${it.monedaDeCompra} $precio por ${it.unidadDeMedida}",
+                "${it.nombreProducto}: ${it.monedaDeCompra} $precio por ${it.unidadMedida}",
                 style = MaterialTheme.typography.bodyLarge
             )
         }
