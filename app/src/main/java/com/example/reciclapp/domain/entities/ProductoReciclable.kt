@@ -20,5 +20,5 @@ data class ProductoReciclable(
     var idCategoria: Int = 0
 ) {
     // Constructor sin argumentos necesario para Firebase Firestore
-    constructor() : this(0, "", "", "", 0.0, "", "", 0, "", "", "Bs", "", 0, 0, false, 0, 0)
+    constructor() : this(0, "", "", "", 0.0, "", "", 0, "", "", "Bs", "",0 , 0, false, 0, 0)
 }

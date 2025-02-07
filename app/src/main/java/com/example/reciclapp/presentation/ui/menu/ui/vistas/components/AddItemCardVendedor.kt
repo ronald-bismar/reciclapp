@@ -64,21 +64,20 @@ fun AddItemCardVendedor(
 
     var selectedCategory by remember { mutableStateOf<Categoria?>(null) }
     var selectedProduct by remember { mutableStateOf<String?>(null) }
-    var puntosPorTransaccion by remember { mutableStateOf("") }
     var cantidad by remember { mutableStateOf("") }
     var selectedUnidad by remember { mutableStateOf<String?>(null) }
     var precio by remember { mutableStateOf("") }
-    var puntosPorProducto by remember { mutableStateOf("") }
     var expandedCategory by remember { mutableStateOf(false) }
     var expandedProducts by remember { mutableStateOf(false) }
     var expandedUnidadDeMedida by remember { mutableStateOf(false) }
     var imageUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
     var detalles by remember { mutableStateOf("") }
+    var puntosCalculados by remember { mutableStateOf(0) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp, vertical = 18.dp),
+            .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
 
     ) {
@@ -97,8 +96,7 @@ fun AddItemCardVendedor(
             ) {
                 OutlinedTextField(
                     value = selectedCategory?.nombre ?: "Categoria",
-                    onValueChange = {
-                    },
+                    onValueChange = {},
                     readOnly = true,
                     trailingIcon = {
                         Icon(
@@ -106,14 +104,13 @@ fun AddItemCardVendedor(
                             contentDescription = "expandir",
                             modifier = Modifier.graphicsLayer {
                                 rotationZ = if (expandedCategory) 180f else 0f
-                            },
-                            tint = Color.White
+                            }
                         )
                     },
                     modifier = Modifier
                         .menuAnchor()
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))  // Añadimos clip antes del background
+                        .clip(RoundedCornerShape(12.dp))
                         .background(MaterialTheme.colorScheme.secondary),
                     textStyle = MaterialTheme.typography.bodyLarge.copy(
                         color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Medium
@@ -125,9 +122,7 @@ fun AddItemCardVendedor(
                     onDismissRequest = { expandedCategory = false },
                     modifier = Modifier
                         .exposedDropdownSize()
-                        .background(
-                            color = Color.White,
-                        )
+                        .background(Color.White)
                         .clip(RoundedCornerShape(12.dp))
                 ) {
                     ListOfCategorias.categorias.forEach { categoria ->
@@ -144,13 +139,10 @@ fun AddItemCardVendedor(
                                 selectedProduct = ""
                                 selectedUnidad = ""
                                 expandedCategory = false
+                                puntosCalculados = categoria.calcularPuntosTransaccion(categoria, cantidad.toDoubleOrNull() ?: 0.0)
                             },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
-                            colors = MenuDefaults.itemColors(
-                                textColor = Color(0xFF2C2C2C)
-                            )
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                            colors = MenuDefaults.itemColors(textColor = Color(0xFF2C2C2C))
                         )
                     }
                 }
@@ -224,8 +216,7 @@ fun AddItemCardVendedor(
             }
         }
 
-        TextoPuntosPorTransaccion()
-
+        TextoPuntosPorTransaccion(puntosCalculados)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -242,7 +233,12 @@ fun AddItemCardVendedor(
                 )
                 OutlinedTextField(
                     value = cantidad,
-                    onValueChange = { cantidad = it },
+                    onValueChange = {
+                        cantidad = it
+                        puntosCalculados = selectedCategory?.calcularPuntosTransaccion(
+                            selectedCategory!!, it.toDoubleOrNull() ?: 0.0
+                        ) ?: 0
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     colors = OutlinedTextFieldDefaults.colors(
@@ -257,6 +253,7 @@ fun AddItemCardVendedor(
                         textAlign = TextAlign.Center
                     )
                 )
+
             }
 
             // Columna para "Unidad de medida" (3/4 del espacio)
@@ -374,36 +371,6 @@ fun AddItemCardVendedor(
             )
         }
 
-        // Puntos por compra
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = "Puntos por compra",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(bottom = 4.dp),
-                fontWeight = FontWeight.Medium
-            )
-            OutlinedTextField(
-                value = puntosPorProducto,
-                onValueChange = { puntosPorProducto = it },
-                suffix = { Text("Puntos ") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
-                    focusedBorderColor = MaterialTheme.colorScheme.primary
-                ),
-                shape = RoundedCornerShape(12.dp),
-                textStyle = MaterialTheme.typography.bodyLarge.copy(
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium,
-                )
-            )
-        }
-
         ImagePickerPanel(
             imageUris = imageUris,
             onImagesSelected = { imageUris = it }
@@ -426,7 +393,7 @@ fun AddItemCardVendedor(
                     )
                 },
                 modifier = Modifier.fillMaxWidth(),
-                minLines = 3,
+                minLines = 2,
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color.Transparent, // Borde no enfocado transparente
                     focusedBorderColor = Color.Transparent,   // Borde enfocado transparente
@@ -468,9 +435,9 @@ fun AddItemCardVendedor(
 }
 
 @Composable
-private fun TextoPuntosPorTransaccion() {
+private fun TextoPuntosPorTransaccion(puntos: Int) {
     Text(
-        "30 puntos por transacción!",
+        "$puntos por transacción!",
         modifier = Modifier.fillMaxWidth(),
         textAlign = TextAlign.Center,
         style = MaterialTheme.typography.titleMedium,
@@ -478,6 +445,7 @@ private fun TextoPuntosPorTransaccion() {
         fontSize = 18.sp
     )
 }
+
 
 @Composable
 private fun Titulo() {
@@ -543,6 +511,12 @@ private fun ImagePickerPanel(
         }
     }
 }
+
+fun actualizarPuntos(categoria: Categoria?, cantidad: Int): Int {
+    if (categoria == null) return 0
+    return categoria.calcularPuntosTransaccion(categoria, cantidad.toDouble())
+}
+
 
 @Preview(showBackground = true)
 @Composable
