@@ -250,147 +250,147 @@ fun MaterialPointsList(materials: List<ProductoReciclable>, colors: List<Color>,
 fun DetailedStatisticsScreen() {
     val materials = listOf(
         ProductoReciclable(
-            idProducto = 1,
+            idProducto = "1",
             urlImagenProducto = "url_plasticos.png",
             nombreProducto = "Plásticos",
-            descripcionProducto = "Material reciclable de plásticos.",
+            detallesProducto = "Material reciclable de plásticos.",
             precio = 10.0,
             cantidad = 500,
             unidadMedida = "kg",
             puntosPorCompra = 10,
-            idUsuario = 1
+            idUsuario = "1"
         ),
         ProductoReciclable(
-            idProducto = 2,
+            idProducto = "2",
             urlImagenProducto = "url_metales.png",
             nombreProducto = "Metales",
-            descripcionProducto = "Material reciclable de metales.",
+            detallesProducto = "Material reciclable de metales.",
             precio = 15.0,
             cantidad = 750,
             unidadMedida = "kg",
             puntosPorCompra = 15,
-            idUsuario = 2
+            idUsuario = "2"
         ),
         ProductoReciclable(
-            idProducto = 3,
+            idProducto = "3",
             urlImagenProducto = "url_papeleria.png",
             nombreProducto = "Papelería",
-            descripcionProducto = "Material reciclable de papelería.",
+            detallesProducto = "Material reciclable de papelería.",
             precio = 5.0,
             cantidad = 300,
             unidadMedida = "kg",
             puntosPorCompra = 5,
-            idUsuario = 3
+            idUsuario = "3"
         ),
         ProductoReciclable(
-            idProducto = 4,
+            idProducto = "4",
             urlImagenProducto = "url_vidrieria.png",
             nombreProducto = "Vidriería",
-            descripcionProducto = "Material reciclable de vidriería.",
+            detallesProducto = "Material reciclable de vidriería.",
             precio = 8.0,
             cantidad = 400,
             unidadMedida = "kg",
             puntosPorCompra = 8,
-            idUsuario = 4
+            idUsuario = "4"
         ),
         ProductoReciclable(
-            idProducto = 5,
+            idProducto = "5",
             urlImagenProducto = "url_textiles.png",
             nombreProducto = "Textiles",
-            descripcionProducto = "Material reciclable de textiles.",
+            detallesProducto = "Material reciclable de textiles.",
             precio = 12.0,
             cantidad = 240,
             unidadMedida = "kg",
             puntosPorCompra = 12,
-            idUsuario = 5
+            idUsuario = "5"
         ),
         ProductoReciclable(
-            idProducto = 6,
+            idProducto = "6",
             urlImagenProducto = "url_electronica.png",
             nombreProducto = "Electrónica",
-            descripcionProducto = "Material reciclable de electrónica.",
+            detallesProducto = "Material reciclable de electrónica.",
             precio = 20.0,
             cantidad = 600,
             unidadMedida = "kg",
             puntosPorCompra = 20,
-            idUsuario = 6
+            idUsuario = "6"
         ),
         ProductoReciclable(
-            idProducto = 7,
+            idProducto = "7",
             urlImagenProducto = "url_pilas.png",
             nombreProducto = "Pilas y baterías",
-            descripcionProducto = "Material reciclable de pilas y baterías.",
+            detallesProducto = "Material reciclable de pilas y baterías.",
             precio = 25.0,
             cantidad = 125,
             unidadMedida = "kg",
             puntosPorCompra = 25,
-            idUsuario = 7
+            idUsuario = "7"
         ),
         ProductoReciclable(
-            idProducto = 8,
+            idProducto = "8",
             urlImagenProducto = "url_madera.png",
             nombreProducto = "Madera",
-            descripcionProducto = "Material reciclable de madera.",
+            detallesProducto = "Material reciclable de madera.",
             precio = 7.0,
             cantidad = 140,
             unidadMedida = "kg",
             puntosPorCompra = 7,
-            idUsuario = 8
+            idUsuario = "8"
         ),
         ProductoReciclable(
-            idProducto = 9,
+            idProducto = "9",
             urlImagenProducto = "url_neumaticos.png",
             nombreProducto = "Neumáticos",
-            descripcionProducto = "Material reciclable de neumáticos.",
+            detallesProducto = "Material reciclable de neumáticos.",
             precio = 18.0,
             cantidad = 90,
             unidadMedida = "kg",
             puntosPorCompra = 18,
-            idUsuario = 9
+            idUsuario = "9"
         ),
         ProductoReciclable(
-            idProducto = 10,
+            idProducto = "10",
             urlImagenProducto = "url_residuos.png",
             nombreProducto = "Residuos orgánicos",
-            descripcionProducto = "Material reciclable de residuos orgánicos.",
+            detallesProducto = "Material reciclable de residuos orgánicos.",
             precio = 4.0,
             cantidad = 200,
             unidadMedida = "kg",
             puntosPorCompra = 4,
-            idUsuario = 10
+            idUsuario = "10"
         ),
         ProductoReciclable(
-            idProducto = 11,
+            idProducto = "11",
             urlImagenProducto = "url_aceites.png",
             nombreProducto = "Aceites",
-            descripcionProducto = "Material reciclable de aceites.",
+            detallesProducto = "Material reciclable de aceites.",
             precio = 15.0,
             cantidad = 75,
             unidadMedida = "L",
             puntosPorCompra = 15,
-            idUsuario = 11
+            idUsuario = "11"
         ),
         ProductoReciclable(
-            idProducto = 12,
+            idProducto = "12",
             urlImagenProducto = "url_carton.png",
             nombreProducto = "Cartón",
-            descripcionProducto = "Material reciclable de cartón.",
+            detallesProducto = "Material reciclable de cartón.",
             precio = 5.0,
             cantidad = 25,
             unidadMedida = "kg",
             puntosPorCompra = 5,
-            idUsuario = 12
+            idUsuario = "12"
         ),
         ProductoReciclable(
-            idProducto = 13,
+            idProducto = "13",
             urlImagenProducto = "url_vidrio.png",
             nombreProducto = "Vidrio",
-            descripcionProducto = "Material reciclable de vidrio.",
+            detallesProducto = "Material reciclable de vidrio.",
             precio = 10.0,
             cantidad = 50,
             unidadMedida = "kg",
             puntosPorCompra = 10,
-            idUsuario = 13
+            idUsuario = "13"
         )
     )
 

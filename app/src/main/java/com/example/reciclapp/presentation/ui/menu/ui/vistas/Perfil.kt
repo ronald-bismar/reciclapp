@@ -1,15 +1,12 @@
 package com.example.reciclapp.presentation.ui.menu.ui.vistas
 
-import AddItemCardVendedor
 import android.content.Context
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,6 +62,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.Usuario
@@ -80,14 +78,13 @@ import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Perfil(userViewModel: UserViewModel) {
+fun Perfil(userViewModel: UserViewModel, navControllerMain: NavHostController) {
 
     val userViewModelVendedores: VendedoresViewModel = hiltViewModel()
     val context = LocalContext.current
     val user by userViewModel.user.observeAsState()
     val updateState by userViewModel.updateUserState.observeAsState()
     var showDialog by remember { mutableStateOf(false) }
-    var showAddItemForm by remember { mutableStateOf(false) }
 
     LaunchedEffect(userViewModelVendedores) {
         userViewModelVendedores.showToast.collect { message ->
@@ -114,15 +111,7 @@ fun Perfil(userViewModel: UserViewModel) {
             ProfileActions(onEditClick = { showDialog = true })
             ProfileDetails(user)
             ProfileSettings(user)
-            ProfileNuevoObjetoParaVender(onEditClick = { showAddItemForm = !showAddItemForm })
-            if (showAddItemForm) {
-
-                // Formulario para añadir nuevo objeto vendido
-                AddItemCardVendedor(onSubmit = { newProduct ->
-                    userViewModelVendedores.registrarNuevoProducto(newProduct)
-                    showAddItemForm = false
-                }, modifier = Modifier.padding(10.dp))
-            }
+            ProfileNuevoObjetoParaVender(navControllerMain)
         }
     }
     updateState?.let { result ->
@@ -175,12 +164,13 @@ fun ProfileSettings(user: Usuario) {
 }
 
 @Composable
-fun ProfileNuevoObjetoParaVender(onEditClick: () -> Unit) {
+fun ProfileNuevoObjetoParaVender(navControllerMain: NavHostController) {
     ProfileSection("Nuevo reciclaje para vender")
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         // Botón para añadir nuevo objeto vendido
         Button(
-            onClick = { onEditClick() }, modifier = Modifier.padding(vertical = 16.dp)
+            onClick = { navControllerMain.navigate("AñadirProductoReciclable") {
+            } }, modifier = Modifier.padding(vertical = 16.dp)
         ) {
             Icon(Icons.Default.Add, contentDescription = "Añadir")
             Spacer(modifier = Modifier.width(8.dp))
@@ -271,9 +261,6 @@ fun EditProfileDialog(
     var isLoading by remember { mutableStateOf(false) }
     var showDialogAutorizeChangeUser by remember { mutableStateOf(false) }
     var showDialogChangeUser by remember { mutableStateOf(false) }
-    Log.d("vendedorPerfil", "esVendedor?: ${user.tipoDeUsuario == "vendedor"}")
-    Log.d("vendedorPerfil", "tipoDeUsuario: ${user.tipoDeUsuario}")
-    Log.d("vendedorPerfil", "isVendedor: $isVendedor")
 
     AnimatedTransitionDialog(
         onDismissRequest = onDismiss, contentAlignment = Alignment.Center

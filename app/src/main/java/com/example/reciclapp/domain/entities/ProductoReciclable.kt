@@ -1,9 +1,9 @@
 package com.example.reciclapp.domain.entities
 
 data class ProductoReciclable(
-    var idProducto: Int = 0,
+    var idProducto: String = "",
     var nombreProducto: String = "",
-    var descripcionProducto: String = "",
+    var detallesProducto: String = "",
     var urlImagenProducto: String = "",
     var precio: Double = 0.0,
     var fechaPublicacion: String = "", // Fecha de publicación del producto
@@ -16,9 +16,9 @@ data class ProductoReciclable(
     var puntosPorCompra: Int = 0,
     var meGusta: Int = 0,
     var fueVendida: Boolean = false,
-    var idUsuario: Int = 0,
-    var idCategoria: Int = 0
+    var idUsuario: String = "",
+    var idCategoria: String = ""
 ) {
     // Constructor sin argumentos necesario para Firebase Firestore
-    constructor() : this(0, "", "", "", 0.0, "", "", 0, "", "", "Bs", "",0 , 0, false, 0, 0)
+    constructor() : this("", "", "", "", 0.0, "", "", 0, "", "", "Bs", "",0 , 0, false, "0", "0")
 }

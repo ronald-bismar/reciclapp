@@ -6,7 +6,7 @@ import com.example.reciclapp.domain.entities.UbicacionGPS
 import com.example.reciclapp.domain.entities.Usuario
 
 interface VendedorRepository {
-    suspend fun getVendedor(idVendedor: Int): Usuario?
+    suspend fun getVendedor(idVendedor: String): Usuario?
     suspend fun getVendedores(): MutableList<Usuario>
     suspend fun publicarProducto(productoReciclable: ProductoReciclable, user: Usuario)
     suspend fun verMapaConCompradoresCercanos(ubicacionGPS: UbicacionGPS)

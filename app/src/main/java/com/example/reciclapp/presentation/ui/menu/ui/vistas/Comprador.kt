@@ -90,7 +90,7 @@ private const val REQUEST_CALL_PERMISSION = 1
 @Composable
 fun Comprador(
     mainNavController: NavController,
-    compradorId: Int,
+    compradorId: String,
     compradoresViewModel: CompradoresViewModel = hiltViewModel()
 ) {
     LaunchedEffect(compradorId) {

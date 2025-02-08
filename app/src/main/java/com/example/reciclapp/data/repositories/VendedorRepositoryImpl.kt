@@ -19,7 +19,7 @@ class VendedorRepositoryImpl @Inject constructor(
     private val crearComentarioUseCase: CrearComentarioUseCase
 ) : VendedorRepository {
 
-    override suspend fun getVendedor(idVendedor: Int): Usuario? {
+    override suspend fun getVendedor(idVendedor: String): Usuario? {
         val snapshot = service.collection("usuario")
             .document(idVendedor.toString())
             .get()
@@ -78,7 +78,7 @@ class VendedorRepositoryImpl @Inject constructor(
         }
 
         // Crear un mapa para almacenar la suma de los precios por idComprador
-        val sumasPorComprador = mutableMapOf<Int, Double>()
+        val sumasPorComprador = mutableMapOf<String, Double>()
 
         // Calcular la suma de los precios para cada idComprador
         for (material in materiales) {

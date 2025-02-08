@@ -5,7 +5,7 @@ import com.example.reciclapp.domain.repositories.CompradorRepository
 import javax.inject.Inject
 
 class GetCompradorUseCase @Inject constructor(private val compradorRepository: CompradorRepository) {
-    suspend fun execute(idComprador: Int): Usuario? {
+    suspend fun execute(idComprador: String): Usuario? {
         return compradorRepository.getComprador(idComprador)
     }
 }

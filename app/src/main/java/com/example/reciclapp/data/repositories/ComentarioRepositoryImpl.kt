@@ -15,7 +15,7 @@ class ComentarioRepositoryImpl @Inject constructor(private val service: Firebase
             .await()
     }
 
-    override suspend fun getComentario(idComentario: Int): Comentario {
+    override suspend fun getComentario(idComentario: String): Comentario {
         TODO("Not yet implemented")
     }
 
@@ -23,15 +23,15 @@ class ComentarioRepositoryImpl @Inject constructor(private val service: Firebase
         TODO("Not yet implemented")
     }
 
-    override suspend fun eliminarComentario(idComentario: Int) {
+    override suspend fun eliminarComentario(idComentario: String) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getComentarios(idUsuario: Int): MutableList<Comentario> {
+    override suspend fun getComentarios(idUsuario: String): MutableList<Comentario> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun listarComentariosDeComprador(idComprador: Int): MutableList<Comentario> {
+    override suspend fun listarComentariosDeComprador(idComprador: String): MutableList<Comentario> {
         val comentariosDeComprador = mutableListOf<Comentario>()
         val querySnapshot =
             service.collection("comentario").whereEqualTo("idUsuarioComentado", idComprador).get().await()

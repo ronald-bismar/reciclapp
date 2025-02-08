@@ -19,7 +19,7 @@ class CategoriaRepositoryImpl @Inject constructor(private val service: FirebaseF
         return categorias
     }
 
-    override suspend fun obtenerCategoria(idCategoria: Int): Categoria? {
+    override suspend fun obtenerCategoria(idCategoria: String): Categoria? {
         val categoria = service.collection("categorias").document(idCategoria.toString()).get().await()
         return categoria.toObject(Categoria::class.java)
     }
@@ -50,7 +50,7 @@ class CategoriaRepositoryImpl @Inject constructor(private val service: FirebaseF
         return true
     }
 
-    override suspend fun eliminarCategoria(idCategoria: Int): Boolean {
+    override suspend fun eliminarCategoria(idCategoria: String): Boolean {
         service.collection("categorias").document(idCategoria.toString()).delete().await()
         return true
     }

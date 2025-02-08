@@ -5,7 +5,7 @@ import com.example.reciclapp.domain.repositories.UbicacionGPSRepository
 import javax.inject.Inject
 
 class GetUbicacionDeUsuarioUseCase @Inject constructor(private val ubicacionGPSRepository: UbicacionGPSRepository) {
-    suspend fun execute(idUsuario: Int): UbicacionGPS{
+    suspend fun execute(idUsuario: String): UbicacionGPS{
         return ubicacionGPSRepository.getUbicacionDeUsuario(idUsuario)
     }
 }

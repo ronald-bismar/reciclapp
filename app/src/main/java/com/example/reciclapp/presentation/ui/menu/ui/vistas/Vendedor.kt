@@ -48,7 +48,7 @@ import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 @Composable
 fun Vendedor(
     navController: NavController,
-    vendedorId: Int,
+    vendedorId: String,
     vendedoresViewModel: VendedoresViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -215,7 +215,7 @@ fun SoldItemCard(item: ProductoReciclable) {
         Spacer(modifier = Modifier.width(16.dp))
         Column {
             Text(text = item.nombreProducto, style = MaterialTheme.typography.titleMedium)
-            Text(text = item.descripcionProducto, style = MaterialTheme.typography.bodyMedium)
+            Text(text = item.detallesProducto, style = MaterialTheme.typography.bodyMedium)
             Text(
                 text = "Precio: ${item.monedaDeCompra} ${item.precio}${if (item.precio < 1) '0' else ' '}",
                 style = MaterialTheme.typography.bodySmall

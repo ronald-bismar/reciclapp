@@ -233,7 +233,6 @@ fun CardUser(icon: Int, type: String, isElevated: Boolean, bajarOtroCard: () -> 
                     painter = painterResource(id = icon),
                     contentDescription = null,
                 )
-
             }
         }
     }

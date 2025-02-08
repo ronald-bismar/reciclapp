@@ -67,7 +67,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MapsView(
-    idUsuario: Int,
+    idUsuario: String,
     mainNavController: NavController,
     ubicacionViewModel: UbicacionViewModel = hiltViewModel(),
 ) {

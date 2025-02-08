@@ -6,7 +6,7 @@ import javax.inject.Inject
 class EliminarUsuarioUseCase @Inject constructor(
     private val usuarioRepository: UsuarioRepository
 ) {
-    suspend fun execute(idUsuario: Int) {
+    suspend fun execute(idUsuario: String) {
         usuarioRepository.eliminarUsuario(idUsuario)
     }
 }

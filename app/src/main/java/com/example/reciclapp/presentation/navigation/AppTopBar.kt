@@ -101,7 +101,6 @@ fun AppTopBar(
                     popUpTo(navController.graph.startDestinationId) {
                         saveState = true
                     }
-                    launchSingleTop = true
                     restoreState = true
                 }
             }) {
@@ -148,7 +147,6 @@ fun AppTopBar(
                 modifier = Modifier
                     .width(165.dp)
                     .background(Color.White),
-
             ) {
                 DropdownMenuItems(
                     navController = navController,

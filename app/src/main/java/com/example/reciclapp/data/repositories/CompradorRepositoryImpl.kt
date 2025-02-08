@@ -16,9 +16,9 @@ class CompradorRepositoryImpl @Inject constructor(
     private val listarTodosLosProductosUseCase: ListarTodosLosProductosUseCase
 ) : CompradorRepository {
 
-    override suspend fun getComprador(idComprador: Int): Usuario? {
+    override suspend fun getComprador(idComprador: String): Usuario? {
         val snapshot = service.collection("usuario")
-            .document(idComprador.toString())
+            .document(idComprador)
             .get()
             .await()
         return snapshot.toObject(Usuario::class.java)
@@ -31,7 +31,7 @@ class CompradorRepositoryImpl @Inject constructor(
             .await()
     }
 
-    override suspend fun eliminarComprador(idComprador: Int) {
+    override suspend fun eliminarComprador(idComprador: String) {
         service.collection("usuario")
             .document(idComprador.toString())
             .delete()

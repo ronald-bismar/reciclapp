@@ -12,7 +12,7 @@ class UsuarioRepositoryImpl @Inject constructor(
     private val saveUserPreferencesUseCase: SaveUserPreferencesUseCase
 ) : UsuarioRepository {
 
-    override suspend fun getUsuario(idUsuario: Int): Usuario? {
+    override suspend fun getUsuario(idUsuario: String): Usuario? {
         val snapshot = service.collection("usuario")
             .document(idUsuario.toString())
             .get()
@@ -36,7 +36,7 @@ class UsuarioRepositoryImpl @Inject constructor(
         saveUserPreferencesUseCase.execute(user)
     }
 
-    override suspend fun eliminarUsuario(idUsuario: Int) {
+    override suspend fun eliminarUsuario(idUsuario: String) {
         service.collection("usuario")
             .document(idUsuario.toString())
             .delete()

@@ -21,7 +21,7 @@ import com.example.reciclapp.presentation.ui.menu.ui.vistas.mapa.MapsView
 fun BottomNavHost(
     mainNavController: NavController,
     navHostController: NavHostController,
-    idUsuario: Int
+    idUsuario: String
 
 ) {
     val globalWasteApi = remember { GlobalWasteApi.create() }

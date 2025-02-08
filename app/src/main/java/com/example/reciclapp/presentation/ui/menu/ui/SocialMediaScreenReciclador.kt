@@ -124,7 +124,7 @@ fun CardSocialMediaReciclador(
                 color = Color.Gray
             )
             Text(
-                text = productoReciclable.descripcionProducto,
+                text = productoReciclable.detallesProducto,
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 color = Color.Black

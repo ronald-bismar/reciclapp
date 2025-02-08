@@ -50,17 +50,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.reciclapp.domain.entities.Categoria
 import com.example.reciclapp.domain.entities.ProductoReciclable
+import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 import com.example.reciclapp.util.ListOfCategorias
+import java.util.Date
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddItemCardVendedor(
-    onSubmit: (ProductoReciclable) -> Unit,
-    modifier: Modifier = Modifier
 ) {
+
+    val vendedoresViewModelVendedores: VendedoresViewModel = hiltViewModel()
 
     var selectedCategory by remember { mutableStateOf<Categoria?>(null) }
     var selectedProduct by remember { mutableStateOf<String?>(null) }
@@ -412,14 +416,26 @@ fun AddItemCardVendedor(
             onClick = {
                 // Crear y enviar el producto
                 val producto = ProductoReciclable(
+                    idProducto = UUID.randomUUID().toString(),
                     nombreProducto = selectedProduct ?: "",
-                    descripcionProducto = detalles,
+                    detallesProducto = detalles,
+                    urlImagenProducto = imageUris.firstOrNull()?.toString() ?: "",
                     precio = precio.toDoubleOrNull() ?: 0.0,
+                    fechaPublicacion = Date().toString(),
+                    fechaModificacion = Date().toString(),
                     cantidad = cantidad.toIntOrNull() ?: 0,
                     categoria = selectedCategory?.nombre ?: "",
-                    urlImagenProducto = imageUris.firstOrNull()?.toString() ?: ""
+                    ubicacionProducto = vendedoresViewModelVendedores.selectedVendedor.value?.direccion?: "",
+                    monedaDeCompra = "Bs",
+                    unidadMedida = selectedUnidad ?: "",
+                    puntosPorCompra = puntosCalculados,
+                    meGusta = 0,
+                    fueVendida = false,
+                    idUsuario = vendedoresViewModelVendedores.selectedVendedor.value?.idUsuario?: "0",
+                    idCategoria = selectedCategory?.idCategoria ?: "0"
                 )
-                onSubmit(producto)
+
+                vendedoresViewModelVendedores.registrarNuevoProducto(producto)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -512,14 +528,9 @@ private fun ImagePickerPanel(
     }
 }
 
-fun actualizarPuntos(categoria: Categoria?, cantidad: Int): Int {
-    if (categoria == null) return 0
-    return categoria.calcularPuntosTransaccion(categoria, cantidad.toDouble())
-}
-
 
 @Preview(showBackground = true)
 @Composable
 fun AddItemCardVendedorPreview() {
-    AddItemCardVendedor(onSubmit = {})
+    AddItemCardVendedor()
 }

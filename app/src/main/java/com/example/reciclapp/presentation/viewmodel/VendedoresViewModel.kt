@@ -45,13 +45,13 @@ class VendedoresViewModel @Inject constructor(
     private val _productos = MutableStateFlow<MutableList<ProductoReciclable>>(mutableListOf())
     val productos: StateFlow<MutableList<ProductoReciclable>> = _productos
 
-    fun fetchVendedorById(idVendedor: Int) {
+    fun fetchVendedorById(idVendedor: String) {
         viewModelScope.launch {
             _selectedVendedor.value = getVendedorUseCase.execute(idVendedor)
         }
     }
 
-    fun fetchProductosByVendedor(userId: Int) {
+    fun fetchProductosByVendedor(userId: String) {
         viewModelScope.launch {
             _productos.value = listarProductosDeVendedorUseCase.execute(userId)
         }

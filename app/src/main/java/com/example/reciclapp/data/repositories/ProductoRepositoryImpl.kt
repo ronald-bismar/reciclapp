@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFirestore) :
     ProductoRepository {
-    override suspend fun getProducto(idProducto: Int): ProductoReciclable? {
+    override suspend fun getProducto(idProducto: String): ProductoReciclable? {
         val snapshot = service.collection("productoReciclable")
             .document(idProducto.toString())
             .get()
@@ -30,7 +30,7 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
             .await()
     }
 
-    override suspend fun eliminarProducto(idProducto: Int) {
+    override suspend fun eliminarProducto(idProducto: String) {
         service.collection("productoReciclable")
             .document(idProducto.toString())
             .delete()
@@ -49,7 +49,7 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
         return productoReciclables
     }
 
-    override suspend fun listarProductosPorVendedor(idVendedor: Int): MutableList<ProductoReciclable> {
+    override suspend fun listarProductosPorVendedor(idVendedor: String): MutableList<ProductoReciclable> {
         val productosDeVendedor = mutableListOf<ProductoReciclable>()
         val querySnapshot =
             service.collection("productoReciclable").whereEqualTo("idVendedor", idVendedor).get().await()
@@ -68,7 +68,7 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
             .await()
     }
 
-    override suspend fun listarMaterialesPorComprador(idComprador: Int): MutableList<ProductoReciclable> {
+    override suspend fun listarMaterialesPorComprador(idComprador: String): MutableList<ProductoReciclable> {
         val materiales = mutableListOf<ProductoReciclable>()
         val querySnapshot =
             service.collection("productoReciclable").whereEqualTo("idUsuario", idComprador).get().await()

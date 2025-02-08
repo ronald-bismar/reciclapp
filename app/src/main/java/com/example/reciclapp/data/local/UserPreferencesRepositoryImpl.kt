@@ -18,7 +18,7 @@ val Context.dataStore by preferencesDataStore(name = PREFERENCES_NAME)
 class UserPreferencesRepositoryImpl @Inject constructor(private val context: Context): UserPreferencesRepository {
     private val dataStore = context.dataStore
 
-    private val ID_USUARIO_KEY = intPreferencesKey("id_usuario")
+    private val ID_USUARIO_KEY = stringPreferencesKey("id_usuario")
     private val NOMBRE_KEY = stringPreferencesKey("nombre")
     private val APELLIDO_KEY = stringPreferencesKey("apellido")
     private val TELEFONO_KEY = longPreferencesKey("telefono")
@@ -32,7 +32,7 @@ class UserPreferencesRepositoryImpl @Inject constructor(private val context: Con
     override suspend fun getUser(): Usuario? {
         return try {
             val preferences = context.dataStore.data.first()
-            val id = preferences[ID_USUARIO_KEY] ?: 0
+            val id = preferences[ID_USUARIO_KEY] ?: ""
             val name = preferences[NOMBRE_KEY] ?: ""
             val lastName = preferences[APELLIDO_KEY] ?: ""
             val phone = preferences[TELEFONO_KEY] ?: 0L
@@ -54,7 +54,7 @@ class UserPreferencesRepositoryImpl @Inject constructor(private val context: Con
     // Función para guardar los datos del usuario en DataStore
     override suspend fun saveUser(usuario: Usuario) {
         dataStore.edit { preferences ->
-            preferences[ID_USUARIO_KEY] = usuario.idUsuario ?: 0
+            preferences[ID_USUARIO_KEY] = usuario.idUsuario ?: ""
             preferences[NOMBRE_KEY] = usuario.nombre
             preferences[APELLIDO_KEY] = usuario.apellido
             preferences[TELEFONO_KEY] = usuario.telefono

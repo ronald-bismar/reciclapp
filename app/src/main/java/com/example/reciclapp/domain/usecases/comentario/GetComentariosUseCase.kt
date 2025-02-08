@@ -5,7 +5,7 @@ import com.example.reciclapp.domain.repositories.ComentarioRepository
 import javax.inject.Inject
 
 class GetComentariosUseCase @Inject constructor(private val comentarioRepository: ComentarioRepository) {
-    suspend fun execute(idUsuario: Int): MutableList<Comentario> {
+    suspend fun execute(idUsuario: String): MutableList<Comentario> {
         return comentarioRepository.getComentarios(idUsuario)
     }
 }

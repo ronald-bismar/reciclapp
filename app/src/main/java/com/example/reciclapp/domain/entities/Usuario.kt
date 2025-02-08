@@ -1,7 +1,7 @@
 package com.example.reciclapp.domain.entities
 
 data class Usuario(
-    val idUsuario: Int? = null,
+    val idUsuario: String = "",
     val nombre: String = "",
     val apellido: String = "",
     val telefono: Long = 0L,

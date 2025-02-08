@@ -52,7 +52,7 @@ class UbicacionViewModel @Inject constructor(
     val markers: StateFlow<List<MarkerData>> = _markers
 
     @SuppressLint("MissingPermission")
-    fun getMyCurrentLocation(idUsuario: Int){
+    fun getMyCurrentLocation(idUsuario: String){
         viewModelScope.launch {
             try {
                 val location = fusedLocationClient.lastLocation.await()
@@ -73,7 +73,7 @@ class UbicacionViewModel @Inject constructor(
     }
 
     @SuppressLint("MissingPermission")
-    fun obtenerYGuardarMiUbicacion(idUsuario: Int) {
+    fun obtenerYGuardarMiUbicacion(idUsuario: String) {
         viewModelScope.launch {
             try {
                 val location = fusedLocationClient.lastLocation.await()
@@ -120,7 +120,7 @@ class UbicacionViewModel @Inject constructor(
         }
     }
 
-    fun fetchMyLocation(idUsuario: Int) {
+    fun fetchMyLocation(idUsuario: String) {
         viewModelScope.launch {
             _myLocation.value = getUbicacionDeUsuarioUseCase.execute(idUsuario)
         }

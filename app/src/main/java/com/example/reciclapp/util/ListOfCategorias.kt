@@ -6,7 +6,7 @@ object ListOfCategorias {
 
     val categorias = listOf(
         Categoria(
-            idCategoria = 1,
+            idCategoria = "1",
             nombre = "Plásticos",
             unidadDeMedida = "Kilogramos (kg), Unidades (u)",
             puntosPorTransaccion = 10,
@@ -15,7 +15,7 @@ object ListOfCategorias {
             productosDeCategoria = mutableListOf("PET", "HDPE", "PVC", "LDPE", "PP", "PS")
         ),
         Categoria(
-            idCategoria = 2,
+            idCategoria = "2",
             nombre = "Metales",
             unidadDeMedida = "Kilogramos (kg), Toneladas (t)",
             puntosPorTransaccion = 15,
@@ -24,25 +24,33 @@ object ListOfCategorias {
             productosDeCategoria = mutableListOf("Aluminio", "Acero", "Cobre", "Latón")
         ),
         Categoria(
-            idCategoria = 3,
+            idCategoria = "3",
             nombre = "Papel y Cartón",
             unidadDeMedida = "Kilogramos (kg), Toneladas (t)",
             puntosPorTransaccion = 8,
             factorContaminacion = 0.8,
             descripcionCategoria = "El papel y cartón se usan para embalajes, cuadernos y periódicos. Pueden ser reciclados para producir más papel, cartón o materiales de aislamiento. Al reciclar, el usuario contribuye a reducir la tala de árboles y el desperdicio.",
-            productosDeCategoria = mutableListOf("Papel blanco", "Papel periódico", "Cartón corrugado")
+            productosDeCategoria = mutableListOf(
+                "Papel blanco",
+                "Papel periódico",
+                "Cartón corrugado"
+            )
         ),
         Categoria(
-            idCategoria = 4,
+            idCategoria = "4",
             nombre = "Vidrio",
             unidadDeMedida = "Kilogramos (kg), Unidades (u)",
             puntosPorTransaccion = 12,
             factorContaminacion = 1.1,
             descripcionCategoria = "El vidrio se utiliza en botellas, frascos y ventanas. Puede ser reciclado indefinidamente para fabricar nuevos productos de vidrio. Reciclar vidrio permite al usuario reducir la extracción de materiales y el consumo energético.",
-            productosDeCategoria = mutableListOf("Vidrio transparente", "Vidrio verde", "Vidrio ámbar")
+            productosDeCategoria = mutableListOf(
+                "Vidrio transparente",
+                "Vidrio verde",
+                "Vidrio ámbar"
+            )
         ),
         Categoria(
-            idCategoria = 5,
+            idCategoria = "5",
             nombre = "Orgánicos",
             unidadDeMedida = "Kilogramos (kg), Litros (l)",
             puntosPorTransaccion = 5,
@@ -51,7 +59,7 @@ object ListOfCategorias {
             productosDeCategoria = mutableListOf("Restos de alimentos", "Restos de jardinería")
         ),
         Categoria(
-            idCategoria = 6,
+            idCategoria = "6",
             nombre = "Textiles",
             unidadDeMedida = "Kilogramos (kg), Piezas (u)",
             puntosPorTransaccion = 10,
@@ -60,7 +68,7 @@ object ListOfCategorias {
             productosDeCategoria = mutableListOf("Algodón", "Poliéster", "Mezclilla", "Lana")
         ),
         Categoria(
-            idCategoria = 7,
+            idCategoria = "7",
             nombre = "Electrónicos",
             unidadDeMedida = "Unidades (u), Kilogramos (kg)",
             puntosPorTransaccion = 20,
@@ -69,7 +77,7 @@ object ListOfCategorias {
             productosDeCategoria = mutableListOf("Celulares", "Computadoras", "Electrodomésticos")
         ),
         Categoria(
-            idCategoria = 8,
+            idCategoria = "8",
             nombre = "Madera",
             unidadDeMedida = "Kilogramos (kg), Metros cúbicos (m³)",
             puntosPorTransaccion = 7,
@@ -78,7 +86,7 @@ object ListOfCategorias {
             productosDeCategoria = mutableListOf("Pallets", "Restos de muebles", "Madera tratada")
         ),
         Categoria(
-            idCategoria = 9,
+            idCategoria = "9",
             nombre = "Otros",
             unidadDeMedida = "Unidades (u), Kilogramos (kg)",
             puntosPorTransaccion = 5,

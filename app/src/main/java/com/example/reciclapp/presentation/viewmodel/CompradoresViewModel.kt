@@ -63,19 +63,19 @@ class CompradoresViewModel @Inject constructor(
         }
     }
 
-    fun fetchCompradorById(idComprador: Int) {
+    fun fetchCompradorById(idComprador: String) {
         viewModelScope.launch {
             _selectedComprador.value = getCompradorUseCase.execute(idComprador) ?: Usuario()
         }
     }
 
-    fun fetchMaterialesByComprador(idComprador: Int) {
+    fun fetchMaterialesByComprador(idComprador: String) {
         viewModelScope.launch {
             _materiales.value = listarMaterialesPorCompradorUseCase.execute(idComprador)
         }
     }
 
-    fun fetchComentariosByComprador(idComprador: Int) {
+    fun fetchComentariosByComprador(idComprador: String) {
         viewModelScope.launch {
             _comentarios.value = listarComentariosDeCompradorUseCase.execute(idComprador)
         }

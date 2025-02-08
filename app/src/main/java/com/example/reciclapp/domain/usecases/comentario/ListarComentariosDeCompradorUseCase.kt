@@ -5,7 +5,7 @@ import com.example.reciclapp.domain.repositories.ComentarioRepository
 import javax.inject.Inject
 
 class ListarComentariosDeCompradorUseCase@Inject constructor(private val comentarioRepository: ComentarioRepository) {
-    suspend fun execute(idComprador: Int): MutableList<Comentario>{
+    suspend fun execute(idComprador: String): MutableList<Comentario>{
         return comentarioRepository.listarComentariosDeComprador(idComprador)
     }
 }

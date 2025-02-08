@@ -113,7 +113,7 @@ fun NavGraph(
         }
 
         composable("perfil") {
-            Perfil(userViewModel = userViewModel)
+            Perfil(userViewModel = userViewModel, mainNavController)
         }
         composable("tipoDeUsuario") {
             UserTypeScreen(mainNavController)
@@ -122,14 +122,14 @@ fun NavGraph(
             route = "compradorPerfil/{userId}",
             arguments = listOf(navArgument("userId") { type = NavType.IntType })
         ) { backStackEntry ->
-            val userId = backStackEntry.arguments?.getInt("userId") ?: 0
+            val userId = backStackEntry.arguments?.getString("userId") ?: ""
             Comprador(mainNavController = mainNavController, compradorId = userId)
         }
         composable(
             route = "vendedorPerfil/{userId}",
             arguments = listOf(navArgument("userId") { type = NavType.IntType })
         ) { backStackEntry ->
-            val userId = backStackEntry.arguments?.getInt("userId") ?: 0
+            val userId = backStackEntry.arguments?.getString("userId") ?: ""
             Vendedor(navController = mainNavController, vendedorId = userId)
         }
         composable("map") {
@@ -138,7 +138,7 @@ fun NavGraph(
             }
         }
         composable("AñadirProductoReciclable") {
-            AddItemCardVendedor ({})
+            AddItemCardVendedor ()
         }
     }
 }

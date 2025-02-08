@@ -32,14 +32,14 @@ class UbicacionGPSRepositoryImpl @Inject constructor(
             .await()
     }
 
-    override suspend fun getUbicacionDeUsuario(idUsuario: Int): UbicacionGPS {
+    override suspend fun getUbicacionDeUsuario(idUsuario: String): UbicacionGPS {
         val querySnapshot =
             service.collection("ubicacionGPS").whereEqualTo("idUsuario", idUsuario).get().await()
         val ubicacionGPS = querySnapshot.documents.firstOrNull()?.toObject(UbicacionGPS::class.java)
         return ubicacionGPS ?: UbicacionGPS()
     }
 
-    override suspend fun deleteUbicacion(idUbicacion: Int) {
+    override suspend fun deleteUbicacion(idUbicacion: String) {
         service.collection("ubicacionGPS")
             .document(idUbicacion.toString())
             .delete()
