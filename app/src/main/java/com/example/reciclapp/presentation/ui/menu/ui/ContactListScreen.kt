@@ -1,5 +1,6 @@
 package com.example.reciclapp.presentation.ui.menu.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,6 +49,9 @@ fun ContactListScreen(
     } else {
         userViewModel.compradores.collectAsState().value
     }
+
+    Log.d("ContactListScreen", "Vendedores: ${userViewModel.vendedores.collectAsState().value}")
+    Log.d("ContactListScreen", "Compradores: ${userViewModel.compradores.collectAsState().value}")
 
     Column(
         modifier = Modifier
@@ -99,5 +103,14 @@ fun ContactListScreen(
                 }
             }
         }
+    }
+
+    @Composable
+    fun mensajeListaVacia(textoUsuario: String){
+        Text(
+            text = "No se encontraron $textoUsuario cercanos",
+            fontSize = 24.sp,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
     }
 }

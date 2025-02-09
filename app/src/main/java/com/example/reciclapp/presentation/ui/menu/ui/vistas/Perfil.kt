@@ -3,6 +3,7 @@ package com.example.reciclapp.presentation.ui.menu.ui.vistas
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -80,6 +81,8 @@ import java.util.Locale
 @Composable
 fun Perfil(userViewModel: UserViewModel, navControllerMain: NavHostController) {
 
+    Log.d("PerfilEncontrado", "Perfil usuario")
+
     val userViewModelVendedores: VendedoresViewModel = hiltViewModel()
     val context = LocalContext.current
     val user by userViewModel.user.observeAsState()
@@ -93,6 +96,8 @@ fun Perfil(userViewModel: UserViewModel, navControllerMain: NavHostController) {
     }
 
     user?.let { user ->
+
+        Log.d("User, Perfil", user.toString())
         if (showDialog) {
             EditProfileDialog(
                 onDismiss = { showDialog = false },
@@ -169,8 +174,10 @@ fun ProfileNuevoObjetoParaVender(navControllerMain: NavHostController) {
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         // Botón para añadir nuevo objeto vendido
         Button(
-            onClick = { navControllerMain.navigate("AñadirProductoReciclable") {
-            } }, modifier = Modifier.padding(vertical = 16.dp)
+            onClick = {
+                navControllerMain.navigate("AñadirProductoReciclable") {
+                }
+            }, modifier = Modifier.padding(vertical = 16.dp)
         ) {
             Icon(Icons.Default.Add, contentDescription = "Añadir")
             Spacer(modifier = Modifier.width(8.dp))
@@ -288,18 +295,17 @@ fun EditProfileDialog(
                 }
             )
         } else if (showDialogChangeUser) {
-            DialogChangeType(isVendedor,userViewModel::onIsVendedorChanged
-                , onBackPressed = {
-                    showDialogChangeUser = false
-                }, onUpdateUserKind = {
-                    isLoading = true
-                    val dataUpdateUser = user.copy(
-                        tipoDeUsuario = if (isVendedor) "vendedor" else "comprador",
-                    )
-                    userViewModel.updateUser(dataUpdateUser)
-                    isLoading = false
-                    showDialogChangeUser = false
-                })
+            DialogChangeType(isVendedor, userViewModel::onIsVendedorChanged, onBackPressed = {
+                showDialogChangeUser = false
+            }, onUpdateUserKind = {
+                isLoading = true
+                val dataUpdateUser = user.copy(
+                    tipoDeUsuario = if (isVendedor) "vendedor" else "comprador",
+                )
+                userViewModel.updateUser(dataUpdateUser)
+                isLoading = false
+                showDialogChangeUser = false
+            })
         } else {
             Box(
                 modifier = Modifier
@@ -406,17 +412,17 @@ fun EditProfileContent(
                 singleLine = true,
                 label = { Text("Email") })
             Spacer(modifier = Modifier.height(20.dp))
-           /* Text(text = "Cambiar tipo de usuario",
-                color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 18.sp,
-                modifier = Modifier
-                    .background(
-                        MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(10.dp)
-                    )
-                    .padding(8.dp)
-                    .clickable { showDialogChangeUser() })
+            /* Text(text = "Cambiar tipo de usuario",
+                 color = MaterialTheme.colorScheme.onSurface,
+                 fontSize = 18.sp,
+                 modifier = Modifier
+                     .background(
+                         MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(10.dp)
+                     )
+                     .padding(8.dp)
+                     .clickable { showDialogChangeUser() })
 
-            */
+             */
         }
     }
 }
@@ -491,6 +497,7 @@ fun DialogChangeType(
         }
     }
 }
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun VerifyEmailAndCorreoForChangeType(
@@ -581,6 +588,6 @@ fun VerifyEmailAndCorreoForChangeType(
             ) {
                 Text("Verificar", style = TextStyle(fontSize = 18.sp))
             }
-         }
-       }
+        }
+    }
 }
