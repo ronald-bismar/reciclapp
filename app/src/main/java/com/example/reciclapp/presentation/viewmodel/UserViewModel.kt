@@ -28,7 +28,6 @@ class UserViewModel @Inject constructor(
     private val getCompradoresUseCase: GetCompradoresUseCase,
 ) : ViewModel() {
 
-
     private val _user = MutableLiveData<Usuario?>()
     val user: LiveData<Usuario?> get() = _user
 

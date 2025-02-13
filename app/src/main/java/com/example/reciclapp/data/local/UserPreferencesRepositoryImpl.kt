@@ -1,6 +1,7 @@
 package com.example.reciclapp.data.local
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -30,6 +31,7 @@ class UserPreferencesRepositoryImpl @Inject constructor(private val context: Con
 
 
     override suspend fun getUser(): Usuario? {
+        Log.d("UserPreferencesRepository", "Obteniendo usuario")
         return try {
             val preferences = context.dataStore.data.first()
             val id = preferences[ID_USUARIO_KEY] ?: ""
@@ -46,6 +48,7 @@ class UserPreferencesRepositoryImpl @Inject constructor(private val context: Con
                 id, name,lastName, phone, email, password, direccion, urlImagenPerfil, tipoUsuario
             )
         } catch (e: Exception) {
+            Log.e("UserPreferencesRepository", "Error al obtener el usuario: ${e.message}")
             e.printStackTrace()
             null
         }
@@ -53,8 +56,9 @@ class UserPreferencesRepositoryImpl @Inject constructor(private val context: Con
 
     // Función para guardar los datos del usuario en DataStore
     override suspend fun saveUser(usuario: Usuario) {
+        Log.d("UserPreferencesRepository", "Guardando usuario: $usuario")
         dataStore.edit { preferences ->
-            preferences[ID_USUARIO_KEY] = usuario.idUsuario ?: ""
+            preferences[ID_USUARIO_KEY] = usuario.idUsuario
             preferences[NOMBRE_KEY] = usuario.nombre
             preferences[APELLIDO_KEY] = usuario.apellido
             preferences[TELEFONO_KEY] = usuario.telefono

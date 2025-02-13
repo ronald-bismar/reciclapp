@@ -374,14 +374,14 @@ fun ImpactoAmbiental() {
                 horizontalArrangement = Arrangement.Center
             ) {
                 repeat(3) { index ->
-                    val infiniteTransition = rememberInfiniteTransition()
+                    val infiniteTransition = rememberInfiniteTransition(label = "")
                     val translateY by infiniteTransition.animateFloat(
                         initialValue = 0f,
                         targetValue = -10f,
                         animationSpec = infiniteRepeatable(
                             animation = tween(1000, delayMillis = index * 200),
                             repeatMode = RepeatMode.Reverse
-                        )
+                        ), label = ""
                     )
 
                     Icon(

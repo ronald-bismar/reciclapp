@@ -17,6 +17,7 @@ class CompradorRepositoryImpl @Inject constructor(
 ) : CompradorRepository {
 
     override suspend fun getComprador(idComprador: String): Usuario? {
+        Log.d("Usuarios","idComprador: $idComprador")
         val snapshot = service.collection("usuario")
             .document(idComprador)
             .get()

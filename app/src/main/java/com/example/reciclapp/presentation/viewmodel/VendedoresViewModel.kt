@@ -1,5 +1,6 @@
 package com.example.reciclapp.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -33,7 +34,7 @@ class VendedoresViewModel @Inject constructor(
     val showToast: SharedFlow<String> =_showToast
 
     init {
-        /* loadUserPreferences()*/
+        loadUserPreferences()
     }
 
     private val _user = MutableLiveData<Usuario?>()
@@ -59,9 +60,11 @@ class VendedoresViewModel @Inject constructor(
 
     private fun loadUserPreferences() {
         viewModelScope.launch {
-            _user.value = getUserPreferencesUseCase.execute()
+            val usuario = getUserPreferencesUseCase.execute()
+            _user.postValue(usuario)
         }
     }
+
 
     fun fetchAllProducts() {
         viewModelScope.launch {
@@ -73,6 +76,7 @@ class VendedoresViewModel @Inject constructor(
     }
 
     fun registrarNuevoProducto(productoReciclable: ProductoReciclable) {
+        Log.d("VendedoresViewModel", "Registrando nuevo producto: $productoReciclable")
         viewModelScope.launch {
             registrarProductoUseCase.execute(productoReciclable)
             _showToast.emit("Producto registrado correctamente") // Emit the toast message

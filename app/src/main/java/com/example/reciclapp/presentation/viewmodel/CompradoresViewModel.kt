@@ -58,8 +58,8 @@ class CompradoresViewModel @Inject constructor(
 
     private fun loadMyUserPreferences() {
         viewModelScope.launch {
-            val user = getUserPreferencesUseCase.execute()
-            _myUser.value = user ?: Usuario() // Asigna un usuario vacío si es nulo
+            val usuario = getUserPreferencesUseCase.execute()
+            _myUser.postValue(usuario)
         }
     }
 

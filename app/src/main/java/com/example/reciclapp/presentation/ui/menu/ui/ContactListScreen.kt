@@ -91,6 +91,8 @@ fun ContactListScreen(
                             } else {
                                 "compradorPerfil/${usuario.idUsuario}"
                             }
+                            Log.d("ProfileRoute", "Comprador: $profileRoute")
+
                             navController.navigate(profileRoute)
                         },
                         sendMessage = {

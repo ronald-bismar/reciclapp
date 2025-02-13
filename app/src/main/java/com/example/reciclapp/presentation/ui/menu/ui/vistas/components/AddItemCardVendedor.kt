@@ -425,13 +425,13 @@ fun AddItemCardVendedor(
                     fechaModificacion = Date().toString(),
                     cantidad = cantidad.toIntOrNull() ?: 0,
                     categoria = selectedCategory?.nombre ?: "",
-                    ubicacionProducto = vendedoresViewModelVendedores.selectedVendedor.value?.direccion?: "",
+                    ubicacionProducto = vendedoresViewModelVendedores.user.value?.direccion?: "",
                     monedaDeCompra = "Bs",
                     unidadMedida = selectedUnidad ?: "",
                     puntosPorCompra = puntosCalculados,
                     meGusta = 0,
                     fueVendida = false,
-                    idUsuario = vendedoresViewModelVendedores.selectedVendedor.value?.idUsuario?: "0",
+                    idUsuario = vendedoresViewModelVendedores.user.value?.idUsuario?: "0",
                     idCategoria = selectedCategory?.idCategoria ?: "0"
                 )
 

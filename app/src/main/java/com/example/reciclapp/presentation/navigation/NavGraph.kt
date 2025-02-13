@@ -120,14 +120,14 @@ fun NavGraph(
         }
         composable(
             route = "compradorPerfil/{userId}",
-            arguments = listOf(navArgument("userId") { type = NavType.IntType })
+            arguments = listOf(navArgument("userId") { type = NavType.StringType })
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId") ?: ""
             Comprador(mainNavController = mainNavController, compradorId = userId)
         }
         composable(
             route = "vendedorPerfil/{userId}",
-            arguments = listOf(navArgument("userId") { type = NavType.IntType })
+            arguments = listOf(navArgument("userId") { type = NavType.StringType })
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId") ?: ""
             Vendedor(navController = mainNavController, vendedorId = userId)
