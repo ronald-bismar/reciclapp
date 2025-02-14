@@ -138,7 +138,7 @@ fun NavGraph(
             }
         }
         composable("AñadirProductoReciclable") {
-            AddItemCardVendedor ()
+            AddItemCardVendedor (mainNavController)
         }
     }
 }

@@ -14,7 +14,7 @@ class UsuarioRepositoryImpl @Inject constructor(
 
     override suspend fun getUsuario(idUsuario: String): Usuario? {
         val snapshot = service.collection("usuario")
-            .document(idUsuario.toString())
+            .document(idUsuario)
             .get()
             .await()
         return snapshot.toObject(Usuario::class.java)
@@ -22,14 +22,14 @@ class UsuarioRepositoryImpl @Inject constructor(
 
     override suspend fun registrarUsuario(user: Usuario) {
         service.collection("usuario")
-            .document(user.idUsuario.toString())
+            .document(user.idUsuario)
             .set(user)
             .await()
     }
 
     override suspend fun actualizarUsuario(user: Usuario) {
         service.collection("usuario")
-            .document(user.idUsuario.toString())
+            .document(user.idUsuario)
             .set(user)
             .await()
 
