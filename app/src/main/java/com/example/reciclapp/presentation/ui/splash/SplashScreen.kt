@@ -72,7 +72,7 @@ fun SplashScreenContent(onTimeout: () -> Unit) {
             modifier = Modifier.fillMaxSize()
         )
         LaunchedEffect(Unit) {
-            delay(2600)
+            delay(2000)
             onTimeout()
         }
         Text(text = "NextMacroSystem 2024-2025", modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 16.dp))
