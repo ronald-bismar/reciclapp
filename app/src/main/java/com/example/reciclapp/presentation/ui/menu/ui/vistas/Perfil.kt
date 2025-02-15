@@ -81,8 +81,6 @@ import java.util.Locale
 @Composable
 fun Perfil(userViewModel: UserViewModel, navControllerMain: NavHostController) {
 
-    Log.d("PerfilEncontrado", "Perfil usuario")
-
     val userViewModelVendedores: VendedoresViewModel = hiltViewModel()
     val context = LocalContext.current
     val user by userViewModel.user.observeAsState()
@@ -171,18 +169,31 @@ fun ProfileSettings(user: Usuario) {
 @Composable
 fun ProfileNuevoObjetoParaVender(navControllerMain: NavHostController) {
     ProfileSection("Nuevo reciclaje para vender")
-    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-        // Botón para añadir nuevo objeto vendido
-        Button(
-            onClick = {
-                navControllerMain.navigate("AñadirProductoReciclable") {
-                }
-            }, modifier = Modifier.padding(vertical = 16.dp)
-        ) {
-            Icon(Icons.Default.Add, contentDescription = "Añadir")
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Añadir Nuevo Reciclaje Para Vender")
-        }
+    Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), contentAlignment = Alignment.Center) {
+       Column {
+           // Botón para añadir nuevo objeto vendido
+           Button(
+               onClick = {
+                   navControllerMain.navigate("AñadirProductoReciclable") {
+                   }
+               }, modifier = Modifier.padding(vertical = 16.dp).fillMaxWidth()
+           ) {
+               Icon(Icons.Default.Add, contentDescription = "Añadir")
+               Spacer(modifier = Modifier.width(8.dp))
+               Text("Añadir Nuevo Reciclaje Para Vender")
+           }
+           // Botón para aver mis productos reciclables
+           Button(
+               onClick = {
+                   navControllerMain.navigate("MyProductsScreen") {
+                   }
+               }, modifier = Modifier.padding(vertical = 16.dp).fillMaxWidth()
+           ) {
+               Icon(painter = painterResource(id = R.drawable.ic_leaf), contentDescription = "Ver mis productos reciclables")
+               Spacer(modifier = Modifier.width(8.dp))
+               Text("Mis productos")
+           }
+       }
     }
 
 }
