@@ -11,4 +11,5 @@ data class Usuario(
     var urlImagenPerfil: String = "",
     var tipoDeUsuario: String = "", // Comprador o Vendedor
     val puntaje: Int = 0,
+    var nombreNivel: String = "",
 )

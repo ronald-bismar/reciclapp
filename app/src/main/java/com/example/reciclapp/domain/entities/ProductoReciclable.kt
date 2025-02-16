@@ -20,5 +20,28 @@ data class ProductoReciclable(
     var idCategoria: String = ""
 ) {
     // Constructor sin argumentos necesario para Firebase Firestore
-    constructor() : this("", "", "", "", 0.0, "", "", 0, "", "", "Bs", "",0 , 0, false, "0", "0")
+    constructor() : this("", "", "", "", 0.0, "", "", 0, "", "", "Bs", "", 0, 0, false, "0", "0")
+
+    // Sobrescribir el método toString()
+    override fun toString(): String {
+        return """
+            ProductoReciclable(
+                idProducto = $idProducto,
+                nombreProducto = $nombreProducto,
+                detallesProducto = $detallesProducto,
+                urlImagenProducto = $urlImagenProducto,
+                precio = $precio $monedaDeCompra,
+                fechaPublicacion = $fechaPublicacion,
+                fechaModificacion = $fechaModificacion,
+                cantidad = $cantidad $unidadMedida,
+                categoria = $categoria,
+                ubicacionProducto = $ubicacionProducto,
+                puntosPorCompra = $puntosPorCompra puntos,
+                meGusta = $meGusta,
+                fueVendida = ${if (fueVendida) "Sí" else "No"},
+                idUsuario = $idUsuario,
+                idCategoria = $idCategoria
+            )
+        """.trimIndent()
+    }
 }

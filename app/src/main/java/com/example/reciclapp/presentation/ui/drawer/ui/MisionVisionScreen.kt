@@ -23,7 +23,7 @@ fun MisionVisionScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
-                .verticalScroll(rememberScrollState()) // Permite desplazamiento vertical
+                .verticalScroll(rememberScrollState())
         ) {
             // Título principal
             Text(

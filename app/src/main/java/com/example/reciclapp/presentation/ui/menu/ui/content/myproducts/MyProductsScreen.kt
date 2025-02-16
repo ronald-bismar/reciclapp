@@ -1,5 +1,6 @@
 package com.example.reciclapp.presentation.ui.menu.ui.content.myproducts
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -23,15 +24,25 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.reciclapp.domain.entities.ProductoReciclable
+import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 
 @Composable
 fun MyProductsScreen(mainNavController: NavHostController) {
 
+    val vendedoresViewModel: VendedoresViewModel = hiltViewModel()
+    val context = LocalContext.current
+    LaunchedEffect(vendedoresViewModel.user.value) {
+        vendedoresViewModel.user.value?.let { vendedoresViewModel.fetchProductosByVendedor(it.idUsuario) }
+    }
+
+    val productosDelVendedor = vendedoresViewModel.productos.collectAsState().value
 
     var showStats by remember { mutableStateOf(true) }
 
@@ -76,18 +87,15 @@ fun MyProductsScreen(mainNavController: NavHostController) {
                     )
                 }
 
-                // Estadísticas
                 item {
                     EstadisticasCard(showStats = showStats, onToggle = { showStats = !showStats })
                 }
 
-                // Tip del día
                 item {
                     DailyTip()
                 }
 
-                // Lista de productos
-                items(productosEjemplo) { producto ->
+                items(productosDelVendedor) { producto ->
                     TarjetaProducto(producto)
                 }
             }
@@ -294,7 +302,6 @@ fun DailyTip(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TarjetaProducto(producto: ProductoReciclable) {
     ElevatedCard(
@@ -310,7 +317,7 @@ fun TarjetaProducto(producto: ProductoReciclable) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Imagen del producto
+
                 Image(
                     painter = rememberAsyncImagePainter(producto.urlImagenProducto),
                     contentDescription = producto.nombreProducto,
@@ -321,7 +328,6 @@ fun TarjetaProducto(producto: ProductoReciclable) {
                 )
 
                 Column(
-                    modifier = Modifier.weight(1f)
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -329,7 +335,6 @@ fun TarjetaProducto(producto: ProductoReciclable) {
                         verticalAlignment = Alignment.Top
                     ) {
                         Column(
-                            modifier = Modifier.weight(1f)
                         ) {
                             Text(
                                 text = producto.nombreProducto,
@@ -359,31 +364,6 @@ fun TarjetaProducto(producto: ProductoReciclable) {
                             }
                         }
                     }
-
-                    // Detalles con iconos
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        ProductoDetalle(
-                            icon = Icons.Outlined.Scale,
-                            texto = "${producto.cantidad} ${producto.unidadMedida}"
-                        )
-                        ProductoDetalle(
-                            icon = Icons.Outlined.LocationOn,
-                            texto = producto.ubicacionProducto
-                        )
-                        ProductoDetalle(
-                            icon = Icons.Outlined.CalendarToday,
-                            texto = producto.fechaPublicacion
-                        )
-                        ProductoDetalle(
-                            icon = Icons.Outlined.Favorite,
-                            texto = "${producto.meGusta}"
-                        )
-                    }
                 }
             }
 
@@ -412,6 +392,30 @@ fun TarjetaProducto(producto: ProductoReciclable) {
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.tertiary
+                )
+            }
+            // Detalles con iconos
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                ProductoDetalle(
+                    icon = Icons.Outlined.Scale,
+                    texto = "${producto.cantidad} ${producto.unidadMedida}"
+                )
+                ProductoDetalle(
+                    icon = Icons.Outlined.LocationOn,
+                    texto = producto.ubicacionProducto
+                )
+                ProductoDetalle(
+                    icon = Icons.Outlined.CalendarToday,
+                    texto = producto.fechaPublicacion
+                )
+                ProductoDetalle(
+                    icon = Icons.Outlined.Favorite,
+                    texto = "${producto.meGusta}"
                 )
             }
         }
@@ -563,7 +567,7 @@ private val productosEjemplo = listOf(
         idProducto = "8",
         nombreProducto = "Madera Recuperada",
         detallesProducto = "Madera limpia y en buen estado, ideal para reutilización",
-        urlImagenProducto = "https://example.com/madera.jpg",
+        urlImagenProducto = "https://images.unsplash.com/photo-1739382446038-184e72fdc427?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw2fHx8ZW58MHx8fHx8",
         precio = 30.00,
         fechaPublicacion = "10/08/2025",
         cantidad = 70,
