@@ -12,4 +12,5 @@ interface ProductoRepository {
     suspend fun updateLikedProducto(productoReciclable: ProductoReciclable, isLiked: Boolean)
     suspend fun listarMaterialesPorComprador(idComprador: String): MutableList<ProductoReciclable>
     suspend fun registrarProductos(materiales: List<ProductoReciclable>)
+    suspend fun obtenerProductosActivos(idVendedor: String): MutableList<ProductoReciclable>
 }

@@ -94,5 +94,22 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
             throw e
         }
     }
+    override suspend fun obtenerProductosActivos(idVendedor: String): MutableList<ProductoReciclable> {
+        val productosDeVendedor = mutableListOf<ProductoReciclable>()
+
+        // Consulta Firestore con dos condiciones: idVendedor y fueVendida = false
+        val querySnapshot = service.collection("productoReciclable")
+            .whereEqualTo("idVendedor", idVendedor)
+            .whereEqualTo("fueVendida", false)
+            .get()
+            .await()
+
+        for (document in querySnapshot.documents) {
+            val productoReciclable = document.toObject(ProductoReciclable::class.java)
+            productoReciclable?.let { productosDeVendedor.add(it) }
+        }
+
+        return productosDeVendedor
+    }
 
 }

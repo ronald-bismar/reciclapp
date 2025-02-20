@@ -11,6 +11,7 @@ import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.usecases.producto.ListarProductosDeVendedorUseCase
 import com.example.reciclapp.domain.usecases.producto.ListarTodosLosProductosUseCase
+import com.example.reciclapp.domain.usecases.producto.ObtenerProductosActivosUseCase
 import com.example.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
 import com.example.reciclapp.domain.usecases.producto.UpdateLikedProductoUseCase
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
@@ -31,7 +32,8 @@ class VendedoresViewModel @Inject constructor(
     private val getUserPreferencesUseCase: GetUserPreferencesUseCase,
     private val listarTodosLosProductosUseCase: ListarTodosLosProductosUseCase,
     private val updateLikedProductoUseCase: UpdateLikedProductoUseCase,
-    private val registrarProductoUseCase: RegistrarProductoUseCase
+    private val registrarProductoUseCase: RegistrarProductoUseCase,
+    private val obtenerProductosActivosUseCase: ObtenerProductosActivosUseCase
 ) : ViewModel() {
     private val _showToast = MutableSharedFlow<String>()
     val showToast: SharedFlow<String> = _showToast
@@ -49,6 +51,12 @@ class VendedoresViewModel @Inject constructor(
     private val _productos = MutableStateFlow<MutableList<ProductoReciclable>>(mutableListOf())
     val productos: StateFlow<MutableList<ProductoReciclable>> = _productos
 
+    private val _productosActivos = MutableStateFlow(0)
+    val productosActivos: StateFlow<Int> = _productosActivos
+
+    private val _cantidadMeGustasEnProductos = MutableStateFlow(0)
+    val cantidadMeGustasEnProductos: StateFlow<Int> = _cantidadMeGustasEnProductos
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
@@ -61,6 +69,7 @@ class VendedoresViewModel @Inject constructor(
     fun fetchProductosByVendedor(userId: String) {
         viewModelScope.launch {
             _productos.value = listarProductosDeVendedorUseCase.execute(userId)
+            contarProductosActivos()
         }
     }
 
@@ -114,6 +123,25 @@ class VendedoresViewModel @Inject constructor(
             } finally {
                 _isLoading.value = false
             }
+        }
+    }
+
+    fun contarProductosActivos(){
+        viewModelScope.launch {
+            Log.d("VendedoresViewModel", "Productos ${_productos.value}")
+
+
+            _productosActivos.value = _productos.value.filter { !it.fueVendida }.size
+
+            Log.d("VendedoresViewModel", "Productos activos: ${_productosActivos.value}")
+        }
+    }
+
+    fun contarCantidadDeProductos(){
+        viewModelScope.launch {
+            _cantidadMeGustasEnProductos.value = _productos.value.map { it.meGusta }.sum()
+            Log.d("VendedoresViewModel", "Cantidad de me gustas: ${_productosActivos.value}")
+
         }
     }
 }

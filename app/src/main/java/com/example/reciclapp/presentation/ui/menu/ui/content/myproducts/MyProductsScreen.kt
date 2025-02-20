@@ -1,6 +1,5 @@
 package com.example.reciclapp.presentation.ui.menu.ui.content.myproducts
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -43,6 +42,10 @@ fun MyProductsScreen(mainNavController: NavHostController) {
     }
 
     val productosDelVendedor = vendedoresViewModel.productos.collectAsState().value
+
+    val productosActivosDelVendedor = vendedoresViewModel.productosActivos.collectAsState().value
+
+    val meGustasEnProductos = vendedoresViewModel.cantidadMeGustasEnProductos.collectAsState().value
 
     var showStats by remember { mutableStateOf(true) }
 
@@ -88,7 +91,7 @@ fun MyProductsScreen(mainNavController: NavHostController) {
                 }
 
                 item {
-                    EstadisticasCard(showStats = showStats, onToggle = { showStats = !showStats })
+                    EstadisticasCard(showStats = showStats, onToggle = { showStats = !showStats }, productosActivosDelVendedor, meGustasEnProductos, vendedoresViewModel.user.value?.nombreNivel)
                 }
 
                 item {
@@ -104,7 +107,13 @@ fun MyProductsScreen(mainNavController: NavHostController) {
 }
 
 @Composable
-fun EstadisticasCard(showStats: Boolean, onToggle: () -> Unit) {
+fun EstadisticasCard(
+    showStats: Boolean,
+    onToggle: () -> Unit,
+    productosActivosDelVendedor: Int,
+    meGustasEnProductos: Int,
+    nombreNivel: String?
+) {
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.elevatedCardColors(
@@ -157,7 +166,7 @@ fun EstadisticasCard(showStats: Boolean, onToggle: () -> Unit) {
                         EstadisticaItem(
                             icon = Icons.Outlined.Inventory,
                             titulo = "Productos Activos",
-                            valor = "8",
+                            valor = productosActivosDelVendedor.toString(),
                             tendencia = "+2 esta semana",
                             modifier = Modifier.weight(1f)
                         )
@@ -177,14 +186,14 @@ fun EstadisticasCard(showStats: Boolean, onToggle: () -> Unit) {
                         EstadisticaItem(
                             icon = Icons.Outlined.ThumbUp,
                             titulo = "Me Gusta",
-                            valor = "39",
+                            valor = meGustasEnProductos.toString(),
                             tendencia = "+5 hoy",
                             modifier = Modifier.weight(1f)
                         )
                         EstadisticaItem(
                             icon = Icons.Outlined.EmojiEvents,
                             titulo = "Nivel",
-                            valor = "Reciclador Pro",
+                            valor = nombreNivel?: "",
                             tendencia = "¡Cerca del siguiente!",
                             modifier = Modifier.weight(1f)
                         )
