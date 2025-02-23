@@ -17,10 +17,12 @@ data class ProductoReciclable(
     var meGusta: Int = 0,
     var fueVendida: Boolean = false,
     var idUsuario: String = "",
-    var idCategoria: String = ""
+    var idCategoria: String = "",
+    var emisionCO2Kilo: Double = 0.0,
+    var pesoPorUnidad: Double = 0.0
 ) {
     // Constructor sin argumentos necesario para Firebase Firestore
-    constructor() : this("", "", "", "", 0.0, "", "", 0, "", "", "Bs", "", 0, 0, false, "0", "0")
+    constructor() : this("", "", "", "", 0.0, "", "", 0, "", "", "Bs", "", 0, 0, false, "0", "0", 0.0, 0.0)
 
     // Sobrescribir el método toString()
     override fun toString(): String {
@@ -40,7 +42,9 @@ data class ProductoReciclable(
                 meGusta = $meGusta,
                 fueVendida = ${if (fueVendida) "Sí" else "No"},
                 idUsuario = $idUsuario,
-                idCategoria = $idCategoria
+                idCategoria = $idCategoria,
+                emisionCO2Kilo = $emisionCO2Kilo,
+                pesoPorUnidad = $pesoPorUnidad $unidadMedida
             )
         """.trimIndent()
     }

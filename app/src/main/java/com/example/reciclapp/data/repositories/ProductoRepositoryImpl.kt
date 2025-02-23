@@ -1,16 +1,20 @@
 package com.example.reciclapp.data.repositories
 
+import android.util.Log
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.repositories.ProductoRepository
+import com.example.reciclapp.util.ProductosReciclables
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+
+private const val TAG = "ProductoRepositoryImpl"
 
 class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFirestore) :
     ProductoRepository {
     override suspend fun getProducto(idProducto: String): ProductoReciclable? {
         val snapshot = service.collection("productoReciclable")
-            .document(idProducto.toString())
+            .document(idProducto)
             .get()
             .await()
         return snapshot.toObject(ProductoReciclable::class.java)
@@ -83,7 +87,6 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
     override suspend fun registrarProductos(materiales: List<ProductoReciclable>) {
         try {
             for (material in materiales) {
-                // Usar el ID del material como el ID del documento
                 service.collection("productoReciclable")
                     .document(material.idProducto)
                     .set(material)
@@ -112,4 +115,19 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
         return productosDeVendedor
     }
 
+    override fun calcularCO2AhorradoEnKilos(productosReciclables: List<ProductoReciclable>): Double {
+        val cantidadCO2Calculada = productosReciclables.sumOf { producto ->
+            when (producto.unidadMedida) {
+                ("Unidades (u)") -> producto.cantidad * producto.pesoPorUnidad
+                ("Kilogramos (kg)") -> producto.cantidad * producto.emisionCO2Kilo
+                else -> 0.0
+            }
+        }
+        return cantidadCO2Calculada
+    }
+
+    override suspend fun obtenerProductosPredeterminados(): MutableList<ProductoReciclable> {
+        Log.d(TAG,"obtenerProductosPredeterminados ${ProductosReciclables.productosPredeterminados.toMutableList().size}")
+        return ProductosReciclables.productosPredeterminados.toMutableList()
+    }
 }

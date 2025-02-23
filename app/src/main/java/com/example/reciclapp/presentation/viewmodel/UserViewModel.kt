@@ -1,18 +1,15 @@
 package com.example.reciclapp.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.domain.usecases.categoria.AgregarCategoriasUseCase
 import com.example.reciclapp.domain.usecases.comprador.GetCompradoresUseCase
 import com.example.reciclapp.domain.usecases.user_preferences.DeleteSessionUserPreferencesUseCase
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.example.reciclapp.domain.usecases.usuario.ActualizarUsuarioUseCase
 import com.example.reciclapp.domain.usecases.vendedor.GetVendedoresUseCase
-import com.example.reciclapp.util.ListOfCategorias
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

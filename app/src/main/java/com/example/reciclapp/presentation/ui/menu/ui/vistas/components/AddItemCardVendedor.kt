@@ -1,4 +1,5 @@
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -40,11 +41,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,7 +58,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -65,21 +66,20 @@ import coil.compose.AsyncImage
 import com.example.reciclapp.domain.entities.Categoria
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
-import com.example.reciclapp.util.ListOfCategorias
-import com.example.reciclapp.util.StorageUtil
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.UUID
 
+
+private const val TAG = "AddItemCardVendedor"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddItemCardVendedor(mainNavController: NavHostController)  {
-
-    val vendedoresViewModel: VendedoresViewModel = hiltViewModel()
+fun AddItemCardVendedor(mainNavController: NavHostController, vendedoresViewModel: VendedoresViewModel = hiltViewModel(key = "UpdateUser")) {
 
     var selectedCategory by remember { mutableStateOf<Categoria?>(null) }
-    var selectedProduct by remember { mutableStateOf<String?>(null) }
+    var selectedProduct by remember { mutableStateOf<ProductoReciclable?>(null) }
+    var productToUpdate by remember { mutableStateOf<ProductoReciclable?>(null) }
     var cantidad by remember { mutableStateOf("") }
     var selectedUnidad by remember { mutableStateOf<String?>(null) }
     var precio by remember { mutableStateOf("") }
@@ -88,9 +88,25 @@ fun AddItemCardVendedor(mainNavController: NavHostController)  {
     var expandedUnidadDeMedida by remember { mutableStateOf(false) }
     var imageUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
     var detalles by remember { mutableStateOf("") }
-    var puntosCalculados by remember { mutableStateOf(0) }
+    var puntosCalculados by remember { mutableIntStateOf(0) }
     val isLoading by vendedoresViewModel.isLoading.observeAsState(false)
     val context = LocalContext.current
+
+    vendedoresViewModel.obtenerProductosPredeterminados()
+
+    val productosPredeterminados =
+        vendedoresViewModel.productosPredeterminados.collectAsState().value
+
+    productToUpdate = vendedoresViewModel.productToUpdate.collectAsState().value
+
+    Log.d(TAG, "View model id: ${vendedoresViewModel}")
+    Log.d(TAG, "Producto a actualizar: $productToUpdate")
+
+    if(productToUpdate != null){
+        selectedProduct = productToUpdate
+        selectedCategory = selectedProduct?.let { ListOfCategorias.categorias.find { categoria -> categoria.idCategoria == productToUpdate!!.idCategoria }}
+        selectedUnidad = selectedProduct!!.unidadMedida
+    }
 
     LaunchedEffect(Unit) {
         vendedoresViewModel.showToast.collectLatest { message ->
@@ -98,7 +114,6 @@ fun AddItemCardVendedor(mainNavController: NavHostController)  {
             mainNavController.popBackStack()
         }
     }
-
 
     Box(
         modifier = Modifier
@@ -172,7 +187,7 @@ fun AddItemCardVendedor(mainNavController: NavHostController)  {
                                     },
                                     onClick = {
                                         selectedCategory = categoria
-                                        selectedProduct = ""
+                                        selectedProduct = null
                                         selectedUnidad = ""
                                         expandedCategory = false
                                         puntosCalculados = categoria.calcularPuntosTransaccion(
@@ -195,7 +210,7 @@ fun AddItemCardVendedor(mainNavController: NavHostController)  {
                         modifier = Modifier.weight(1f)
                     ) {
                         OutlinedTextField(
-                            value = selectedProduct ?: "Producto",
+                            value = selectedProduct?.nombreProducto ?: "Producto",
                             onValueChange = {},
                             readOnly = true,
                             trailingIcon = {
@@ -228,14 +243,17 @@ fun AddItemCardVendedor(mainNavController: NavHostController)  {
                                     shape = RoundedCornerShape(10.dp)
                                 )
                         ) {
-                            val productos = selectedCategory?.productosDeCategoria
-                                ?: ListOfCategorias.categorias.flatMap { it.productosDeCategoria.map { producto -> producto } }
+                            val productos =
+                                selectedCategory?.let { productosPredeterminados.filter { selectedCategory!!.idCategoria == it.idCategoria } }
+                                    ?: productosPredeterminados
+
+                            Log.d("Productos", "${productos.size}")
 
                             productos.forEach { producto ->
                                 DropdownMenuItem(
                                     text = {
                                         Text(
-                                            text = producto,
+                                            text = producto.nombreProducto,
                                             style = MaterialTheme.typography.bodyMedium,
                                             color = Color(0xFF2C2C2C)
                                         )
@@ -345,19 +363,8 @@ fun AddItemCardVendedor(mainNavController: NavHostController)  {
                                     )
                                     .clip(RoundedCornerShape(12.dp))
                             ) {
-                                val unidadesDeMedida =
-                                    ListOfCategorias.categorias.find {
-                                        it.productosDeCategoria.contains(
-                                            selectedProduct
-                                        )
-                                    }?.unidadDeMedida?.split(
-                                        ", "
-                                    )
-                                        ?: ListOfCategorias.categorias.flatMap {
-                                            it.unidadDeMedida.split(
-                                                ", "
-                                            )
-                                        }
+                                val unidadesDeMedida = selectedCategory?.unidadDeMedida?.split(", ")
+                                    ?: ListOfCategorias.categorias.flatMap { it.unidadDeMedida.split(", ") }.distinct()
 
                                 val unidadesSinRepetir = unidadesDeMedida.distinct()
 
@@ -453,30 +460,34 @@ fun AddItemCardVendedor(mainNavController: NavHostController)  {
 
                 Button(
                     onClick = {
-                                    vendedoresViewModel.registrarNuevoProducto(
-                                        ProductoReciclable(
-                                            idProducto = UUID.randomUUID().toString(),
-                                            nombreProducto = selectedProduct ?: "",
-                                            detallesProducto = detalles,
-                                            urlImagenProducto = "",
-                                            precio = precio.toDoubleOrNull() ?: 0.0,
-                                            fechaPublicacion = Date().toString(),
-                                            fechaModificacion = Date().toString(),
-                                            cantidad = cantidad.toIntOrNull() ?: 0,
-                                            categoria = selectedCategory?.nombre ?: "",
-                                            ubicacionProducto = vendedoresViewModel.user.value?.direccion
-                                                ?: "",
-                                            monedaDeCompra = "Bs",
-                                            unidadMedida = selectedUnidad ?: "",
-                                            puntosPorCompra = puntosCalculados,
-                                            meGusta = 0,
-                                            fueVendida = false,
-                                            idUsuario = vendedoresViewModel.user.value?.idUsuario
-                                                ?: "0",
-                                            idCategoria = selectedCategory?.idCategoria ?: "0"
-                                        ), imageUris, context
-                                    )
+                        val cantidadValue = cantidad.toIntOrNull() ?: 0
+                        val precioValue = precio.toDoubleOrNull() ?: 0.0
 
+                        // Crear nuevo producto basado en el seleccionado
+                        selectedProduct?.let { baseProduct ->
+                            vendedoresViewModel.registrarNuevoProducto(
+                                baseProduct.copy(
+                                    idProducto = UUID.randomUUID().toString(),
+                                    detallesProducto = detalles,
+                                    urlImagenProducto = "",
+                                    precio = precioValue,
+                                    fechaPublicacion = Date().toString(),
+                                    fechaModificacion = Date().toString(),
+                                    cantidad = cantidadValue,
+                                    categoria = selectedCategory?.nombre ?: "",
+                                    ubicacionProducto = vendedoresViewModel.user.value?.direccion
+                                        ?: "",
+                                    monedaDeCompra = "Bs",
+                                    unidadMedida = selectedUnidad ?: "",
+                                    puntosPorCompra = puntosCalculados,
+                                    meGusta = 0,
+                                    fueVendida = false,
+                                    idUsuario = vendedoresViewModel.user.value?.idUsuario ?: "0"
+                                ),
+                                imageUris,
+                                context
+                            )
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()

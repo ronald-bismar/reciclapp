@@ -57,11 +57,6 @@ object ProductoModule {
     }
 
     @Provides
-    fun provideEliminarMaterialUseCase(repository: ProductoRepository): EliminarProductoUseCase {
-        return EliminarProductoUseCase(repository)
-    }
-
-    @Provides
     fun provideListarMaterialesUseCase(repository: ProductoRepository): ListarMaterialesPorCompradorUseCase {
         return ListarMaterialesPorCompradorUseCase(repository)
     }

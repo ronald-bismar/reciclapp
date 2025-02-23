@@ -13,4 +13,6 @@ interface ProductoRepository {
     suspend fun listarMaterialesPorComprador(idComprador: String): MutableList<ProductoReciclable>
     suspend fun registrarProductos(materiales: List<ProductoReciclable>)
     suspend fun obtenerProductosActivos(idVendedor: String): MutableList<ProductoReciclable>
+    fun calcularCO2AhorradoEnKilos(productosReciclables: List<ProductoReciclable>): Double
+    suspend fun obtenerProductosPredeterminados(): MutableList<ProductoReciclable>
 }

@@ -1,21 +1,64 @@
 package com.example.reciclapp.presentation.ui.menu.ui.content.myproducts
 
+import Tips
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.outlined.CalendarToday
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.EmojiEvents
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.Inventory
+import androidx.compose.material.icons.outlined.Lightbulb
+import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material.icons.outlined.Park
+import androidx.compose.material.icons.outlined.Scale
+import androidx.compose.material.icons.outlined.ThumbUp
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,27 +68,34 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
+import com.example.reciclapp.util.FechaUtils
+
+private const val TAG = "MyProductsScreen"
 
 @Composable
-fun MyProductsScreen(mainNavController: NavHostController) {
+fun MyProductsScreen(mainNavController: NavHostController, vendedoresViewModel: VendedoresViewModel = hiltViewModel(key = "UpdateUser")) {
 
-    val vendedoresViewModel: VendedoresViewModel = hiltViewModel()
     val context = LocalContext.current
     LaunchedEffect(vendedoresViewModel.user.value) {
         vendedoresViewModel.user.value?.let { vendedoresViewModel.fetchProductosByVendedor(it.idUsuario) }
     }
+
+    Log.d(TAG, "View model id MyProductsScreen: $vendedoresViewModel")
 
     val productosDelVendedor = vendedoresViewModel.productos.collectAsState().value
 
     val productosActivosDelVendedor = vendedoresViewModel.productosActivos.collectAsState().value
 
     val meGustasEnProductos = vendedoresViewModel.cantidadMeGustasEnProductos.collectAsState().value
+
+    val co2AhorradoEnKilos = vendedoresViewModel.co2AhorradoEnKilos.collectAsState().value
 
     var showStats by remember { mutableStateOf(true) }
 
@@ -91,7 +141,14 @@ fun MyProductsScreen(mainNavController: NavHostController) {
                 }
 
                 item {
-                    EstadisticasCard(showStats = showStats, onToggle = { showStats = !showStats }, productosActivosDelVendedor, meGustasEnProductos, vendedoresViewModel.user.value?.nombreNivel)
+                    EstadisticasCard(
+                        showStats = showStats,
+                        onToggle = { showStats = !showStats },
+                        productosActivosDelVendedor,
+                        meGustasEnProductos,
+                        vendedoresViewModel.user.value?.nombreNivel,
+                        co2AhorradoEnKilos
+                    )
                 }
 
                 item {
@@ -99,7 +156,7 @@ fun MyProductsScreen(mainNavController: NavHostController) {
                 }
 
                 items(productosDelVendedor) { producto ->
-                    TarjetaProducto(producto)
+                    TarjetaProducto(producto, mainNavController, vendedoresViewModel)
                 }
             }
         }
@@ -112,7 +169,8 @@ fun EstadisticasCard(
     onToggle: () -> Unit,
     productosActivosDelVendedor: Int,
     meGustasEnProductos: Int,
-    nombreNivel: String?
+    nombreNivel: String?,
+    co2AhorradoEnKilos: Double
 ) {
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
@@ -167,14 +225,12 @@ fun EstadisticasCard(
                             icon = Icons.Outlined.Inventory,
                             titulo = "Productos Activos",
                             valor = productosActivosDelVendedor.toString(),
-                            tendencia = "+2 esta semana",
                             modifier = Modifier.weight(1f)
                         )
                         EstadisticaItem(
                             icon = Icons.Outlined.Park,
                             titulo = "CO₂ Evitado",
-                            valor = "125 kg",
-                            tendencia = "+15kg este mes",
+                            valor = "$co2AhorradoEnKilos kg",
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -187,14 +243,12 @@ fun EstadisticasCard(
                             icon = Icons.Outlined.ThumbUp,
                             titulo = "Me Gusta",
                             valor = meGustasEnProductos.toString(),
-                            tendencia = "+5 hoy",
                             modifier = Modifier.weight(1f)
                         )
                         EstadisticaItem(
                             icon = Icons.Outlined.EmojiEvents,
                             titulo = "Nivel",
-                            valor = nombreNivel?: "",
-                            tendencia = "¡Cerca del siguiente!",
+                            valor = nombreNivel ?: "",
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -209,7 +263,6 @@ fun EstadisticaItem(
     icon: ImageVector,
     titulo: String,
     valor: String,
-    tendencia: String,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -242,11 +295,6 @@ fun EstadisticaItem(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(vertical = 4.dp)
             )
-            Text(
-                text = tendencia,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.primary
-            )
         }
     }
 }
@@ -256,6 +304,8 @@ fun EstadisticaItem(
 fun DailyTip(
     modifier: Modifier = Modifier
 ) {
+    val tip = remember { Tips.tipsList.random() }
+
     Surface(
         modifier = modifier
             .fillMaxWidth()
@@ -302,7 +352,7 @@ fun DailyTip(
                 )
 
                 Text(
-                    text = "¿Sabías que compactar tus botellas PET puede aumentar hasta un 40% las probabilidades de venta? ¡Inténtalo!",
+                    text = tip.mensaje,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -312,121 +362,176 @@ fun DailyTip(
 }
 
 @Composable
-fun TarjetaProducto(producto: ProductoReciclable) {
+fun TarjetaProducto(producto: ProductoReciclable,  mainNavController: NavHostController, vendedoresViewModel: VendedoresViewModel) {
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.elevatedCardColors(
             containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(4.dp)
             ) {
-
-                Image(
-                    painter = rememberAsyncImagePainter(producto.urlImagenProducto),
-                    contentDescription = producto.nombreProducto,
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(RoundedCornerShape(12.dp)),
-                    contentScale = ContentScale.Crop
-                )
-
-                Column(
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.Top
-                    ) {
-                        Column(
-                        ) {
-                            Text(
-                                text = producto.nombreProducto,
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = producto.detallesProducto,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        Row {
-                            IconButton(onClick = { /* Editar */ }) {
-                                Icon(
-                                    imageVector = Icons.Default.Edit,
-                                    contentDescription = "Editar",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            }
-                            IconButton(onClick = { /* Eliminar */ }) {
-                                Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = "Eliminar",
-                                    tint = MaterialTheme.colorScheme.error
-                                )
-                            }
-                        }
-                    }
-                }
+                ActionMenu(onEdit = {
+                    vendedoresViewModel.setProductToUpdate(producto)
+                    mainNavController.navigate("AñadirProductoReciclable")
+                }, onDelete = {})
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Etiquetas y precio
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier.padding(16.dp)
             ) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    ProductoEtiqueta(
-                        texto = producto.categoria,
-                        color = MaterialTheme.colorScheme.primary
+                    Image(
+                        painter = rememberAsyncImagePainter(producto.urlImagenProducto),
+                        contentDescription = producto.nombreProducto,
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(RoundedCornerShape(12.dp)),
+                        contentScale = ContentScale.Crop
                     )
-                    ProductoEtiqueta(
-                        texto = "${producto.puntosPorCompra} puntos",
-                        color = MaterialTheme.colorScheme.secondary
+
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = producto.nombreProducto,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = producto.detallesProducto,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        ProductoEtiqueta(
+                            texto = producto.categoria,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        ProductoEtiqueta(
+                            texto = "${producto.puntosPorCompra} puntos",
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                    Text(
+                        text = "${producto.precio} Bs",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.tertiary
                     )
                 }
-                Text(
-                    text = "${producto.precio} Bs",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.tertiary
-                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    ProductoDetalle(
+                        icon = Icons.Outlined.Scale,
+                        texto = "${producto.cantidad} ${producto.unidadMedida}"
+                    )
+                    ProductoDetalle(
+                        icon = Icons.Outlined.CalendarToday,
+                        texto = FechaUtils.dateFirebaseToSimpleFormat(producto.fechaPublicacion)
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    ProductoDetalle(
+                        icon = Icons.Outlined.LocationOn,
+                        texto = producto.ubicacionProducto
+                    )
+                    ProductoDetalle(
+                        icon = Icons.Outlined.Favorite,
+                        texto = "${producto.meGusta}"
+                    )
+                }
             }
-            // Detalles con iconos
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                ProductoDetalle(
-                    icon = Icons.Outlined.Scale,
-                    texto = "${producto.cantidad} ${producto.unidadMedida}"
-                )
-                ProductoDetalle(
-                    icon = Icons.Outlined.LocationOn,
-                    texto = producto.ubicacionProducto
-                )
-                ProductoDetalle(
-                    icon = Icons.Outlined.CalendarToday,
-                    texto = producto.fechaPublicacion
-                )
-                ProductoDetalle(
-                    icon = Icons.Outlined.Favorite,
-                    texto = "${producto.meGusta}"
-                )
-            }
+        }
+    }
+}
+
+@Composable
+fun ActionMenu(
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(modifier = modifier) {
+        IconButton(onClick = { expanded = true }) {
+            Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = "Más opciones",
+                tint = MaterialTheme.colorScheme.secondary
+            )
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            // Opción de Editar con ícono y texto amigable
+            DropdownMenuItem(
+                text = { Text("Editar") },
+                onClick = {
+                    onEdit()
+                    expanded = false
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.Edit,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            )
+
+            Divider()
+
+            // Opción de Eliminar con ícono y texto más suave
+            DropdownMenuItem(
+                text = { Text("Eliminar") },
+                onClick = {
+                    onDelete()
+                    expanded = false
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.Delete,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            )
         }
     }
 }
@@ -471,119 +576,3 @@ fun ProductoEtiqueta(
         )
     }
 }
-
-// Datos de ejemplo
-private val productosEjemplo = listOf(
-    ProductoReciclable(
-        idProducto = "1",
-        nombreProducto = "Botellas PET",
-        detallesProducto = "Botellas de plástico limpias y compactadas",
-        urlImagenProducto = "https://example.com/bottle.jpg",
-        precio = 25.50,
-        fechaPublicacion = "14/02/2025",
-        cantidad = 100,
-        categoria = "Plástico",
-        ubicacionProducto = "Zona Norte",
-        unidadMedida = "kg",
-        puntosPorCompra = 50,
-        meGusta = 24
-    ),
-    ProductoReciclable(
-        idProducto = "2",
-        nombreProducto = "Cartón Corrugado",
-        detallesProducto = "Cartón limpio y sin humedad, ideal para reciclaje",
-        urlImagenProducto = "https://example.com/carton.jpg",
-        precio = 15.75,
-        fechaPublicacion = "10/03/2025",
-        cantidad = 200,
-        categoria = "Papel y Cartón",
-        ubicacionProducto = "Zona Centro",
-        unidadMedida = "kg",
-        puntosPorCompra = 30,
-        meGusta = 18
-    ),
-    ProductoReciclable(
-        idProducto = "3",
-        nombreProducto = "Latas de Aluminio",
-        detallesProducto = "Latas limpias y aplastadas, listas para reciclar",
-        urlImagenProducto = "https://example.com/latas.jpg",
-        precio = 40.00,
-        fechaPublicacion = "05/04/2025",
-        cantidad = 150,
-        categoria = "Metal",
-        ubicacionProducto = "Zona Sur",
-        unidadMedida = "kg",
-        puntosPorCompra = 60,
-        meGusta = 35
-    ),
-    ProductoReciclable(
-        idProducto = "4",
-        nombreProducto = "Vidrio Transparente",
-        detallesProducto = "Botellas y frascos de vidrio transparente, sin tapas",
-        urlImagenProducto = "https://example.com/vidrio.jpg",
-        precio = 12.00,
-        fechaPublicacion = "20/01/2025",
-        cantidad = 80,
-        categoria = "Vidrio",
-        ubicacionProducto = "Zona Este",
-        unidadMedida = "kg",
-        puntosPorCompra = 20,
-        meGusta = 12
-    ),
-    ProductoReciclable(
-        idProducto = "5",
-        nombreProducto = "Baterías Usadas",
-        detallesProducto = "Baterías de litio y níquel-cadmio, recogida especializada",
-        urlImagenProducto = "https://example.com/baterias.jpg",
-        precio = 5.00,
-        fechaPublicacion = "25/05/2025",
-        cantidad = 50,
-        categoria = "Electrónicos",
-        ubicacionProducto = "Zona Oeste",
-        unidadMedida = "unidad",
-        puntosPorCompra = 100,
-        meGusta = 8
-    ),
-    ProductoReciclable(
-        idProducto = "6",
-        nombreProducto = "Tetra Pak",
-        detallesProducto = "Envases de Tetra Pak limpios y compactados",
-        urlImagenProducto = "https://example.com/tetrapak.jpg",
-        precio = 18.00,
-        fechaPublicacion = "30/06/2025",
-        cantidad = 120,
-        categoria = "Envases Mixtos",
-        ubicacionProducto = "Zona Norte",
-        unidadMedida = "kg",
-        puntosPorCompra = 40,
-        meGusta = 22
-    ),
-    ProductoReciclable(
-        idProducto = "7",
-        nombreProducto = "Pilas Alcalinas",
-        detallesProducto = "Pilas usadas, recogida para reciclaje seguro",
-        urlImagenProducto = "https://example.com/pilas.jpg",
-        precio = 3.50,
-        fechaPublicacion = "15/07/2025",
-        cantidad = 300,
-        categoria = "Electrónicos",
-        ubicacionProducto = "Zona Centro",
-        unidadMedida = "unidad",
-        puntosPorCompra = 15,
-        meGusta = 10
-    ),
-    ProductoReciclable(
-        idProducto = "8",
-        nombreProducto = "Madera Recuperada",
-        detallesProducto = "Madera limpia y en buen estado, ideal para reutilización",
-        urlImagenProducto = "https://images.unsplash.com/photo-1739382446038-184e72fdc427?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw2fHx8ZW58MHx8fHx8",
-        precio = 30.00,
-        fechaPublicacion = "10/08/2025",
-        cantidad = 70,
-        categoria = "Madera",
-        ubicacionProducto = "Zona Sur",
-        unidadMedida = "kg",
-        puntosPorCompra = 25,
-        meGusta = 14
-    )
-)

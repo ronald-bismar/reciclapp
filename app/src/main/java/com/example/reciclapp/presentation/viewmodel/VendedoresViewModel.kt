@@ -9,9 +9,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
+import com.example.reciclapp.domain.usecases.producto.CalcularCO2AhorradoEnKilos
+import com.example.reciclapp.domain.usecases.producto.EliminarProductoUseCase
 import com.example.reciclapp.domain.usecases.producto.ListarProductosDeVendedorUseCase
 import com.example.reciclapp.domain.usecases.producto.ListarTodosLosProductosUseCase
-import com.example.reciclapp.domain.usecases.producto.ObtenerProductosActivosUseCase
+import com.example.reciclapp.domain.usecases.producto.ObtenerProductosPredeterminados
 import com.example.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
 import com.example.reciclapp.domain.usecases.producto.UpdateLikedProductoUseCase
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
@@ -33,7 +35,9 @@ class VendedoresViewModel @Inject constructor(
     private val listarTodosLosProductosUseCase: ListarTodosLosProductosUseCase,
     private val updateLikedProductoUseCase: UpdateLikedProductoUseCase,
     private val registrarProductoUseCase: RegistrarProductoUseCase,
-    private val obtenerProductosActivosUseCase: ObtenerProductosActivosUseCase
+    private val calcularCO2AhorradoEnKilos: CalcularCO2AhorradoEnKilos,
+    private val obtenerProductosPredeterminados: ObtenerProductosPredeterminados,
+    private val eliminarProductoUseCase: EliminarProductoUseCase
 ) : ViewModel() {
     private val _showToast = MutableSharedFlow<String>()
     val showToast: SharedFlow<String> = _showToast
@@ -57,6 +61,15 @@ class VendedoresViewModel @Inject constructor(
     private val _cantidadMeGustasEnProductos = MutableStateFlow(0)
     val cantidadMeGustasEnProductos: StateFlow<Int> = _cantidadMeGustasEnProductos
 
+    private val _productosPredeterminados = MutableStateFlow<MutableList<ProductoReciclable>>(mutableListOf())
+    val productosPredeterminados: StateFlow<MutableList<ProductoReciclable>> = _productosPredeterminados
+
+    private val _co2AhorradoEnKilos = MutableStateFlow(0.0)
+    val co2AhorradoEnKilos: StateFlow<Double> = _co2AhorradoEnKilos
+
+    private val _productToUpdate = MutableStateFlow<ProductoReciclable?>(null)
+    val productToUpdate: StateFlow<ProductoReciclable?> = _productToUpdate
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
@@ -70,6 +83,7 @@ class VendedoresViewModel @Inject constructor(
         viewModelScope.launch {
             _productos.value = listarProductosDeVendedorUseCase.execute(userId)
             contarProductosActivos()
+            calcularCO2AhorradoEnKilos()
         }
     }
 
@@ -77,6 +91,19 @@ class VendedoresViewModel @Inject constructor(
         viewModelScope.launch {
             val usuario = getUserPreferencesUseCase.execute()
             _user.postValue(usuario)
+        }
+    }
+
+    private fun calcularCO2AhorradoEnKilos() {
+        viewModelScope.launch {
+            val productosReciclables = _productos.value
+            _co2AhorradoEnKilos.value = calcularCO2AhorradoEnKilos.execute(productosReciclables)
+        }
+    }
+
+    fun obtenerProductosPredeterminados() {
+        viewModelScope.launch {
+            _productosPredeterminados.value = obtenerProductosPredeterminados.execute()
         }
     }
 
@@ -96,7 +123,7 @@ class VendedoresViewModel @Inject constructor(
         uriImagenProducto: List<Uri>,
         context: Context
     ) {
-        _isLoading.value = true // Indicar que la operación está en progreso
+        _isLoading.value = true
 
         viewModelScope.launch {
             try {
@@ -126,7 +153,7 @@ class VendedoresViewModel @Inject constructor(
         }
     }
 
-    fun contarProductosActivos(){
+    fun contarProductosActivos() {
         viewModelScope.launch {
             Log.d("VendedoresViewModel", "Productos ${_productos.value}")
 
@@ -137,11 +164,15 @@ class VendedoresViewModel @Inject constructor(
         }
     }
 
-    fun contarCantidadDeProductos(){
-        viewModelScope.launch {
-            _cantidadMeGustasEnProductos.value = _productos.value.map { it.meGusta }.sum()
-            Log.d("VendedoresViewModel", "Cantidad de me gustas: ${_productosActivos.value}")
+    fun setProductToUpdate(productoReciclable: ProductoReciclable) {
+        _productToUpdate.value = productoReciclable
+    }
 
+    fun eliminarProducto(productoReciclable: ProductoReciclable) {
+        viewModelScope.launch {
+            eliminarProductoUseCase.execute(productoReciclable.idProducto)
+            _showToast.emit("Producto eliminado correctamente")
         }
+
     }
 }
