@@ -207,7 +207,7 @@ fun DropdownMenuItems(navController: NavHostController, onMenuItemClick: (MenuIt
     val items = listOf(
 
        // MenuItem("Mi perfil", Icons.Filled.Person, "Mi perfil"),
-        MenuItem("Cerrar sesión", Icons.Filled.Face, "Cerrar sesión"),
+        MenuItem("Cerrar sesión", Icons.Filled.Face, "Cerrando sesión"),
         MenuItem("Salir", Icons.Filled.Close, "Salir")
     )
     items.forEach { item ->

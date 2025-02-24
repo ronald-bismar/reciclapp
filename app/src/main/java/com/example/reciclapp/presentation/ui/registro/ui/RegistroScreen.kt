@@ -130,19 +130,20 @@ fun RegistroScreen(viewModel: RegistroViewModel, navController: NavHostControlle
                 Spacer(modifier = Modifier.height(8.dp))
                 RegistroButton(isLoading, recordEnable = recordEnable, onRecordSelected = {
                     viewModel.initLoading()
-                    StorageUtil.uploadToStorage(imageUri!!, context) { url ->
-                        imageUrl = url
-                        coroutineScope.launch {
-                            viewModel.onRecordSelected(
-                                name,
-                                lastName,
-                                phone.toLong(),
-                                address,
-                                email,
-                                password,
-                                imageUrl ?: ""
-                            )
+                    coroutineScope.launch {
+                        val url = imageUri.let {
+                            StorageUtil.uploadToStorage(it!!, context)
                         }
+                        viewModel.onRecordSelected(
+                            name,
+                            lastName,
+                            phone.toLong(),
+                            address,
+                            email,
+                            password,
+                            url ?: ""
+                        )
+                        viewModel.stopLoading()
                     }
                 })
 

@@ -9,10 +9,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.usecases.user_preferences.SaveUserPreferencesUseCase
 import com.example.reciclapp.domain.usecases.usuario.RegistrarUsuarioUseCase
-import com.example.reciclapp.model.util.GenerateID
+import com.example.reciclapp.util.GenerateID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import okhttp3.Address
 import javax.inject.Inject
 
 @HiltViewModel
@@ -170,7 +169,7 @@ class RegistroViewModel @Inject constructor(
         _isLoading.value = true
     }
 
-    private fun stopLoading() {
+    fun stopLoading() {
         _isLoading.value = false
     }
 

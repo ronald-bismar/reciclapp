@@ -15,7 +15,7 @@ import com.example.reciclapp.domain.usecases.comprador.GetCompradorUseCase
 import com.example.reciclapp.domain.usecases.producto.ListarMaterialesPorCompradorUseCase
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.example.reciclapp.domain.usecases.vendedor.ComentarACompradorUseCase
-import com.example.reciclapp.model.util.GenerateID
+import com.example.reciclapp.util.GenerateID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

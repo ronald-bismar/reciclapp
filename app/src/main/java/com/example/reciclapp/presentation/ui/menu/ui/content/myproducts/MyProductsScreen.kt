@@ -2,6 +2,7 @@ package com.example.reciclapp.presentation.ui.menu.ui.content.myproducts
 
 import Tips
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -76,15 +77,28 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 import com.example.reciclapp.util.FechaUtils
+import kotlinx.coroutines.flow.collectLatest
 
 private const val TAG = "MyProductsScreen"
 
 @Composable
-fun MyProductsScreen(mainNavController: NavHostController, vendedoresViewModel: VendedoresViewModel = hiltViewModel(key = "UpdateUser")) {
+fun MyProductsScreen(mainNavController: NavHostController, vendedoresViewModel: VendedoresViewModel) {
+
 
     val context = LocalContext.current
-    LaunchedEffect(vendedoresViewModel.user.value) {
+
+    LaunchedEffect(Unit) {
+        vendedoresViewModel.showToast.collectLatest { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
         vendedoresViewModel.user.value?.let { vendedoresViewModel.fetchProductosByVendedor(it.idUsuario) }
+    }
+
+    LaunchedEffect(Unit) {
+        vendedoresViewModel.user.value?.let { vendedoresViewModel.fetchProductosByVendedor(it.idUsuario)
+        Log.d(TAG,"Vendedor encontrado: ${vendedoresViewModel.user.value}")
+
+        }
     }
 
     Log.d(TAG, "View model id MyProductsScreen: $vendedoresViewModel")
@@ -141,14 +155,16 @@ fun MyProductsScreen(mainNavController: NavHostController, vendedoresViewModel: 
                 }
 
                 item {
-                    EstadisticasCard(
-                        showStats = showStats,
-                        onToggle = { showStats = !showStats },
-                        productosActivosDelVendedor,
-                        meGustasEnProductos,
-                        vendedoresViewModel.user.value?.nombreNivel,
-                        co2AhorradoEnKilos
-                    )
+                    vendedoresViewModel.user.value?.nombreNivel?.let {
+                        EstadisticasCard(
+                            showStats = showStats,
+                            onToggle = { showStats = !showStats },
+                            productosActivosDelVendedor,
+                            meGustasEnProductos,
+                            it,
+                            co2AhorradoEnKilos
+                        )
+                    }
                 }
 
                 item {
@@ -169,7 +185,7 @@ fun EstadisticasCard(
     onToggle: () -> Unit,
     productosActivosDelVendedor: Int,
     meGustasEnProductos: Int,
-    nombreNivel: String?,
+    nombreNivel: String,
     co2AhorradoEnKilos: Double
 ) {
     ElevatedCard(
@@ -248,7 +264,7 @@ fun EstadisticasCard(
                         EstadisticaItem(
                             icon = Icons.Outlined.EmojiEvents,
                             titulo = "Nivel",
-                            valor = nombreNivel ?: "",
+                            valor = nombreNivel,
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -362,7 +378,7 @@ fun DailyTip(
 }
 
 @Composable
-fun TarjetaProducto(producto: ProductoReciclable,  mainNavController: NavHostController, vendedoresViewModel: VendedoresViewModel) {
+fun TarjetaProducto(producto: ProductoReciclable, mainNavController: NavHostController, vendedoresViewModel: VendedoresViewModel) {
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.elevatedCardColors(
@@ -370,6 +386,24 @@ fun TarjetaProducto(producto: ProductoReciclable,  mainNavController: NavHostCon
         )
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
+            // Etiqueta de Vendido
+            if (producto.fueVendida) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .background(Color.Red, shape = RoundedCornerShape(4.dp))
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = "Vendido",
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -378,7 +412,9 @@ fun TarjetaProducto(producto: ProductoReciclable,  mainNavController: NavHostCon
                 ActionMenu(onEdit = {
                     vendedoresViewModel.setProductToUpdate(producto)
                     mainNavController.navigate("AñadirProductoReciclable")
-                }, onDelete = {})
+                }, onDelete = {
+                    vendedoresViewModel.eliminarProducto(producto)
+                })
             }
 
             Column(
@@ -477,6 +513,7 @@ fun TarjetaProducto(producto: ProductoReciclable,  mainNavController: NavHostCon
         }
     }
 }
+
 
 @Composable
 fun ActionMenu(

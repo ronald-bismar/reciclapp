@@ -1,7 +1,5 @@
-package com.example.reciclapp.model.util
+package com.example.reciclapp.util
 
 import java.util.UUID
 
-fun GenerateID(): String {
-    return UUID.randomUUID().toString()
-}
+fun GenerateID(): String = UUID.randomUUID().toString()

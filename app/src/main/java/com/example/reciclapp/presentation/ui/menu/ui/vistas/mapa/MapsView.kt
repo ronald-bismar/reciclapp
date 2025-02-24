@@ -156,7 +156,7 @@ fun MapsView(
         ) {
             Text(
                 text = "Mapa Compradores de Reciclaje",
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(8.dp)
             )
         }

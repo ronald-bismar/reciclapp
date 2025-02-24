@@ -3,7 +3,6 @@ package com.example.reciclapp.presentation.navigation
 import AddItemCardVendedor
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -20,9 +19,10 @@ import androidx.navigation.navArgument
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.example.reciclapp.presentation.ui.CompartirScreen.CompartirScreen
 import com.example.reciclapp.presentation.ui.aboutus.AboutUsScreen
-import com.example.reciclapp.presentation.ui.drawer.ui.SimpleAyudaScreen
 import com.example.reciclapp.presentation.ui.contactate.ContactateConNosotrosScreen
 import com.example.reciclapp.presentation.ui.drawer.ui.CalificanosScreen
+import com.example.reciclapp.presentation.ui.drawer.ui.MisionVisionScreen
+import com.example.reciclapp.presentation.ui.drawer.ui.SimpleAyudaScreen
 import com.example.reciclapp.presentation.ui.login.ui.LoginScreen
 import com.example.reciclapp.presentation.ui.login.ui.LoginViewModel
 import com.example.reciclapp.presentation.ui.menu.ui.IntroductionScreen
@@ -31,16 +31,17 @@ import com.example.reciclapp.presentation.ui.menu.ui.PantallaPrincipal
 import com.example.reciclapp.presentation.ui.menu.ui.PresentacionAppScreen
 import com.example.reciclapp.presentation.ui.menu.ui.SocialMediaScreenVendedores
 import com.example.reciclapp.presentation.ui.menu.ui.UserTypeScreen
+import com.example.reciclapp.presentation.ui.menu.ui.content.myproducts.MyProductsScreen
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Comprador
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Perfil
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Vendedor
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.mapa.MapsView
-import com.example.reciclapp.presentation.ui.drawer.ui.MisionVisionScreen
-import com.example.reciclapp.presentation.ui.menu.ui.content.myproducts.MyProductsScreen
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroScreen
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroViewModel
 import com.example.reciclapp.presentation.ui.splash.SplashScreenContent
+import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
+import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -51,18 +52,14 @@ fun NavGraph(
     loginViewModel: LoginViewModel = hiltViewModel(),
     registroViewModel: RegistroViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel(),
+    vendedoresViewModel: VendedoresViewModel = hiltViewModel(),
+    compradoresViewModel: CompradoresViewModel = hiltViewModel(),
     getUserPreferencesUseCase: GetUserPreferencesUseCase
 ) {
-
-    var nextScreen by remember {
-        mutableStateOf("splash")
-    }
+    var nextScreen by remember { mutableStateOf("splash") }
 
     LaunchedEffect(Unit) {
-        nextScreen =
-        getNextScreen(getUserPreferencesUseCase)
-        /* "tipoDeUsuario"*/
-        /*"pantalla presentacion"*/
+        nextScreen = getNextScreen(getUserPreferencesUseCase)
     }
 
     NavHost(navController = mainNavController, startDestination = "splash") {
@@ -94,25 +91,24 @@ fun NavGraph(
         composable("introduction screen") {
             IntroductionScreen(mainNavController)
         }
-        composable("Que es Reciclapp"){
+        composable("Que es Reciclapp") {
             SimpleAyudaScreen()
         }
-        composable("Mision y vision"){
+        composable("Mision y vision") {
             MisionVisionScreen()
         }
-        composable("Sobre Nosotros"){
+        composable("Sobre Nosotros") {
             AboutUsScreen()
         }
-        composable("Compartir"){
+        composable("Compartir") {
             CompartirScreen()
         }
-        composable("Contactate con nosotros"){
+        composable("Contactate con nosotros") {
             ContactateConNosotrosScreen()
         }
-        composable("Calificanos"){
+        composable("Calificanos") {
             CalificanosScreen()
         }
-
         composable("perfil") {
             Perfil(userViewModel = userViewModel, mainNavController)
         }
@@ -139,11 +135,11 @@ fun NavGraph(
             }
         }
         composable("AñadirProductoReciclable") {
-            AddItemCardVendedor (mainNavController)
+            AddItemCardVendedor(mainNavController, vendedoresViewModel)
         }
-         composable("MyProductsScreen"){
-             MyProductsScreen(mainNavController)
-         }
+        composable("MyProductsScreen") {
+            MyProductsScreen(mainNavController, vendedoresViewModel)
+        }
     }
 }
 

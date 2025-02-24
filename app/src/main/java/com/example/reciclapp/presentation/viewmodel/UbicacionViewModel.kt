@@ -11,7 +11,7 @@ import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.usecases.ubicacionGPS.GetLocationsAndCompradoresUseCase
 import com.example.reciclapp.domain.usecases.ubicacionGPS.GetUbicacionDeUsuarioUseCase
 import com.example.reciclapp.domain.usecases.ubicacionGPS.RegistrarUbicacionDeUsuarioUseCase
-import com.example.reciclapp.model.util.GenerateID
+import com.example.reciclapp.util.GenerateID
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.Timestamp

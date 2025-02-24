@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
+import com.example.reciclapp.domain.usecases.producto.ActualizarProductoUseCase
 import com.example.reciclapp.domain.usecases.producto.CalcularCO2AhorradoEnKilos
 import com.example.reciclapp.domain.usecases.producto.EliminarProductoUseCase
 import com.example.reciclapp.domain.usecases.producto.ListarProductosDeVendedorUseCase
@@ -37,7 +38,8 @@ class VendedoresViewModel @Inject constructor(
     private val registrarProductoUseCase: RegistrarProductoUseCase,
     private val calcularCO2AhorradoEnKilos: CalcularCO2AhorradoEnKilos,
     private val obtenerProductosPredeterminados: ObtenerProductosPredeterminados,
-    private val eliminarProductoUseCase: EliminarProductoUseCase
+    private val eliminarProductoUseCase: EliminarProductoUseCase,
+    private val actualizarProductoUseCase: ActualizarProductoUseCase
 ) : ViewModel() {
     private val _showToast = MutableSharedFlow<String>()
     val showToast: SharedFlow<String> = _showToast
@@ -84,7 +86,12 @@ class VendedoresViewModel @Inject constructor(
             _productos.value = listarProductosDeVendedorUseCase.execute(userId)
             contarProductosActivos()
             calcularCO2AhorradoEnKilos()
+            calcularMeGustasEnProductos()
         }
+    }
+
+    private fun calcularMeGustasEnProductos() {
+        _cantidadMeGustasEnProductos.value = _productos.value.sumOf { it.meGusta }
     }
 
     private fun loadUserPreferences() {
@@ -129,25 +136,63 @@ class VendedoresViewModel @Inject constructor(
             try {
                 // Subir la primera imagen (si existe)
                 val primeraImagenUri = uriImagenProducto.firstOrNull()
-                var urlImagen: String? = null
-
-                primeraImagenUri?.let {
-                    StorageUtil.uploadToStorage(primeraImagenUri, context) { url ->
-                        urlImagen = url
-                    }
+                val urlImagen = primeraImagenUri?.let { uri ->
+                    StorageUtil.uploadToStorage(uri, context) // Esperar a que se complete la subida
                 }
 
+                // Crear una copia del producto con la nueva URL de la imagen
                 val productoActualizado = productoReciclable.copy(
                     urlImagenProducto = urlImagen ?: ""
                 )
 
+                // Registrar el producto
                 registrarProductoUseCase.execute(productoActualizado)
 
+                // Mostrar mensaje de éxito
                 _showToast.emit("Producto registrado correctamente")
             } catch (e: Exception) {
+                // Manejar errores
                 Log.e("VendedoresViewModel", "Error al registrar el producto", e)
                 _showToast.emit("Error al registrar el producto")
             } finally {
+                // Finalizar el estado de carga
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun actualizarProducto(
+        productoReciclable: ProductoReciclable,
+        uriImagenProducto: List<Uri>,
+        context: Context
+    ) {
+        _isLoading.value = true
+
+        viewModelScope.launch {
+            try {
+                // Subir la primera imagen (si existe)
+                val primeraImagenUri = uriImagenProducto.firstOrNull()
+                val urlImagen = primeraImagenUri?.let { uri ->
+                    StorageUtil.uploadToStorage(uri, context) // Esperar a que se complete la subida
+                }
+
+                // Actualizar el producto con la nueva URL de la imagen
+                val productoActualizado = productoReciclable.copy(
+                    urlImagenProducto = urlImagen ?: ""
+                )
+
+                // Ejecutar la actualización del producto
+                actualizarProductoUseCase.execute(productoActualizado)
+                fetchProductosByVendedor(productoReciclable.idUsuario)
+
+                // Mostrar mensaje de éxito
+                _showToast.emit("Producto actualizado correctamente")
+            } catch (e: Exception) {
+                // Manejar errores
+                Log.e("VendedoresViewModel", "Error al actualizar el producto", e)
+                _showToast.emit("Error al actualizar el producto")
+            } finally {
+                // Finalizar el estado de carga
                 _isLoading.value = false
             }
         }
@@ -172,7 +217,13 @@ class VendedoresViewModel @Inject constructor(
         viewModelScope.launch {
             eliminarProductoUseCase.execute(productoReciclable.idProducto)
             _showToast.emit("Producto eliminado correctamente")
+            val listaActualizada = _productos.value.toMutableList()
+            listaActualizada.remove(productoReciclable)
+            _productos.value = listaActualizada
         }
+    }
 
+    fun resetProductToUpdate() {
+        _productToUpdate.value = null
     }
 }

@@ -13,11 +13,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -26,7 +24,9 @@ import com.example.reciclapp.presentation.navigation.AppTopBar
 import com.example.reciclapp.presentation.navigation.bottom.BottomNavHost
 import com.example.reciclapp.presentation.navigation.bottom.BottomSheetContent
 import com.example.reciclapp.presentation.navigation.drawer.DrawerContent
+import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
+import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 import kotlinx.coroutines.launch
 
 /**
@@ -43,6 +43,8 @@ fun PantallaPrincipal(navControllerMain: NavController) {
     // ViewModel para manejar el estado del usuario
     // (Esta instancia de View Model se envia a todos los hijos para que recuerden y actualicen el estado cuando haya cambios)
     val userViewModel: UserViewModel = hiltViewModel()
+    val vendedoresViewModel: VendedoresViewModel = hiltViewModel()
+    val compradoresViewModel: CompradoresViewModel = hiltViewModel()
     // Estado del Drawer de navegación
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     // Alcance para las corutinas
@@ -51,8 +53,14 @@ fun PantallaPrincipal(navControllerMain: NavController) {
     val navController = rememberNavController()
     // Estado del Bottom Sheet modal
     val bottomSheetState = rememberModalBottomSheetState()
-    // Estado para controlar la visibilidad del menú desplegable
-    var showDropdownMenu by remember { mutableStateOf(false) }
+
+    val productosDeVendedor = vendedoresViewModel.productos.collectAsState().value
+
+    LaunchedEffect(userViewModel.user.value) {
+        userViewModel.user.value?.let {
+            vendedoresViewModel.fetchProductosByVendedor(userViewModel.user.value!!.idUsuario)
+        }
+    }
 
     // Elementos de navegación en el menú inferior
     val navigationItems = listOf(
@@ -97,7 +105,8 @@ fun PantallaPrincipal(navControllerMain: NavController) {
                 BottomNavHost(
                     mainNavController = navControllerMain,
                     navHostController = navController,
-                    userViewModel.user?.value.let { it?.idUsuario } ?: ""
+                    userViewModel.user?.value.let { it?.idUsuario } ?: "",
+                    userViewModel, productosDeVendedor
                 )
             }
         }

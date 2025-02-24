@@ -43,6 +43,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,6 +76,7 @@ import com.example.reciclapp.presentation.viewmodel.UserViewModel
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 import com.example.reciclapp.util.StorageUtil
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -280,6 +282,8 @@ fun EditProfileDialog(
     var showDialogAutorizeChangeUser by remember { mutableStateOf(false) }
     var showDialogChangeUser by remember { mutableStateOf(false) }
 
+    val coroutineScope = rememberCoroutineScope()
+
     AnimatedTransitionDialog(
         onDismissRequest = onDismiss, contentAlignment = Alignment.Center
     ) {
@@ -354,20 +358,31 @@ fun EditProfileDialog(
                         }
                         TextButton(onClick = {
                             isLoading = true
-                            StorageUtil.uploadToStorage(imageUri!!, context) { url ->
-                                imageUrl = url
-                                val dataUpdateUser = user.copy(
-                                    nombre = name,
-                                    apellido = lastName,
-                                    telefono = phone.toLong(),
-                                    direccion = address,
-                                    correo = email,
-                                    tipoDeUsuario = if (isVendedor) "vendedor" else "comprador",
-                                    urlImagenPerfil = imageUrl ?: user.urlImagenPerfil
-                                )
-                                userViewModel.updateUser(dataUpdateUser)
-                                isLoading = false
-                                onDismiss()
+
+                            coroutineScope.launch {
+                                try {
+                                    val url = imageUri?.let { uri ->
+                                        StorageUtil.uploadToStorage(uri, context)
+                                    }
+
+                                    val dataUpdateUser = user.copy(
+                                        nombre = name,
+                                        apellido = lastName,
+                                        telefono = phone.toLong(),
+                                        direccion = address,
+                                        correo = email,
+                                        tipoDeUsuario = if (isVendedor) "vendedor" else "comprador",
+                                        urlImagenPerfil = url ?: user.urlImagenPerfil
+                                    )
+
+                                    userViewModel.updateUser(dataUpdateUser)
+                                } catch (e: Exception) {
+                                    Log.e("MyComposable", "Error al subir la imagen", e)
+                                } finally {
+                                    // Finalizar el estado de carga
+                                    isLoading = false
+                                    onDismiss()
+                                }
                             }
                         }) {
                             Text("Actualizar")

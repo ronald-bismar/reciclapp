@@ -1,5 +1,6 @@
 package com.example.reciclapp.presentation.ui.menu.ui.content.statistics
 
+import RachaReciclaje
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -22,7 +23,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -40,35 +40,122 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.reciclapp.R
+import com.example.reciclapp.domain.entities.Logro
+import com.example.reciclapp.domain.entities.ProductoReciclable
+import com.example.reciclapp.domain.entities.Usuario
+import com.example.reciclapp.presentation.viewmodel.UserViewModel
+import com.example.reciclapp.util.ImpactoAmbientalUtil
+import com.example.reciclapp.util.Logros
+import com.example.reciclapp.util.NombreNivelUsuario
+import com.example.reciclapp.util.ProductosReciclables
+import com.example.reciclapp.util.ValidarLogros.actualizarLogrosUsuario
 
-// Composable para mostrar la pantalla de estadísticas detalladas
+private const val TAG = "PantallaPrincipal"
+
 @Composable
-fun DetailedStatisticsScreen() {
+fun DetailedStatisticsScreen(
+    userViewModel: UserViewModel,
+    productosDeVendedor: MutableList<ProductoReciclable>,
+) {
     val modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)
+
+    val usuarioSinLogrosActualizados = userViewModel.user.value
+
+    val usuarioConLogrosActualizados = usuarioSinLogrosActualizados?.let {
+        actualizarLogrosUsuario(
+            usuario = usuarioSinLogrosActualizados,
+            transacciones = productosDeVendedor.filter { producto -> producto.fueVendida },
+            puntosTotales = it.puntaje,
+            co2Evitado = productosDeVendedor.sumOf { producto -> producto.emisionCO2Kilo },
+            residuosReducidosEnUnidades = productosDeVendedor.sumOf { producto -> if (producto.unidadMedida == "Unidades (u)") producto.cantidad.toDouble() else 0.0 },
+            compartidosEnRedes = 0,
+            interacciones = 0,
+            transaccionesEnGrupo = 0,
+            eventosParticipados = 0
+        )
+    }
+
+    usuarioConLogrosActualizados?.apply {
+        nombreNivel = NombreNivelUsuario.obtenerNombreNivel(this.puntaje ?: 0)
+        nivel = NombreNivelUsuario.obtenerNivel(this.puntaje ?: 0)
+    }
+
+    val (porcentajeLogrado, siguienteNivel) = NombreNivelUsuario.calcularProgreso(
+        usuarioConLogrosActualizados?.puntaje ?: 0
+    )
+
+    val rachaSemanal = RachaReciclaje.calcularRachaSemanal(productosDeVendedor.filter { it.fueVendida })
+    val rachaMensual = RachaReciclaje.calcularRachaMensual(productosDeVendedor.filter { it.fueVendida })
+
+    val cantidadArbolesBeneficiados = ImpactoAmbientalUtil.calcularArbolesSalvados(productosDeVendedor.filter { it.fueVendida })
+
+    // Obtener puntos por categoría (usando idCategoria)
+    val puntosPorCategoria = ProductosReciclables.obtenerPuntosPorCategoria()
+    println("Puntos por categoría (usando idCategoria):")
+    puntosPorCategoria.forEach { (idCategoria, puntos) ->
+        println("Categoría $idCategoria: $puntos puntos")
+    }
+
+    val nombreYPuntosPorCategoria = ProductosReciclables.obtenerNombreYPuntosPorCategoria()
+
+    //TODO actualizar al usuario en firebase despues de sacar sus puntos actuales
+    usuarioConLogrosActualizados?.let { userViewModel.updateUser(it) }
+
+    val listaDeIds = usuarioConLogrosActualizados?.logrosPorId?.split(",") ?: emptyList()
+
+    val cantidadDeLogrosAnteriores =
+        usuarioSinLogrosActualizados?.logrosPorId?.split(",")?.size ?: 0
+    val cantidadDeLogrosActuales = usuarioConLogrosActualizados?.logrosPorId?.split(",")?.size ?: 0
+
+    // Filtrar la lista de logros para encontrar los que coinciden con los IDs
+    val logrosEncontrados: List<Logro> = Logros.listaDeLogros.filter { logro ->
+        listaDeIds.contains(logro.idLogro)
+    }
 
     LazyColumn(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item { BadgeNuevoLogro(modifier = Modifier.fillMaxWidth()) }
-        item { CardNivelReciclaje() }
-        item { RachaReciclaje() }
-        item { ImpactoAmbiental() }
-        item { LogrosDesbloqueados() }
-        item { EstadisticasCategorias() }
+        if (cantidadDeLogrosActuales > cantidadDeLogrosAnteriores)
+            item {
+                BadgeNuevoLogro(
+                    ultimoLogro = logrosEncontrados.last(),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        item {
+            usuarioConLogrosActualizados?.let {
+                CardNivelReciclaje(
+                    usuarioConLogrosActualizados,
+                    porcentajeLogrado,
+                    it.nivel,
+                    siguienteNivel
+                )
+            }
+        }
+        if (rachaSemanal > 0 || rachaMensual > 0)
+            item { RachaReciclaje(rachaSemanal, rachaMensual) }
+        item { ImpactoAmbiental(cantidadArbolesBeneficiados) }
+        item { LogrosDesbloqueados(logrosEncontrados) }
+        item { EstadisticasCategorias(nombreYPuntosPorCategoria) }
     }
 }
 
 
 @Composable
-fun CardNivelReciclaje() {
+fun CardNivelReciclaje(
+    usuario: Usuario,
+    porcentajeLogrado: Int,
+    actualNivel: String,
+    siguienteNivel: String
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -83,18 +170,18 @@ fun CardNivelReciclaje() {
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            DatosEcoGuerrero()
-            BarraNivel()
+            DatosEcoGuerrero(usuario)
+            BarraNivel(porcentajeLogrado, actualNivel, siguienteNivel)
         }
     }
 }
 
 
 @Composable
-fun BarraNivel() {
+fun BarraNivel(porcentajeLogrado: Int, actualNivel: String, siguienteNivel: String) {
     Column(Modifier.fillMaxWidth()) {
-        NivelAnteriorYSiguienteNivel()
-        BarraNivelDeReciclaje(0.6F)
+        NivelAnteriorYSiguienteNivel(actualNivel, siguienteNivel)
+        BarraNivelDeReciclaje(porcentajeLogrado.toFloat())
     }
 }
 
@@ -119,7 +206,7 @@ fun BarraNivelDeReciclaje(nivel: Float) { // nivel debe estar entre 0f y 1f (0% 
 
 
 @Composable
-private fun NivelAnteriorYSiguienteNivel() {
+private fun NivelAnteriorYSiguienteNivel(actualNivel: String, siguienteNivel: String) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -134,12 +221,12 @@ private fun NivelAnteriorYSiguienteNivel() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Nivel 5",
+            text = actualNivel,
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Light
         )
         Text(
-            text = "Nivel 6",
+            text = siguienteNivel,
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Normal
         )
@@ -148,7 +235,7 @@ private fun NivelAnteriorYSiguienteNivel() {
 
 
 @Composable
-fun DatosEcoGuerrero() {
+fun DatosEcoGuerrero(usuario: Usuario) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -156,23 +243,23 @@ fun DatosEcoGuerrero() {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        NombreEcoGuerrero()
-        PuntosEcoGuerrero()
+        NombreEcoGuerrero(usuario.nombreNivel, usuario.nivel)
+        PuntosEcoGuerrero(usuario.puntaje)
     }
 }
 
 @Composable
-fun PuntosEcoGuerrero() {
+fun PuntosEcoGuerrero(puntaje: Int) {
     Row(Modifier.padding(horizontal = 6.dp), verticalAlignment = Alignment.CenterVertically) {
         IconoPuntos()
-        Puntos()
+        Puntos(puntaje)
     }
 }
 
 @Composable
-fun Puntos() {
+fun Puntos(puntaje: Int) {
     Text(
-        text = "1250", style = MaterialTheme.typography.bodyMedium,
+        text = puntaje.toString(), style = MaterialTheme.typography.bodyMedium,
         fontWeight = FontWeight.Bold
     )
 }
@@ -191,18 +278,18 @@ private fun IconoPuntos() {
 }
 
 @Composable
-fun NombreEcoGuerrero() {
+fun NombreEcoGuerrero(nombreNivel: String, nivel: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         IconoArbolito()
         Spacer(modifier = Modifier.width(10.dp))
         Column(horizontalAlignment = Alignment.Start) {
             Text(
-                text = "EcoGuerrero", style = MaterialTheme.typography.bodyLarge,
+                text = nombreNivel, style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold
             )
             Spacer(Modifier.height(2.dp))
             Text(
-                text = "Nivel 5",
+                text = nivel,
                 style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.Normal
             )
@@ -233,22 +320,22 @@ private fun IconoArbolito() {
 
 
 @Composable
-fun BadgeNuevoLogro(modifier: Modifier) {
+fun BadgeNuevoLogro(ultimoLogro: Logro, modifier: Modifier) {
     Row(
         horizontalArrangement = Arrangement.Start,
         modifier = modifier
             .padding(vertical = 4.dp)
-            .wrapContentHeight() // Ajusta la altura al contenido
+            .wrapContentHeight()
             .background(Color(0xFFFFF1A8))
             .border(0.4.dp, color = Color(0xFFF39A00), shape = RoundedCornerShape(8.dp))
     ) {
-        IconoBadge()
-        TextoBadge()
+        IconoBadge(ultimoLogro.badge)
+        TextoBadge(ultimoLogro.mensajeFelicitacion)
     }
 }
 
 @Composable
-fun TextoBadge() {
+fun TextoBadge(mensajeFelicitacionLogro: String) {
     Column(
         Modifier.padding(horizontal = 2.dp, vertical = 10.dp),
         verticalArrangement = Arrangement.SpaceBetween
@@ -260,7 +347,7 @@ fun TextoBadge() {
             fontWeight = FontWeight.SemiBold
         )
         Text(
-            text = "Felicidades has reciclado 7 dias seguidos!",
+            text = mensajeFelicitacionLogro,
             modifier = Modifier.padding(2.dp),
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Normal
@@ -269,9 +356,9 @@ fun TextoBadge() {
 }
 
 @Composable
-fun IconoBadge() {
+fun IconoBadge(badge: ImageVector) {
     Icon(
-        imageVector = Icons.Outlined.EmojiEvents,
+        imageVector = badge,
         contentDescription = "Ícono de trofeo",
         Modifier
             .padding(10.dp)
@@ -281,7 +368,17 @@ fun IconoBadge() {
 }
 
 @Composable
-fun RachaReciclaje() {
+fun RachaReciclaje(rachaSemanal: Int, rachaMensual: Int) {
+
+    val mensajeRacha: String =
+        if (rachaSemanal > 0)
+            "$rachaSemanal semanas seguidas reciclando!"
+        else if (rachaMensual > 0)
+            "$rachaMensual meses seguidos reciclando!"
+        else ""
+
+    val cantidadIconos =
+        if (rachaSemanal > 0) rachaSemanal else if (rachaMensual > 0) rachaMensual else 0
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -306,16 +403,16 @@ fun RachaReciclaje() {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                repeat(7) { index ->
-                    DiaRacha(activo = index < 7)
+                repeat(cantidadIconos) { index ->
+                    DiaRachaConIcon(activo = index < cantidadIconos)
                 }
             }
 
             Text(
-                text = "¡7 días seguidos reciclando!",
+                text = mensajeRacha,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Gray
@@ -325,20 +422,10 @@ fun RachaReciclaje() {
 }
 
 @Composable
-fun DiaRacha(activo: Boolean) {
-    val infiniteTransition = rememberInfiniteTransition(label = "")
-    val scale by infiniteTransition.animateFloat(
-        initialValue = 1f,
-        targetValue = if (activo) 1.1f else 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1000),
-            repeatMode = RepeatMode.Reverse
-        ), label = ""
-    )
-
+fun DiaRachaConIcon(activo: Boolean) {
     Box(
         modifier = Modifier
-            .size(32.dp)
+            .size(32.dp).padding(horizontal = 2.dp)
             .clip(CircleShape)
             .background(if (activo) Color(0xFFF39A00) else Color.LightGray),
         contentAlignment = Alignment.Center
@@ -353,7 +440,7 @@ fun DiaRacha(activo: Boolean) {
 }
 
 @Composable
-fun ImpactoAmbiental() {
+fun ImpactoAmbiental(cantidadArbolesBeneficiados: Int) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -373,7 +460,7 @@ fun ImpactoAmbiental() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                repeat(3) { index ->
+                repeat(cantidadArbolesBeneficiados) { index ->
                     val infiniteTransition = rememberInfiniteTransition(label = "")
                     val translateY by infiniteTransition.animateFloat(
                         initialValue = 0f,
@@ -395,27 +482,35 @@ fun ImpactoAmbiental() {
                 }
             }
 
-            Text(
-                text = "¡Has salvado el equivalente a 3 árboles! 🌳",
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                style = MaterialTheme.typography.bodySmall
-            )
+            if(cantidadArbolesBeneficiados > 0){
+                Text(
+                    text = "¡Has beneficiado al equivalente a $cantidadArbolesBeneficiados árboles! 🌳",
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    style = MaterialTheme.typography.bodySmall
+                )
 
-            LinearProgressIndicator(
-                progress = 0.85f,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(8.dp)
-                    .clip(RoundedCornerShape(4.dp)),
-                color = MaterialTheme.colorScheme.secondary,
-                trackColor = Color.LightGray
-            )
+                LinearProgressIndicator(
+                    progress = 0.85f,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(8.dp)
+                        .clip(RoundedCornerShape(4.dp)),
+                    color = MaterialTheme.colorScheme.secondary,
+                    trackColor = Color.LightGray
+                )
+            }else{
+                Text(
+                    text = "Aun no tienes estadisticas de impacto ambiental",
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
         }
     }
 }
 
 @Composable
-fun LogrosDesbloqueados() {
+fun LogrosDesbloqueados(logrosEncontrados: List<Logro>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -431,39 +526,41 @@ fun LogrosDesbloqueados() {
                 fontWeight = FontWeight.Bold
             )
 
-            val logros = listOf(
-                "¡Primer Reciclaje!",
-                "Maestro del Plástico",
-                "Defensor del Planeta"
-            )
 
-            logros.forEach { logro ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = Color.LightGray.copy(alpha = 0.2f),
-                            shape = RoundedCornerShape(8.dp)
+            if (logrosEncontrados.isEmpty())
+                Text(
+                    text = "No has desbloqueado ningún logro",
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    style = MaterialTheme.typography.bodySmall
+                )
+            else
+                logrosEncontrados.forEach { logro ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                color = Color.LightGray.copy(alpha = 0.2f),
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.EmojiEvents,
+                            contentDescription = null,
+                            tint = Color(0xFFF39A00),
+                            modifier = Modifier.size(24.dp)
                         )
-                        .padding(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.EmojiEvents,
-                        contentDescription = null,
-                        tint = Color(0xFFF39A00),
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = logro)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = logro.titulo)
+                    }
                 }
-            }
         }
     }
 }
 
 @Composable
-fun EstadisticasCategorias() {
+fun EstadisticasCategorias(nombreYPuntosPorCategoria: Map<String, Int>) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -479,14 +576,39 @@ fun EstadisticasCategorias() {
                 fontWeight = FontWeight.Bold
             )
 
-            val categorias = listOf(
-                Triple("Plástico", 450, MaterialTheme.colorScheme.primary),
-                Triple("Papel", 320, MaterialTheme.colorScheme.secondary),
-                Triple("Vidrio", 280, MaterialTheme.colorScheme.tertiary),
-                Triple("Metal", 200, Color(0xFFF39A00))
-            )
+            // Convertir el mapa en una lista de Triple (nombre, puntos, color)
+            val categorias = nombreYPuntosPorCategoria.map { (categoria, puntos) ->
+                Triple(
+                    categoria,
+                    puntos,
+                    when (categoria) {
+                        "Plásticos" -> MaterialTheme.colorScheme.primary
+                        "Papel y Cartón" -> MaterialTheme.colorScheme.secondary
+                        "Vidrio" -> MaterialTheme.colorScheme.tertiary
+                        "Metales" -> Color(0xFFF39A00)
+                        "Orgánicos" -> Color(0xFF4CAF50)
+                        "Textiles" -> Color(0xFF9C27B0)
+                        "Electrónicos" -> Color(0xFF607D8B)
+                        "Madera" -> Color(0xFF8D6E63)
+                        "Otros" -> Color(0xFF795548)
+                        else -> Color.Gray // Color por defecto para categorías desconocidas
+                    }
+                )
+            }
 
-            categorias.forEach { (categoria, puntos, color) ->
+            // Definir las primeras tres categorías que siempre se mostrarán
+            val categoriasPrioritarias = listOf("Plásticos", "Papel y Cartón", "Vidrio")
+
+            // Filtrar las categorías: mostrar las prioritarias y las que tengan puntos > 0
+            val categoriasFiltradas = categorias.filter { (categoria, puntos, _) ->
+                categoria in categoriasPrioritarias || puntos > 0
+            }
+
+            // Calcular el máximo de puntos para normalizar el progreso
+            val maxPuntos = categoriasFiltradas.maxOfOrNull { it.second }?.toFloat() ?: 1f
+
+            // Mostrar cada categoría dinámicamente
+            categoriasFiltradas.forEach { (categoria, puntos, color) ->
                 Column {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -497,7 +619,7 @@ fun EstadisticasCategorias() {
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     LinearProgressIndicator(
-                        progress = puntos / 450f,
+                        progress = puntos / maxPuntos, // Normalizar el progreso
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(8.dp)
@@ -509,11 +631,4 @@ fun EstadisticasCategorias() {
             }
         }
     }
-}
-
-// Función de vista previa para la pantalla de estadísticas detalladas
-@Preview(showBackground = true)
-@Composable
-fun PreviewDetailedStatisticsScreen() {
-    DetailedStatisticsScreen()
 }

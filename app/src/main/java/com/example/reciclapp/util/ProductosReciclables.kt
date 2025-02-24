@@ -44,4 +44,45 @@ object ProductosReciclables {
         Electrodomesticos, Pallets, RestosDeMuebles, MaderaTratada, Lamparas, Baterias,
         Neumaticos, Ceramicas
     )
+
+    // Función para obtener el total de puntos por categoría
+    fun obtenerPuntosPorCategoria(): Map<String, Int> {
+        // Mapa para almacenar el total de puntos por categoría
+        val puntosPorCategoria = mutableMapOf<String, Int>()
+
+        // Recorrer todos los productos
+        productosPredeterminados.forEach { producto ->
+            // Sumar los puntos de cada producto a su categoría correspondiente
+            puntosPorCategoria[producto.idCategoria] = puntosPorCategoria.getOrDefault(producto.idCategoria, 0) + producto.puntosPorCompra
+        }
+
+        return puntosPorCategoria
+    }
+
+    // Función para obtener el nombre de la categoría y el total de puntos
+    fun obtenerNombreYPuntosPorCategoria(): Map<String, Int> {
+        // Mapa para almacenar el nombre de la categoría y el total de puntos
+        val nombreYPuntosPorCategoria = mutableMapOf<String, Int>()
+
+        // Recorrer todos los productos
+        productosPredeterminados.forEach { producto ->
+            // Obtener el nombre de la categoría (puedes usar un mapa de categorías si lo tienes)
+            val nombreCategoria = when (producto.idCategoria) {
+                "1" -> "Plásticos"
+                "2" -> "Metales"
+                "3" -> "Papel y Cartón"
+                "4" -> "Vidrio"
+                "5" -> "Orgánicos"
+                "6" -> "Textiles"
+                "7" -> "Electrónicos"
+                "8" -> "Madera"
+                "9" -> "Otros"
+                else -> "Desconocido"
+            }
+            // Sumar los puntos de cada producto a su categoría correspondiente
+            nombreYPuntosPorCategoria[nombreCategoria] = nombreYPuntosPorCategoria.getOrDefault(nombreCategoria, 0) + producto.puntosPorCompra
+        }
+
+        return nombreYPuntosPorCategoria
+    }
 }

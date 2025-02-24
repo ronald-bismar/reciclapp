@@ -40,6 +40,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -60,7 +61,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.reciclapp.domain.entities.Categoria
@@ -75,7 +75,10 @@ private const val TAG = "AddItemCardVendedor"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddItemCardVendedor(mainNavController: NavHostController, vendedoresViewModel: VendedoresViewModel = hiltViewModel(key = "UpdateUser")) {
+fun AddItemCardVendedor(
+    mainNavController: NavHostController,
+    vendedoresViewModel: VendedoresViewModel
+) {
 
     var selectedCategory by remember { mutableStateOf<Categoria?>(null) }
     var selectedProduct by remember { mutableStateOf<ProductoReciclable?>(null) }
@@ -91,6 +94,7 @@ fun AddItemCardVendedor(mainNavController: NavHostController, vendedoresViewMode
     var puntosCalculados by remember { mutableIntStateOf(0) }
     val isLoading by vendedoresViewModel.isLoading.observeAsState(false)
     val context = LocalContext.current
+    var isUpdatingProduct by remember { mutableStateOf(false) }
 
     vendedoresViewModel.obtenerProductosPredeterminados()
 
@@ -99,19 +103,29 @@ fun AddItemCardVendedor(mainNavController: NavHostController, vendedoresViewMode
 
     productToUpdate = vendedoresViewModel.productToUpdate.collectAsState().value
 
-    Log.d(TAG, "View model id: ${vendedoresViewModel}")
-    Log.d(TAG, "Producto a actualizar: $productToUpdate")
-
-    if(productToUpdate != null){
-        selectedProduct = productToUpdate
-        selectedCategory = selectedProduct?.let { ListOfCategorias.categorias.find { categoria -> categoria.idCategoria == productToUpdate!!.idCategoria }}
-        selectedUnidad = selectedProduct!!.unidadMedida
+    // Observar cambios en productToUpdate
+    LaunchedEffect(productToUpdate) {
+        if (productToUpdate != null) {
+            selectedProduct = productToUpdate
+            selectedCategory = ListOfCategorias.categorias.find { it.idCategoria == productToUpdate!!.idCategoria }
+            selectedUnidad = productToUpdate!!.unidadMedida
+            cantidad = productToUpdate!!.cantidad.toString()
+            precio = productToUpdate!!.precio.toString()
+            detalles = productToUpdate!!.detallesProducto
+            isUpdatingProduct = true
+        }
     }
 
     LaunchedEffect(Unit) {
         vendedoresViewModel.showToast.collectLatest { message ->
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             mainNavController.popBackStack()
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            vendedoresViewModel.resetProductToUpdate()
         }
     }
 
@@ -364,7 +378,11 @@ fun AddItemCardVendedor(mainNavController: NavHostController, vendedoresViewMode
                                     .clip(RoundedCornerShape(12.dp))
                             ) {
                                 val unidadesDeMedida = selectedCategory?.unidadDeMedida?.split(", ")
-                                    ?: ListOfCategorias.categorias.flatMap { it.unidadDeMedida.split(", ") }.distinct()
+                                    ?: ListOfCategorias.categorias.flatMap {
+                                        it.unidadDeMedida.split(
+                                            ", "
+                                        )
+                                    }.distinct()
 
                                 val unidadesSinRepetir = unidadesDeMedida.distinct()
 
@@ -463,30 +481,48 @@ fun AddItemCardVendedor(mainNavController: NavHostController, vendedoresViewMode
                         val cantidadValue = cantidad.toIntOrNull() ?: 0
                         val precioValue = precio.toDoubleOrNull() ?: 0.0
 
-                        // Crear nuevo producto basado en el seleccionado
-                        selectedProduct?.let { baseProduct ->
-                            vendedoresViewModel.registrarNuevoProducto(
-                                baseProduct.copy(
-                                    idProducto = UUID.randomUUID().toString(),
-                                    detallesProducto = detalles,
-                                    urlImagenProducto = "",
-                                    precio = precioValue,
-                                    fechaPublicacion = Date().toString(),
-                                    fechaModificacion = Date().toString(),
-                                    cantidad = cantidadValue,
-                                    categoria = selectedCategory?.nombre ?: "",
-                                    ubicacionProducto = vendedoresViewModel.user.value?.direccion
-                                        ?: "",
-                                    monedaDeCompra = "Bs",
-                                    unidadMedida = selectedUnidad ?: "",
-                                    puntosPorCompra = puntosCalculados,
-                                    meGusta = 0,
-                                    fueVendida = false,
-                                    idUsuario = vendedoresViewModel.user.value?.idUsuario ?: "0"
-                                ),
-                                imageUris,
-                                context
-                            )
+                        if (isUpdatingProduct) {
+                            productToUpdate?.let { productToUpdate ->
+                                vendedoresViewModel.actualizarProducto(
+                                    productToUpdate.copy(
+                                        nombreProducto = selectedProduct?.nombreProducto ?: "",
+                                        detallesProducto = detalles,
+                                        precio = precioValue,
+                                        fechaModificacion = Date().toString(),
+                                        cantidad = cantidadValue,
+                                        unidadMedida = selectedUnidad ?: "",
+                                        puntosPorCompra = puntosCalculados,
+                                        idUsuario = vendedoresViewModel.user.value?.idUsuario ?: "0"
+                                    ),
+                                    imageUris,
+                                    context
+                                )
+                            }
+                        } else {
+                            selectedProduct?.let { baseProduct ->
+                                vendedoresViewModel.registrarNuevoProducto(
+                                    baseProduct.copy(
+                                        idProducto = UUID.randomUUID().toString(),
+                                        detallesProducto = detalles,
+                                        urlImagenProducto = "",
+                                        precio = precioValue,
+                                        fechaPublicacion = Date().toString(),
+                                        fechaModificacion = Date().toString(),
+                                        cantidad = cantidadValue,
+                                        categoria = selectedCategory?.nombre ?: "",
+                                        ubicacionProducto = vendedoresViewModel.user.value?.direccion
+                                            ?: "",
+                                        monedaDeCompra = "Bs",
+                                        unidadMedida = selectedUnidad ?: "",
+                                        puntosPorCompra = puntosCalculados,
+                                        meGusta = 0,
+                                        fueVendida = false,
+                                        idUsuario = vendedoresViewModel.user.value?.idUsuario ?: "0"
+                                    ),
+                                    imageUris,
+                                    context
+                                )
+                            }
                         }
                     },
                     modifier = Modifier
@@ -496,13 +532,14 @@ fun AddItemCardVendedor(mainNavController: NavHostController, vendedoresViewMode
                         containerColor = MaterialTheme.colorScheme.primary
                     )
                 ) {
-                    Text("Publicar material")
+                    Text(if (isUpdatingProduct) "Actualizar Producto" else "Registrar Producto")
                 }
             }
 
         }
     }
 }
+
 
 @Composable
 private fun TextoPuntosPorTransaccion(puntos: Int) {

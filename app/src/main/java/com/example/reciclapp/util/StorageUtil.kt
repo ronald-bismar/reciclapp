@@ -10,18 +10,22 @@ import com.google.firebase.storage.ktx.storage
 import java.io.InputStream
 import java.util.UUID
 
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+
 class StorageUtil {
 
     companion object {
 
         /**
-         * Sube una imagen a Firebase Storage y devuelve la URL de descarga a través de la función de callback.
+         * Sube una imagen a Firebase Storage y devuelve la URL de descarga.
          *
          * @param uri La URI de la imagen a subir.
          * @param context El contexto donde se mostrará el mensaje del toast.
-         * @param onComplete Una funcion callback que se ejecuta cuando se haya realizado la operacion.
+         * @return La URL de descarga de la imagen, o null si falla.
          */
-        fun uploadToStorage(uri: Uri, context: Context, onComplete: (String?) -> Unit) {
+        suspend fun uploadToStorage(uri: Uri, context: Context): String? = suspendCancellableCoroutine { continuation ->
             val storage = Firebase.storage
             val storageRef = storage.reference
             val uniqueImageName = UUID.randomUUID().toString()
@@ -33,21 +37,21 @@ class StorageUtil {
                     val uploadTask = imageRef.putBytes(byteArray)
                     uploadTask.addOnFailureListener {
                         showToast(context, "Upload failed")
-                        onComplete(null)
+                        continuation.resume(null)
                     }.addOnSuccessListener {
                         imageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
-                            onComplete(downloadUrl.toString())
+                            continuation.resume(downloadUrl.toString())
                         }.addOnFailureListener {
-                            onComplete(null)
+                            continuation.resume(null)
                         }
                     }
                 } else {
                     showToast(context, "Failed to read image")
-                    onComplete(null)
+                    continuation.resume(null)
                 }
             } catch (e: Exception) {
-                Log.d("StorageUtil","Error: ${e.message}")
-                onComplete(null)
+                Log.d("StorageUtil", "Error: ${e.message}")
+                continuation.resumeWithException(e)
             }
         }
 
