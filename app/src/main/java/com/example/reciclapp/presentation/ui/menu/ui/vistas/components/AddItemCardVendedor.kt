@@ -492,7 +492,7 @@ fun AddItemCardVendedor(
                                         cantidad = cantidadValue,
                                         unidadMedida = selectedUnidad ?: "",
                                         puntosPorCompra = puntosCalculados,
-                                        idUsuario = vendedoresViewModel.user.value?.idUsuario ?: "0"
+                                        idVendedor = vendedoresViewModel.user.value?.idUsuario ?: "0"
                                     ),
                                     imageUris,
                                     context
@@ -517,7 +517,7 @@ fun AddItemCardVendedor(
                                         puntosPorCompra = puntosCalculados,
                                         meGusta = 0,
                                         fueVendida = false,
-                                        idUsuario = vendedoresViewModel.user.value?.idUsuario ?: "0"
+                                        idVendedor = vendedoresViewModel.user.value?.idUsuario ?: "0"
                                     ),
                                     imageUris,
                                     context

@@ -57,7 +57,7 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
     override suspend fun listarProductosPorVendedor(idVendedor: String): MutableList<ProductoReciclable> {
         val productosDeVendedor = mutableListOf<ProductoReciclable>()
         val querySnapshot =
-            service.collection("productoReciclable").whereEqualTo("idUsuario", idVendedor).get().await()
+            service.collection("productoReciclable").whereEqualTo("idVendedor", idVendedor).get().await()
         for (document in querySnapshot.documents) {
             val productoReciclable = document.toObject(ProductoReciclable::class.java)
             productoReciclable?.let { productosDeVendedor.add(it) }
@@ -73,10 +73,10 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
             .await()
     }
 
-    override suspend fun listarMaterialesPorComprador(idComprador: String): MutableList<ProductoReciclable> {
+    override suspend fun listarProductosPorComprador(idComprador: String): MutableList<ProductoReciclable> {
         val materiales = mutableListOf<ProductoReciclable>()
         val querySnapshot =
-            service.collection("productoReciclable").whereEqualTo("idUsuario", idComprador).get().await()
+            service.collection("productoReciclable").whereEqualTo("idComprador", idComprador).get().await()
         for(document in querySnapshot.documents){
             val material = document.toObject(ProductoReciclable::class.java)
             material?.let { materiales.add(it) }
@@ -84,12 +84,12 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
         return materiales
     }
 
-    override suspend fun registrarProductos(materiales: List<ProductoReciclable>) {
+    override suspend fun registrarProductos(productoReciclables: List<ProductoReciclable>) {
         try {
-            for (material in materiales) {
+            for (productoReciclable in productoReciclables) {
                 service.collection("productoReciclable")
-                    .document(material.idProducto)
-                    .set(material)
+                    .document(productoReciclable.idProducto)
+                    .set(productoReciclable)
                     .await()
             }
         } catch (e: Exception) {

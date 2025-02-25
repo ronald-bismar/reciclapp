@@ -6,6 +6,6 @@ import javax.inject.Inject
 
 class ListarMaterialesPorCompradorUseCase @Inject constructor(private val materialRepository: ProductoRepository) {
     suspend fun execute(idUsuario: String): MutableList<ProductoReciclable> {
-        return materialRepository.listarMaterialesPorComprador(idUsuario)
+        return materialRepository.listarProductosPorComprador(idUsuario)
     }
 }

@@ -57,9 +57,12 @@ fun NavGraph(
     getUserPreferencesUseCase: GetUserPreferencesUseCase
 ) {
     var nextScreen by remember { mutableStateOf("splash") }
+    var tipoDeUsuario by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
-        nextScreen = getNextScreen(getUserPreferencesUseCase)
+        val (screen, userType) = getNextScreenAndKindUser(getUserPreferencesUseCase)
+        nextScreen = screen
+        tipoDeUsuario = userType
     }
 
     NavHost(navController = mainNavController, startDestination = "splash") {
@@ -80,7 +83,7 @@ fun NavGraph(
             RegistroScreen(registroViewModel, mainNavController)
         }
         composable("menu") {
-            PantallaPrincipal(mainNavController)
+            PantallaPrincipal(mainNavController, tipoDeUsuario)
         }
         composable("pantalla presentacion") {
             PantallaPresentacion(mainNavController)
@@ -143,8 +146,10 @@ fun NavGraph(
     }
 }
 
-suspend fun getNextScreen(getUserPreferencesUseCase: GetUserPreferencesUseCase): String {
-    return withContext(Dispatchers.IO) {
-        if (getUserPreferencesUseCase.execute()?.nombre != "") "menu" else "login"
-    }
+suspend fun getNextScreenAndKindUser(getUserPreferencesUseCase: GetUserPreferencesUseCase): Pair<String, String> {
+    val userPreferences = withContext(Dispatchers.IO) { getUserPreferencesUseCase.execute() }
+    val nextScreen = if (userPreferences?.nombre != "") "menu" else "login"
+    val tipoDeUsuario = userPreferences?.tipoDeUsuario ?: ""
+
+    return nextScreen to tipoDeUsuario
 }

@@ -57,12 +57,12 @@ class CompradorRepositoryImpl @Inject constructor(
     }
 
     override suspend fun publicarListaDeMaterialesQueCompra(
-        materiales: List<ProductoReciclable>,
+        productoReciclables: List<ProductoReciclable>,
     ) {
-        materiales.map { material ->
+        productoReciclables.map { productoReciclable ->
             try {
-                registrarProductoUseCase.execute(material)
-                Result.success(material)
+                registrarProductoUseCase.execute(productoReciclable)
+                Result.success(productoReciclable)
             } catch (e: Exception) {
                 Result.failure(e)
             }
@@ -75,7 +75,7 @@ class CompradorRepositoryImpl @Inject constructor(
         val listaDeUsuariosYProductos = mutableListOf<HashMap<Usuario, ProductoReciclable>>()
 
         for (vendedor in vendedores) {
-            val productosDelVendedor = productoReciclables.filter { it.idUsuario == vendedor.idUsuario }
+            val productosDelVendedor = productoReciclables.filter { it.idVendedor == vendedor.idUsuario }
             for (producto in productosDelVendedor) {
                 val map = hashMapOf(vendedor to producto)
                 listaDeUsuariosYProductos.add(map)

@@ -35,8 +35,14 @@ import com.example.reciclapp.presentation.viewmodel.UserViewModel
 fun MenuScreen(
     navController: NavHostController,
     menuItems: List<ItemsMenu>,
-    userViewModel: UserViewModel
 ) {
+    val currentRoute = currentRoute(navController)
+
+    // Si la ruta actual es nula o no pertenece a `menuItems`, navegar a la tercera pantalla
+    if (currentRoute == null || menuItems.none { it.ruta == currentRoute }) {
+        navController.navigate(menuItems[2].ruta) // Navegar a la tercera pantalla
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -51,15 +57,13 @@ fun MenuScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            menuItems.forEachIndexed { index, item ->
-                val selected = currentRoute(navController) == item.ruta
+            menuItems.forEach { item ->
+                val selected = currentRoute == item.ruta
                 CustomNavigationItem(
                     selected = selected,
                     onClick = { navController.navigate(item.ruta) },
                     icon = item.icon,
                     label = item.title,
-                    isFirst = index == 0,
-                    isLast = index == menuItems.size - 1
                 )
             }
         }
@@ -72,17 +76,10 @@ fun CustomNavigationItem(
     onClick: () -> Unit,
     icon: ImageVector,
     label: String,
-    isFirst: Boolean = false,
-    isLast: Boolean = false
 ) {
     val size by animateDpAsState(if (selected) 48.dp else 20.dp)
     val elevation by animateDpAsState(if (selected) 10.dp else 0.dp)
     val yOffset by animateDpAsState(if (selected) (-25).dp else 0.dp)
-
-    val backgroundColor =
-        if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
-    val contentColor =
-        if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
 
     Box(
         modifier = Modifier

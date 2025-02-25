@@ -1,5 +1,6 @@
 package com.example.reciclapp.presentation.ui.menu.ui
 
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,6 +21,7 @@ import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -60,6 +63,8 @@ fun SocialMediaScreenVendedores(
 
     val productos by vendedoresViewModel.productos.collectAsStateWithLifecycle()
 
+    Log.d("Productos","Productos: $productos")
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -71,7 +76,7 @@ fun SocialMediaScreenVendedores(
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.surface)
             ) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                EmptyProductsMessage()
             }
 
         } else {
@@ -86,6 +91,40 @@ fun SocialMediaScreenVendedores(
         }
     }
 }
+
+@Composable
+fun EmptyProductsMessage() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surface),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.ShoppingCart,
+                contentDescription = "No hay productos",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(64.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "No hay productos disponibles",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Por favor intenta más tarde.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+            )
+        }
+    }
+}
+
 
 @Composable
 fun CardSocialMediaReciclador(
@@ -130,7 +169,7 @@ fun CardSocialMediaReciclador(
                 color = Color.Black
             )
             Text(
-                text = precio,
+                text = "$precio ${productoReciclable.unidadMedida}",
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center,
                 color = Color.Black
@@ -172,7 +211,7 @@ fun CardSocialMediaReciclador(
                 }
                 IconButton(onClick = {
                     val profileRoute =
-                        "vendedorPerfil/${productoReciclable.idUsuario}" //vamos a pantalla perfil del vendedor
+                        "vendedorPerfil/${productoReciclable.idVendedor}" //vamos a pantalla perfil del vendedor
 
                     mainNavController.navigate(profileRoute)
                 }, modifier = Modifier.size(24.dp)) {

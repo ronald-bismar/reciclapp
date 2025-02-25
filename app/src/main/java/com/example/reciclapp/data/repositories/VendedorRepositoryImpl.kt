@@ -82,7 +82,7 @@ class VendedorRepositoryImpl @Inject constructor(
 
         // Calcular la suma de los precios para cada idComprador
         for (material in materiales) {
-            val idComprador = material.idUsuario
+            val idComprador = material.idVendedor
             val precioMaterial = material.precio
 
             sumasPorComprador[idComprador] = sumasPorComprador.getOrDefault(idComprador, 0.0) + precioMaterial

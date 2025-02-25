@@ -183,7 +183,7 @@ class VendedoresViewModel @Inject constructor(
 
                 // Ejecutar la actualización del producto
                 actualizarProductoUseCase.execute(productoActualizado)
-                fetchProductosByVendedor(productoReciclable.idUsuario)
+                fetchProductosByVendedor(productoReciclable.idVendedor)
 
                 // Mostrar mensaje de éxito
                 _showToast.emit("Producto actualizado correctamente")
