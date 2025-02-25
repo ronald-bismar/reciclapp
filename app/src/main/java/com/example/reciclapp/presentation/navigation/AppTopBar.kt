@@ -70,7 +70,6 @@ fun AppTopBar(
 ) {
     // Observa el estado del usuario y del logout
     val user by userViewModel.user.observeAsState()
-    Log.d("UserViewModel", "userViewModelAppBar: $userViewModel")
 
 
     val logOutState by userViewModel.logOutState.observeAsState()
@@ -97,7 +96,9 @@ fun AppTopBar(
         },
         actions = {
             IconButton(onClick = {
-                navControllerMain.navigate("AñadirProductoReciclable") {
+                navControllerMain.navigate(if ((user?.tipoDeUsuario?.uppercase()
+                        ?: "") == "COMPRADOR"
+                ) "AñadirProductoReciclableComprador" else "AñadirProductoReciclable") {
                     popUpTo(navController.graph.startDestinationId) {
                         saveState = true
                     }

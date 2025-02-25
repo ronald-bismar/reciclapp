@@ -39,7 +39,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -47,7 +46,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -102,7 +100,7 @@ fun Comprador(
     }
 
     val selectedComprador = compradoresViewModel.selectedComprador.observeAsState().value
-    val materiales = compradoresViewModel.materiales.collectAsState().value
+    val materiales = compradoresViewModel.productos.collectAsState().value
     val comentarios = compradoresViewModel.comentarios.collectAsState().value
 
     val stateNewComment by compradoresViewModel.stateNewComment.observeAsState()

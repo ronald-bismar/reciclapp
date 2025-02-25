@@ -45,7 +45,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -65,6 +64,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.reciclapp.domain.entities.Categoria
 import com.example.reciclapp.domain.entities.ProductoReciclable
+import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 import kotlinx.coroutines.flow.collectLatest
 import java.util.Date
@@ -75,33 +75,30 @@ private const val TAG = "AddItemCardVendedor"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddItemCardVendedor(
+fun CrearProductoReciclableComprador(
     mainNavController: NavHostController,
-    vendedoresViewModel: VendedoresViewModel
+    compradoresViewModel: CompradoresViewModel
 ) {
 
     var selectedCategory by remember { mutableStateOf<Categoria?>(null) }
     var selectedProduct by remember { mutableStateOf<ProductoReciclable?>(null) }
     var productToUpdate by remember { mutableStateOf<ProductoReciclable?>(null) }
-    var cantidad by remember { mutableStateOf("") }
     var selectedUnidad by remember { mutableStateOf<String?>(null) }
     var precio by remember { mutableStateOf("") }
     var expandedCategory by remember { mutableStateOf(false) }
     var expandedProducts by remember { mutableStateOf(false) }
     var expandedUnidadDeMedida by remember { mutableStateOf(false) }
-    var imageUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
     var detalles by remember { mutableStateOf("") }
-    var puntosCalculados by remember { mutableIntStateOf(0) }
-    val isLoading by vendedoresViewModel.isLoading.observeAsState(false)
+    val isLoading by compradoresViewModel.isLoading.observeAsState(false)
     val context = LocalContext.current
     var isUpdatingProduct by remember { mutableStateOf(false) }
 
-    vendedoresViewModel.obtenerProductosPredeterminados()
+    compradoresViewModel.obtenerProductosPredeterminados()
 
     val productosPredeterminados =
-        vendedoresViewModel.productosPredeterminados.collectAsState().value
+        compradoresViewModel.productosPredeterminados.collectAsState().value
 
-    productToUpdate = vendedoresViewModel.productToUpdate.collectAsState().value
+    productToUpdate = compradoresViewModel.productToUpdate.collectAsState().value
 
     // Observar cambios en productToUpdate
     LaunchedEffect(productToUpdate) {
@@ -109,7 +106,6 @@ fun AddItemCardVendedor(
             selectedProduct = productToUpdate
             selectedCategory = ListOfCategorias.categorias.find { it.idCategoria == productToUpdate!!.idCategoria }
             selectedUnidad = productToUpdate!!.unidadMedida
-            cantidad = productToUpdate!!.cantidad.toString()
             precio = productToUpdate!!.precio.toString()
             detalles = productToUpdate!!.detallesProducto
             isUpdatingProduct = true
@@ -117,7 +113,7 @@ fun AddItemCardVendedor(
     }
 
     LaunchedEffect(Unit) {
-        vendedoresViewModel.showToast.collectLatest { message ->
+        compradoresViewModel.showToast.collectLatest { message ->
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             mainNavController.popBackStack()
         }
@@ -125,7 +121,7 @@ fun AddItemCardVendedor(
 
     DisposableEffect(Unit) {
         onDispose {
-            vendedoresViewModel.resetProductToUpdate()
+            compradoresViewModel.resetProductToUpdate()
         }
     }
 
@@ -204,10 +200,6 @@ fun AddItemCardVendedor(
                                         selectedProduct = null
                                         selectedUnidad = ""
                                         expandedCategory = false
-                                        puntosCalculados = categoria.calcularPuntosTransaccion(
-                                            categoria,
-                                            cantidad.toDoubleOrNull() ?: 0.0
-                                        )
                                     },
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -289,45 +281,12 @@ fun AddItemCardVendedor(
                     }
                 }
 
-                TextoPuntosPorTransaccion(puntosCalculados)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 2.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "Cantidad",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(bottom = 4.dp),
-                            fontWeight = FontWeight.Medium
-                        )
-                        OutlinedTextField(
-                            value = cantidad,
-                            onValueChange = {
-                                cantidad = it
-                                puntosCalculados = selectedCategory?.calcularPuntosTransaccion(
-                                    selectedCategory!!, it.toDoubleOrNull() ?: 0.0
-                                ) ?: 0
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
-                                focusedBorderColor = MaterialTheme.colorScheme.primary
-                            ),
-                            shape = RoundedCornerShape(12.dp),
-                            textStyle = MaterialTheme.typography.bodyLarge.copy(
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Medium,
-                                textAlign = TextAlign.Center
-                            )
-                        )
-
-                    }
 
                     // Columna para "Unidad de medida" (3/4 del espacio)
                     Column(modifier = Modifier.weight(2f)) {
@@ -440,11 +399,6 @@ fun AddItemCardVendedor(
                     )
                 }
 
-                ImagePickerPanel(
-                    imageUris = imageUris,
-                    onImagesSelected = { imageUris = it }
-                )
-
                 // Detalles adicionales
                 Column(
                     modifier = Modifier
@@ -478,29 +432,24 @@ fun AddItemCardVendedor(
 
                 Button(
                     onClick = {
-                        val cantidadValue = cantidad.toIntOrNull() ?: 0
                         val precioValue = precio.toDoubleOrNull() ?: 0.0
 
                         if (isUpdatingProduct) {
                             productToUpdate?.let { productToUpdate ->
-                                vendedoresViewModel.actualizarProducto(
+                                compradoresViewModel.actualizarProducto(
                                     productToUpdate.copy(
                                         nombreProducto = selectedProduct?.nombreProducto ?: "",
                                         detallesProducto = detalles,
                                         precio = precioValue,
                                         fechaModificacion = Date().toString(),
-                                        cantidad = cantidadValue,
                                         unidadMedida = selectedUnidad ?: "",
-                                        puntosPorCompra = puntosCalculados,
-                                        idVendedor = vendedoresViewModel.user.value?.idUsuario ?: "0"
-                                    ),
-                                    imageUris,
-                                    context
+                                        idComprador = compradoresViewModel.myUser.value?.idUsuario ?: "0"
+                                    )
                                 )
                             }
                         } else {
                             selectedProduct?.let { baseProduct ->
-                                vendedoresViewModel.registrarNuevoProducto(
+                                compradoresViewModel.registrarNuevoProducto(
                                     baseProduct.copy(
                                         idProducto = UUID.randomUUID().toString(),
                                         detallesProducto = detalles,
@@ -508,19 +457,15 @@ fun AddItemCardVendedor(
                                         precio = precioValue,
                                         fechaPublicacion = Date().toString(),
                                         fechaModificacion = Date().toString(),
-                                        cantidad = cantidadValue,
                                         categoria = selectedCategory?.nombre ?: "",
-                                        ubicacionProducto = vendedoresViewModel.user.value?.direccion
+                                        ubicacionProducto = compradoresViewModel.myUser.value?.direccion
                                             ?: "",
                                         monedaDeCompra = "Bs",
                                         unidadMedida = selectedUnidad ?: "",
-                                        puntosPorCompra = puntosCalculados,
                                         meGusta = 0,
                                         fueVendida = false,
-                                        idVendedor = vendedoresViewModel.user.value?.idUsuario ?: "0"
-                                    ),
-                                    imageUris,
-                                    context
+                                        idComprador = compradoresViewModel.myUser.value?.idUsuario ?: "0"
+                                    )
                                 )
                             }
                         }

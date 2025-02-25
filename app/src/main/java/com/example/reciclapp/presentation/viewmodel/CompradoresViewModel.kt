@@ -1,5 +1,7 @@
 package com.example.reciclapp.presentation.viewmodel
 
+import android.content.Context
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -12,12 +14,19 @@ import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.usecases.comentario.ListarComentariosDeCompradorUseCase
 import com.example.reciclapp.domain.usecases.comprador.GetCompradorUseCase
-import com.example.reciclapp.domain.usecases.producto.ListarMaterialesPorCompradorUseCase
+import com.example.reciclapp.domain.usecases.producto.ActualizarProductoUseCase
+import com.example.reciclapp.domain.usecases.producto.CalcularCO2AhorradoEnKilos
+import com.example.reciclapp.domain.usecases.producto.ListarProductosPorCompradorUseCase
+import com.example.reciclapp.domain.usecases.producto.ObtenerProductosPredeterminados
+import com.example.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.example.reciclapp.domain.usecases.vendedor.ComentarACompradorUseCase
 import com.example.reciclapp.util.GenerateID
+import com.example.reciclapp.util.StorageUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -28,33 +37,54 @@ import javax.inject.Inject
 @HiltViewModel
 class CompradoresViewModel @Inject constructor(
     private val getCompradorUseCase: GetCompradorUseCase,
-    private val listarMaterialesPorCompradorUseCase: ListarMaterialesPorCompradorUseCase,
+    private val listarProductosPorCompradorUseCase: ListarProductosPorCompradorUseCase,
     private val listarComentariosDeCompradorUseCase: ListarComentariosDeCompradorUseCase,
     private val getUserPreferencesUseCase: GetUserPreferencesUseCase,
     private val comentarACompradorUseCase: ComentarACompradorUseCase,
+    private val obtenerProductosPredeterminados: ObtenerProductosPredeterminados,
+    private val actualizarProductoUseCase: ActualizarProductoUseCase,
+    private val registrarProductoUseCase: RegistrarProductoUseCase,
+    private val calcularCO2AhorradoEnKilos: CalcularCO2AhorradoEnKilos
 ) :
     ViewModel(
     ) {
 
+    private val _showToast = MutableSharedFlow<String>()
+    val showToast: SharedFlow<String> = _showToast
+
     init {
         loadMyUserPreferences()
-        Log.d("MyUser", "MyUser: $myUser")
     }
 
     private val _myUser = MutableLiveData(Usuario())
-    private val myUser: LiveData<Usuario> get() = _myUser
+    val myUser: LiveData<Usuario> get() = _myUser
 
     private val _selectedComprador = MutableLiveData(Usuario())
     val selectedComprador: LiveData<Usuario> = _selectedComprador
 
-    private val _materiales = MutableStateFlow<MutableList<ProductoReciclable>>(mutableListOf())
-    val materiales: StateFlow<MutableList<ProductoReciclable>> = _materiales
+    private val _productos = MutableStateFlow<MutableList<ProductoReciclable>>(mutableListOf())
+    val productos: StateFlow<MutableList<ProductoReciclable>> = _productos
 
     private val _comentarios = MutableStateFlow<MutableList<Comentario>>(mutableListOf())
     val comentarios: StateFlow<MutableList<Comentario>> = _comentarios
 
     private val _stateNewComment = MutableLiveData<Result<Comentario>?>()
     val stateNewComment: LiveData<Result<Comentario>?> get() = _stateNewComment
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _productosPredeterminados = MutableStateFlow<MutableList<ProductoReciclable>>(mutableListOf())
+    val productosPredeterminados: StateFlow<MutableList<ProductoReciclable>> = _productosPredeterminados
+
+    private val _productToUpdate = MutableStateFlow<ProductoReciclable?>(null)
+    val productToUpdate: StateFlow<ProductoReciclable?> = _productToUpdate
+
+    private val _co2AhorradoEnKilos = MutableStateFlow(0.0)
+    val co2AhorradoEnKilos: StateFlow<Double> = _co2AhorradoEnKilos
+
+    private val _productosActivos = MutableStateFlow(0)
+    val productosActivos: StateFlow<Int> = _productosActivos
 
     private fun loadMyUserPreferences() {
         viewModelScope.launch {
@@ -71,13 +101,19 @@ class CompradoresViewModel @Inject constructor(
 
     fun fetchMaterialesByComprador(idComprador: String) {
         viewModelScope.launch {
-            _materiales.value = listarMaterialesPorCompradorUseCase.execute(idComprador)
+            _productos.value = listarProductosPorCompradorUseCase.execute(idComprador)
         }
     }
 
     fun fetchComentariosByComprador(idComprador: String) {
         viewModelScope.launch {
             _comentarios.value = listarComentariosDeCompradorUseCase.execute(idComprador)
+        }
+    }
+
+    fun obtenerProductosPredeterminados() {
+        viewModelScope.launch {
+            _productosPredeterminados.value = obtenerProductosPredeterminados.execute()
         }
     }
 
@@ -118,8 +154,87 @@ class CompradoresViewModel @Inject constructor(
         }
     }
 
+    fun registrarNuevoProducto(
+        productoReciclable: ProductoReciclable
+    ) {
+        _isLoading.value = true
+
+        viewModelScope.launch {
+            try {
+
+                // Registrar el producto
+                registrarProductoUseCase.execute(productoReciclable)
+
+                // Mostrar mensaje de éxito
+                _showToast.emit("Producto registrado correctamente")
+            } catch (e: Exception) {
+                // Manejar errores
+                Log.e("VendedoresViewModel", "Error al registrar el producto", e)
+                _showToast.emit("Error al registrar el producto")
+            } finally {
+                // Finalizar el estado de carga
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun actualizarProducto(
+        productoReciclable: ProductoReciclable
+    ) {
+        _isLoading.value = true
+
+        viewModelScope.launch {
+            try {
+
+                // Ejecutar la actualización del producto
+                actualizarProductoUseCase.execute(productoReciclable)
+                fetchProductosByVendedor(productoReciclable.idVendedor)
+
+                // Mostrar mensaje de éxito
+                _showToast.emit("Producto actualizado correctamente")
+            } catch (e: Exception) {
+                // Manejar errores
+                Log.e("VendedoresViewModel", "Error al actualizar el producto", e)
+                _showToast.emit("Error al actualizar el producto")
+            } finally {
+                // Finalizar el estado de carga
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun fetchProductosByVendedor(userId: String) {
+        viewModelScope.launch {
+            _productos.value = listarProductosPorCompradorUseCase.execute(userId)
+            contarProductosActivos()
+            calcularCO2AhorradoEnKilos()
+        }
+    }
+
+    private fun calcularCO2AhorradoEnKilos() {
+        viewModelScope.launch {
+            val productosReciclables = _productos.value
+            _co2AhorradoEnKilos.value = calcularCO2AhorradoEnKilos.execute(productosReciclables)
+        }
+    }
+
+    fun contarProductosActivos() {
+        viewModelScope.launch {
+            Log.d("VendedoresViewModel", "Productos ${_productos.value}")
+
+
+            _productosActivos.value = _productos.value.filter { !it.fueVendida }.size
+
+            Log.d("VendedoresViewModel", "Productos activos: ${_productosActivos.value}")
+        }
+    }
+
     fun resetState() {
         _stateNewComment.value = null
+    }
+
+    fun resetProductToUpdate() {
+        _productToUpdate.value = null
     }
 
 }

@@ -4,7 +4,7 @@ import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.repositories.ProductoRepository
 import javax.inject.Inject
 
-class ListarMaterialesPorCompradorUseCase @Inject constructor(private val materialRepository: ProductoRepository) {
+class ListarProductosPorCompradorUseCase @Inject constructor(private val materialRepository: ProductoRepository) {
     suspend fun execute(idUsuario: String): MutableList<ProductoReciclable> {
         return materialRepository.listarProductosPorComprador(idUsuario)
     }

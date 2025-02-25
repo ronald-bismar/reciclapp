@@ -1,6 +1,7 @@
 package com.example.reciclapp.presentation.navigation
 
-import AddItemCardVendedor
+import CrearProductoReciclableComprador
+import CrearProductoReciclableVendedor
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -137,9 +138,15 @@ fun NavGraph(
                 MapsView(idUsuario = idUsuario, mainNavController = mainNavController)
             }
         }
+
         composable("AñadirProductoReciclable") {
-            AddItemCardVendedor(mainNavController, vendedoresViewModel)
+            CrearProductoReciclableVendedor(mainNavController, vendedoresViewModel)
         }
+
+        composable("AñadirProductoReciclableComprador") {
+            CrearProductoReciclableComprador(mainNavController, compradoresViewModel)
+        }
+
         composable("MyProductsScreen") {
             MyProductsScreen(mainNavController, vendedoresViewModel)
         }

@@ -228,7 +228,7 @@ fun MarkerDialog(
     compradoresViewModel: CompradoresViewModel = hiltViewModel()
 ) {
 
-    val materiales = compradoresViewModel.materiales.collectAsState().value
+    val materiales = compradoresViewModel.productos.collectAsState().value
 
     markerData.usuario.idUsuario?.let { compradoresViewModel.fetchMaterialesByComprador(it) }
 
