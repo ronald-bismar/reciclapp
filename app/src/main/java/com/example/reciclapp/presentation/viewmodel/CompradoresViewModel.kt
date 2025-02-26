@@ -1,7 +1,5 @@
 package com.example.reciclapp.presentation.viewmodel
 
-import android.content.Context
-import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -22,7 +20,6 @@ import com.example.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.example.reciclapp.domain.usecases.vendedor.ComentarACompradorUseCase
 import com.example.reciclapp.util.GenerateID
-import com.example.reciclapp.util.StorageUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -74,8 +71,10 @@ class CompradoresViewModel @Inject constructor(
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _productosPredeterminados = MutableStateFlow<MutableList<ProductoReciclable>>(mutableListOf())
-    val productosPredeterminados: StateFlow<MutableList<ProductoReciclable>> = _productosPredeterminados
+    private val _productosPredeterminados =
+        MutableStateFlow<MutableList<ProductoReciclable>>(mutableListOf())
+    val productosPredeterminados: StateFlow<MutableList<ProductoReciclable>> =
+        _productosPredeterminados
 
     private val _productToUpdate = MutableStateFlow<ProductoReciclable?>(null)
     val productToUpdate: StateFlow<ProductoReciclable?> = _productToUpdate
@@ -103,6 +102,10 @@ class CompradoresViewModel @Inject constructor(
         viewModelScope.launch {
             _productos.value = listarProductosPorCompradorUseCase.execute(idComprador)
         }
+    }
+
+    fun getProductosVendidos(): List<ProductoReciclable>{
+        return _productos.value.filter { producto -> producto.fueVendida && producto.idVendedor != ""}
     }
 
     fun fetchComentariosByComprador(idComprador: String) {
@@ -150,7 +153,8 @@ class CompradoresViewModel @Inject constructor(
             }
         } else {
             // Manejar el caso donde `myUser` o `selectedComprador` son nulos
-            _stateNewComment.value = Result.failure(IllegalStateException("Usuario o comprador no seleccionado."))
+            _stateNewComment.value =
+                Result.failure(IllegalStateException("Usuario o comprador no seleccionado."))
         }
     }
 
@@ -188,7 +192,7 @@ class CompradoresViewModel @Inject constructor(
 
                 // Ejecutar la actualización del producto
                 actualizarProductoUseCase.execute(productoReciclable)
-                fetchProductosByVendedor(productoReciclable.idVendedor)
+                fetchProductosByComprador(productoReciclable.idVendedor)
 
                 // Mostrar mensaje de éxito
                 _showToast.emit("Producto actualizado correctamente")
@@ -203,10 +207,9 @@ class CompradoresViewModel @Inject constructor(
         }
     }
 
-    fun fetchProductosByVendedor(userId: String) {
+    fun fetchProductosByComprador(userId: String) {
         viewModelScope.launch {
             _productos.value = listarProductosPorCompradorUseCase.execute(userId)
-            contarProductosActivos()
             calcularCO2AhorradoEnKilos()
         }
     }
@@ -215,17 +218,6 @@ class CompradoresViewModel @Inject constructor(
         viewModelScope.launch {
             val productosReciclables = _productos.value
             _co2AhorradoEnKilos.value = calcularCO2AhorradoEnKilos.execute(productosReciclables)
-        }
-    }
-
-    fun contarProductosActivos() {
-        viewModelScope.launch {
-            Log.d("VendedoresViewModel", "Productos ${_productos.value}")
-
-
-            _productosActivos.value = _productos.value.filter { !it.fueVendida }.size
-
-            Log.d("VendedoresViewModel", "Productos activos: ${_productosActivos.value}")
         }
     }
 

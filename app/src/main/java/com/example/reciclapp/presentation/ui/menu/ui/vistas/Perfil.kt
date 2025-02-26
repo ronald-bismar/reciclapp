@@ -116,7 +116,7 @@ fun Perfil(userViewModel: UserViewModel, navControllerMain: NavHostController) {
             ProfileActions(onEditClick = { showDialog = true })
             ProfileDetails(user)
             ProfileSettings(user)
-            ProfileNuevoObjetoParaVender(navControllerMain)
+            ProfileNuevoObjetoParaVender(navControllerMain, user)
         }
     }
     updateState?.let { result ->
@@ -169,33 +169,44 @@ fun ProfileSettings(user: Usuario) {
 }
 
 @Composable
-fun ProfileNuevoObjetoParaVender(navControllerMain: NavHostController) {
+fun ProfileNuevoObjetoParaVender(navControllerMain: NavHostController, user: Usuario) {
     ProfileSection("Nuevo reciclaje para vender")
-    Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), contentAlignment = Alignment.Center) {
-       Column {
-           // Botón para añadir nuevo objeto vendido
-           Button(
-               onClick = {
-                   navControllerMain.navigate("AñadirProductoReciclable") {
-                   }
-               }, modifier = Modifier.padding(vertical = 16.dp).fillMaxWidth()
-           ) {
-               Icon(Icons.Default.Add, contentDescription = "Añadir")
-               Spacer(modifier = Modifier.width(8.dp))
-               Text("Añadir Nuevo Reciclaje Para Vender")
-           }
-           // Botón para aver mis productos reciclables
-           Button(
-               onClick = {
-                   navControllerMain.navigate("MyProductsScreen") {
-                   }
-               }, modifier = Modifier.padding(vertical = 16.dp).fillMaxWidth()
-           ) {
-               Icon(painter = painterResource(id = R.drawable.ic_leaf), contentDescription = "Ver mis productos reciclables")
-               Spacer(modifier = Modifier.width(8.dp))
-               Text("Mis productos")
-           }
-       }
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column {
+            // Botón para añadir nuevo objeto vendido
+            Button(
+                onClick = {
+                    navControllerMain.navigate("AñadirProductoReciclable")
+                }, modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .fillMaxWidth()
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Añadir")
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Añadir Nuevo Reciclaje Para Vender")
+            }
+            // Botón para aver mis productos reciclables
+            Button(
+                onClick = {
+                    if (user.tipoDeUsuario.uppercase() == "COMPRADOR") navControllerMain.navigate("MyProductsScreenComprador")
+                    else navControllerMain.navigate("MyProductsScreen")
+                }, modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .fillMaxWidth()
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_leaf),
+                    contentDescription = "Ver mis productos reciclables"
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Mis productos")
+            }
+        }
     }
 
 }
@@ -300,15 +311,12 @@ fun EditProfileDialog(
                 CircularProgressIndicator()
             }
         } else if (showDialogAutorizeChangeUser) {
-            VerifyEmailAndCorreoForChangeType(
-                onVerificationSuccess = {
-                    showDialogAutorizeChangeUser = false
-                    showDialogChangeUser = true
-                },
-                onBackPressed = {
-                    showDialogAutorizeChangeUser = false
-                }
-            )
+            VerifyEmailAndCorreoForChangeType(onVerificationSuccess = {
+                showDialogAutorizeChangeUser = false
+                showDialogChangeUser = true
+            }, onBackPressed = {
+                showDialogAutorizeChangeUser = false
+            })
         } else if (showDialogChangeUser) {
             DialogChangeType(isVendedor, userViewModel::onIsVendedorChanged, onBackPressed = {
                 showDialogChangeUser = false
@@ -428,7 +436,8 @@ fun EditProfileContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TextField(value = name, onValueChange = onNameChange, label = { Text("Name") })
-            TextField(value = lastName,
+            TextField(
+                value = lastName,
                 onValueChange = onLastNameChange,
                 label = { Text("Last Name") })
             TextField(value = phone, onValueChange = onPhoneChange, label = { Text("Phone") })
@@ -437,8 +446,7 @@ fun EditProfileContent(
                 onValueChange = onEmailChange,
                 singleLine = true,
                 label = { Text("Email") })
-            Spacer(modifier = Modifier.height(20.dp))
-            /* Text(text = "Cambiar tipo de usuario",
+            Spacer(modifier = Modifier.height(20.dp))/* Text(text = "Cambiar tipo de usuario",
                  color = MaterialTheme.colorScheme.onSurface,
                  fontSize = 18.sp,
                  modifier = Modifier
@@ -479,8 +487,7 @@ fun DialogChangeType(
             .fillMaxWidth()
             .height(300.dp)
             .background(
-                color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(8.dp)
+                color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp)
             )
             .padding(20.dp)
     ) {
@@ -493,13 +500,10 @@ fun DialogChangeType(
                 text = "Deseas cambiar a:",
                 fontSize = 20.sp,
             )
-            UserTypeAnimated(
-                isVendedor = currentKind,
-                onIsVendedorChanged = { it ->
-                    newKind = it
-                    onIsVendedorChanged(newKind)
-                }
-            )
+            UserTypeAnimated(isVendedor = currentKind, onIsVendedorChanged = { it ->
+                newKind = it
+                onIsVendedorChanged(newKind)
+            })
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -553,8 +557,7 @@ fun VerifyEmailAndCorreoForChangeType(
             .fillMaxWidth()
             .height(400.dp)
             .background(
-                color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(8.dp)
+                color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp)
             )
             .padding(20.dp)
     ) {
@@ -578,16 +581,14 @@ fun VerifyEmailAndCorreoForChangeType(
                 style = TextStyle(fontSize = 18.sp, color = Color.Gray)
             )
 
-            TextField(
-                value = email,
+            TextField(value = email,
                 onValueChange = { email = it },
                 label = { Text("Correo electrónico") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier.fillMaxWidth()
             )
 
-            TextField(
-                value = password,
+            TextField(value = password,
                 onValueChange = { password = it },
                 label = { Text("Contraseña") },
                 visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -606,11 +607,9 @@ fun VerifyEmailAndCorreoForChangeType(
             Button(
                 onClick = {
                     userViewModel.verifyAutorizeChangeKindUser(
-                        correo = email,
-                        password = password
+                        correo = email, password = password
                     )
-                },
-                modifier = Modifier.fillMaxWidth()
+                }, modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Verificar", style = TextStyle(fontSize = 18.sp))
             }

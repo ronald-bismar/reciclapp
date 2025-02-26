@@ -1,5 +1,3 @@
-package com.example.reciclapp.presentation.ui.menu.ui.content.mypurchases
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -50,17 +48,14 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
 
-private const val TAG = "MyPurchasesScreen"
-
 @Composable
-fun MyProductsToBuyScreen(
-    mainNavController: NavHostController,
+fun HistorialComprasScreen(
     compradoresViewModel: CompradoresViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
 
-    // Obtener la lista de productos que el comprador compra habitualmente
-    val productosComprados = compradoresViewModel.productos.collectAsState().value
+    // Obtener la lista de productos vendidos
+    val productosVendidos = compradoresViewModel.getProductosVendidos()
     val isLoading = compradoresViewModel.isLoading.value
 
     // Cargar los productos cuando la pantalla se inicia
@@ -101,22 +96,22 @@ fun MyProductsToBuyScreen(
                     // Encabezado
                     item {
                         Text(
-                            text = "Productos que compras",
+                            text = "Historial de Compras 🛒",
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
 
-                    // Mostrar la lista de productos
-                    items(productosComprados) { producto ->
-                        TarjetaProducto(producto)
+                    // Mostrar la lista de productos vendidos
+                    items(productosVendidos) { producto ->
+                        TarjetaProductoVendido(producto)
                     }
 
-                    // Mensaje si no hay productos
+                    // Mensaje si no hay productos vendidos
                     item {
-                        if (productosComprados.isEmpty()) {
-                            EmptyProductsMessage()
+                        if (productosVendidos.isEmpty()) {
+                            EmptyPurchasesMessage()
                         }
                     }
                 }
@@ -126,7 +121,7 @@ fun MyProductsToBuyScreen(
 }
 
 @Composable
-fun TarjetaProducto(producto: ProductoReciclable) {
+fun TarjetaProductoVendido(producto: ProductoReciclable) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -142,23 +137,15 @@ fun TarjetaProducto(producto: ProductoReciclable) {
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Imagen del producto con overlay de categoría
-            Box(modifier = Modifier.size(90.dp)) {
-
-                // Badge de categoría en la esquina
-                Surface(
-                    color = MaterialTheme.colorScheme.secondary,
-                    shape = RoundedCornerShape(topStart = 12.dp, bottomEnd = 12.dp),
-                    modifier = Modifier.align(Alignment.TopCenter)
-                ) {
-                    Text(
-                        text = producto.categoria,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.White,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                    )
-                }
-            }
+            // Imagen del producto
+            Image(
+                painter = rememberAsyncImagePainter(producto.urlImagenProducto),
+                contentDescription = producto.nombreProducto,
+                modifier = Modifier
+                    .size(90.dp)
+                    .clip(RoundedCornerShape(12.dp)),
+                contentScale = ContentScale.Crop
+            )
 
             Spacer(modifier = Modifier.width(16.dp))
 
@@ -252,48 +239,7 @@ fun TarjetaProducto(producto: ProductoReciclable) {
 }
 
 @Composable
-fun ProductoDetalle(
-    icon: ImageVector,
-    texto: String
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(16.dp)
-        )
-        Text(
-            text = texto,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-}
-
-@Composable
-fun ProductoEtiqueta(
-    texto: String,
-    color: Color
-) {
-    Surface(
-        color = color.copy(alpha = 0.1f),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Text(
-            text = texto,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-            color = color,
-            style = MaterialTheme.typography.labelMedium
-        )
-    }
-}
-
-@Composable
-fun EmptyProductsMessage() {
+fun EmptyPurchasesMessage() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -311,45 +257,17 @@ fun EmptyProductsMessage() {
                 tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
             )
             Text(
-                text = "Aún no has seleccionado productos",
+                text = "Aún no tienes compras registradas",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             )
             Text(
-                text = "¡Explora los productos disponibles y añade los que sueles comprar!",
+                text = "¡Explora los productos disponibles y comienza a comprar!",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MyProductsToBuyScreenPreview(){
-    val botellaPlastica = ProductoReciclable(
-        idProducto = "1",
-        nombreProducto = "Botella plástica PET",
-        detallesProducto = "Botellas plásticas de agua y refresco, limpias y comprimidas.",
-        urlImagenProducto = "https://example.com/botella-plastica.jpg",
-        precio = 0.5, // Precio por kilo
-        fechaPublicacion = "2025-02-25",
-        fechaModificacion = "2025-02-25",
-        cantidad = 100,
-        categoria = "Plástico",
-        ubicacionProducto = "La Paz, Bolivia",
-        monedaDeCompra = "Bs",
-        unidadMedida = "kg",
-        puntosPorCompra = 20,
-        meGusta = 15,
-        fueVendida = false,
-        idVendedor = "12345",
-        idComprador = null,
-        idCategoria = "PLASTICO01",
-        emisionCO2Kilo = 2.0,
-        pesoPorUnidad = 0.02 // 20 gramos por botella
-    )
-    TarjetaProducto(botellaPlastica)
 }

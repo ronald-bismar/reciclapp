@@ -75,17 +75,17 @@ fun PantallaPrincipal(navControllerMain: NavController, tipoDeUsuario: String?) 
     val navigationItemsVendedor = listOf(
         ItemsMenu.Pantalla1,
         ItemsMenu.Pantalla2,
-        ItemsMenu.Pantalla3, // Mapa
+        ItemsMenu.Pantalla3,
         ItemsMenu.Pantalla4,
-        ItemsMenu.Pantalla5 // Posts
+        ItemsMenu.Pantalla5
     )
 
     val navigationItemsComprador = listOf(
         ItemsMenu.Pantalla1,
         ItemsMenu.Pantalla2,
-        ItemsMenu.Pantalla5, // Posts
+        ItemsMenu.Pantalla5,
         ItemsMenu.Pantalla4Vendedores,
-        ItemsMenu.Pantalla3, // Mapa
+        ItemsMenu.PantallaHistorialCompras,
     )
 
     // Determinar la navegación predeterminada según el tipo de usuario

@@ -2,6 +2,7 @@ package com.example.reciclapp.presentation.navigation
 
 import CrearProductoReciclableComprador
 import CrearProductoReciclableVendedor
+import HistorialComprasScreen
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -33,6 +34,7 @@ import com.example.reciclapp.presentation.ui.menu.ui.PresentacionAppScreen
 import com.example.reciclapp.presentation.ui.menu.ui.SocialMediaScreenVendedores
 import com.example.reciclapp.presentation.ui.menu.ui.UserTypeScreen
 import com.example.reciclapp.presentation.ui.menu.ui.content.myproducts.MyProductsScreen
+import com.example.reciclapp.presentation.ui.menu.ui.content.mypurchases.MyProductsToBuyScreen
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Comprador
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Perfil
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Vendedor
@@ -149,6 +151,14 @@ fun NavGraph(
 
         composable("MyProductsScreen") {
             MyProductsScreen(mainNavController, vendedoresViewModel)
+        }
+
+        composable("MyProductsScreenComprador") {
+            MyProductsToBuyScreen(mainNavController, compradoresViewModel)
+        }
+
+        composable("HistorialCompras") {
+            HistorialComprasScreen(compradoresViewModel)
         }
     }
 }

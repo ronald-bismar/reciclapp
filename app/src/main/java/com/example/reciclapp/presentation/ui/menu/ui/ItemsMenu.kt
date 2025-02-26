@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -38,5 +39,9 @@ sealed class ItemsMenu(
 
     data object Pantalla4Vendedores : ItemsMenu(Icons.Default.Call, "Vendedor", "Contacto") {
         override val route: String = "pantalla4"
+    }
+
+    data object PantallaHistorialCompras : ItemsMenu(Icons.Default.ShoppingCart , "Compras", "HistorialCompras") {
+        override val route: String = "HistorialCompras"
     }
 }

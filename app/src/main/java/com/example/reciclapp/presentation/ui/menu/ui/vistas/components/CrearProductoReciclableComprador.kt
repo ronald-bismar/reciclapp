@@ -375,7 +375,7 @@ fun CrearProductoReciclableComprador(
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "Precio",
+                        text = "Precio que ofreces por ${selectedUnidad?: "el producto"}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(bottom = 4.dp),
@@ -502,7 +502,7 @@ private fun TextoPuntosPorTransaccion(puntos: Int) {
 @Composable
 private fun Titulo() {
     Text(
-        text = "Producto reciclable a la venta",
+        text = "Nuevo Producto Reciclable que compras",
         style = MaterialTheme.typography.titleLarge,
         fontWeight = FontWeight.Medium
     )

@@ -1,5 +1,6 @@
 package com.example.reciclapp.presentation.navigation.bottom
 
+import HistorialComprasScreen
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -47,6 +48,9 @@ fun BottomNavHost(
         }
         composable(ItemsMenu.Pantalla5.ruta) {
             SocialMediaScreenVendedores(mainNavController)
+        }
+        composable(ItemsMenu.PantallaHistorialCompras.ruta) {
+            HistorialComprasScreen()
         }
     }
 }
