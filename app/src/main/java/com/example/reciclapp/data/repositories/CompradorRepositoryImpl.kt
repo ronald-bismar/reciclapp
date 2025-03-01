@@ -1,12 +1,15 @@
 package com.example.reciclapp.data.repositories
 
 import android.util.Log
+import com.example.reciclapp.domain.entities.EstadoTransaccion
 import com.example.reciclapp.domain.entities.ProductoReciclable
+import com.example.reciclapp.domain.entities.TransaccionPendiente
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.repositories.CompradorRepository
 import com.example.reciclapp.domain.usecases.producto.ListarTodosLosProductosUseCase
 import com.example.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -88,5 +91,90 @@ class CompradorRepositoryImpl @Inject constructor(
 
     override suspend fun hacerOfertaPorMaterialesEnVenta(precioPropuesto: Double) {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun crearTransaccionPendiente(transaccion: TransaccionPendiente) {
+        try {
+            service.collection("TransaccionesPendientes")
+                .document(transaccion.idTransaccion)
+                .set(transaccion)
+                .await()
+        } catch (e: Exception) {
+            Log.e("CompradorRepositoryImpl", "Error al crear transacción pendiente", e)
+            throw e
+        }
+    }
+
+    override suspend fun getTransaccionesPendientes(idUsuario: String): List<TransaccionPendiente> {
+        val transacciones = mutableListOf<TransaccionPendiente>()
+        try {
+            // Consulta para transacciones donde el usuario es comprador
+            val queryComprador = service.collection("TransaccionesPendientes")
+                .whereEqualTo("estado", EstadoTransaccion.PENDIENTE)
+                .whereEqualTo("idComprador", idUsuario)
+                .get()
+                .await()
+
+            // Consulta para transacciones donde el usuario es vendedor
+            val queryVendedor = service.collection("TransaccionesPendientes")
+                .whereEqualTo("estado", EstadoTransaccion.PENDIENTE)
+                .whereEqualTo("idVendedor", idUsuario)
+                .get()
+                .await()
+
+            // Combinar resultados de ambas consultas
+            transacciones.addAll(
+                queryComprador.documents.mapNotNull { document ->
+                    document.toObject(TransaccionPendiente::class.java)
+                }
+            )
+
+            transacciones.addAll(
+                queryVendedor.documents.mapNotNull { document ->
+                    document.toObject(TransaccionPendiente::class.java)
+                }
+            )
+        } catch (e: FirebaseFirestoreException) {
+            Log.e("CompradorRepositoryImpl", "Error al obtener transacciones pendientes", e)
+            throw e
+        } catch (e: Exception) {
+            Log.e("CompradorRepositoryImpl", "Error inesperado", e)
+            throw e
+        }
+        return transacciones
+    }
+
+
+    override suspend fun confirmarTransaccion(idTransaccion: String) {
+        try {
+            // Actualizar el estado de la transacción a COMPLETADA
+            service.collection("TransaccionesPendientes")
+                .document(idTransaccion)
+                .update(mapOf(
+                    "estado" to EstadoTransaccion.COMPLETADA
+                ))
+                .await()
+
+            // Obtener la transacción para actualizar el producto
+            val transaccionSnapshot = service.collection("TransaccionesPendientes")
+                .document(idTransaccion)
+                .get()
+                .await()
+
+            val transaccion = transaccionSnapshot.toObject(TransaccionPendiente::class.java)
+
+            // Actualizar el estado del producto a vendido
+            transaccion?.let {
+                service.collection("productoReciclable")
+                    .document(it.idProducto)
+                    .update(mapOf(
+                        "fueVendida" to true,
+                    ))
+                    .await()
+            }
+        } catch (e: Exception) {
+            Log.e("CompradorRepositoryImpl", "Error al confirmar transacción", e)
+            throw e
+        }
     }
 }

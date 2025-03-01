@@ -31,7 +31,10 @@ import com.example.reciclapp.presentation.ui.menu.ui.IntroductionScreen
 import com.example.reciclapp.presentation.ui.menu.ui.PantallaPresentacion
 import com.example.reciclapp.presentation.ui.menu.ui.PantallaPrincipal
 import com.example.reciclapp.presentation.ui.menu.ui.PresentacionAppScreen
+import com.example.reciclapp.presentation.ui.menu.ui.QRGeneratorScreen
+import com.example.reciclapp.presentation.ui.menu.ui.QRScannerScreen
 import com.example.reciclapp.presentation.ui.menu.ui.SocialMediaScreenVendedores
+import com.example.reciclapp.presentation.ui.menu.ui.TransaccionesPendientesScreen
 import com.example.reciclapp.presentation.ui.menu.ui.UserTypeScreen
 import com.example.reciclapp.presentation.ui.menu.ui.content.myproducts.MyProductsScreen
 import com.example.reciclapp.presentation.ui.menu.ui.content.mypurchases.MyProductsToBuyScreen
@@ -159,6 +162,37 @@ fun NavGraph(
 
         composable("HistorialCompras") {
             HistorialComprasScreen(compradoresViewModel)
+        }
+
+        composable(
+            "qr-generator/{productoId}/{usuarioId}",
+            arguments = listOf(
+                navArgument("productoId") { type = NavType.StringType },
+                navArgument("usuarioId") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val productoId = backStackEntry.arguments?.getString("productoId") ?: ""
+            val usuarioId = backStackEntry.arguments?.getString("usuarioId") ?: ""
+
+            // Obtener producto y usuario usando viewModels
+            val producto = // Obtener producto usando viewModel
+            val usuario = // Obtener usuario usando viewModel
+
+                QRGeneratorScreen(
+                    producto = producto,
+                    usuarioContactado = usuario,
+                    onQRGenerated = {
+                        navController.navigate("contact-options/$usuarioId")
+                    }
+                )
+        }
+
+        composable("qr-scanner") {
+            QRScannerScreen()
+        }
+
+        composable("transacciones-pendientes") {
+            TransaccionesPendientesScreen()
         }
     }
 }
