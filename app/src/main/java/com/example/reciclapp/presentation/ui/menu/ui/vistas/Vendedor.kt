@@ -1,5 +1,6 @@
 package com.example.reciclapp.presentation.ui.menu.ui.vistas
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -41,14 +42,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 
+private const val TAG = "Vendedor"
+
 @Composable
 fun Vendedor(
-    navController: NavController,
+    mainNavController: NavHostController,
     vendedorId: String,
+    productoId: String,
     vendedoresViewModel: VendedoresViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -56,6 +61,11 @@ fun Vendedor(
         vendedoresViewModel.fetchVendedorById(vendedorId)
         vendedoresViewModel.fetchProductosByVendedor(vendedorId)
     }
+
+    LaunchedEffect(productoId) {
+        Log.d(TAG, "Id del vendedor: $vendedorId")
+    }
+
 
     val selectedVendedor = vendedoresViewModel.selectedVendedor.collectAsState().value
     val productos = vendedoresViewModel.productos.collectAsState().value
@@ -105,10 +115,18 @@ fun Vendedor(
                     "Mensaje",
                     Icons.Default.Email
                 ) {
-                    openWhatsAppMessage(
+
+                    val esVendedor = true
+                    val profileRoute =
+                        "QRGenerator/{$productoId}/{$vendedorId}/{$esVendedor}" //vamos a pantalla perfil del vendedor
+
+                    mainNavController.navigate(profileRoute)
+                    /*openWhatsAppMessage(
                         context = context,
                         phoneNumber = "${selectedVendedor.telefono}"
                     )
+
+                     */
                 } // Ajusta el formato del número
 
                 ActionButton3(
@@ -124,8 +142,8 @@ fun Vendedor(
             Spacer(modifier = Modifier.height(10.dp))
             HorizontalDivider()
 
-            // Listado de objetos vendidos
-            ProfileSection2("Objetos a la venta")
+            // Listado de productos a la venta
+            ProfileSection2("Productos a la venta")
             SoldItemsList(productos)
         }
     } else {
@@ -203,7 +221,7 @@ fun SoldItemCard(item: ProductoReciclable) {
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface)
-            .padding(horizontal= 6.dp, vertical = 20.dp), verticalAlignment = Alignment.CenterVertically
+            .padding(horizontal = 6.dp, vertical = 20.dp), verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
             painter = rememberAsyncImagePainter(model = item.urlImagenProducto),

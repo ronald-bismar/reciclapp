@@ -130,4 +130,15 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
         Log.d(TAG,"obtenerProductosPredeterminados ${ProductosReciclables.productosPredeterminados.toMutableList().size}")
         return ProductosReciclables.productosPredeterminados.toMutableList()
     }
+
+    override suspend fun obtenerProductosPorIds(ids: List<String>): List<ProductoReciclable> {
+        val productos = mutableListOf<ProductoReciclable>()
+        for (id in ids) {
+            val producto = getProducto(id)
+            if (producto != null) {
+                productos.add(producto)
+            }
+        }
+        return productos
+    }
 }

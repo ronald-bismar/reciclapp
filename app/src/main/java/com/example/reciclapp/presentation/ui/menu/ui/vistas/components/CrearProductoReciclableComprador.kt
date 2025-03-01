@@ -487,19 +487,6 @@ fun CrearProductoReciclableComprador(
 
 
 @Composable
-private fun TextoPuntosPorTransaccion(puntos: Int) {
-    Text(
-        "$puntos por transacción!",
-        modifier = Modifier.fillMaxWidth(),
-        textAlign = TextAlign.Center,
-        style = MaterialTheme.typography.titleMedium,
-        color = Color(0xFFF39A00),
-        fontSize = 18.sp
-    )
-}
-
-
-@Composable
 private fun Titulo() {
     Text(
         text = "Nuevo Producto Reciclable que compras",

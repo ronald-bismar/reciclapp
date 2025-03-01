@@ -128,7 +128,7 @@ fun Comprador(
             ProfileHeader(comprador.urlImagenPerfil)
             ProfileDetails3(comprador)
             ActionButtons(comprador.telefono.toString())
-            SectionTitle("Objetos comprables:")
+            SectionTitle("Productos que compra:")
             MaterialList(materiales)
             SectionTitle("Comentarios:")
             PuntuarUsuario(onComentarioCreado = { newComment, puntuacion  ->

@@ -3,6 +3,7 @@ package com.example.reciclapp.presentation.navigation
 import CrearProductoReciclableComprador
 import CrearProductoReciclableVendedor
 import HistorialComprasScreen
+import QRScannerScreen
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -32,7 +33,6 @@ import com.example.reciclapp.presentation.ui.menu.ui.PantallaPresentacion
 import com.example.reciclapp.presentation.ui.menu.ui.PantallaPrincipal
 import com.example.reciclapp.presentation.ui.menu.ui.PresentacionAppScreen
 import com.example.reciclapp.presentation.ui.menu.ui.QRGeneratorScreen
-import com.example.reciclapp.presentation.ui.menu.ui.QRScannerScreen
 import com.example.reciclapp.presentation.ui.menu.ui.SocialMediaScreenVendedores
 import com.example.reciclapp.presentation.ui.menu.ui.TransaccionesPendientesScreen
 import com.example.reciclapp.presentation.ui.menu.ui.UserTypeScreen
@@ -46,6 +46,7 @@ import com.example.reciclapp.presentation.ui.registro.ui.RegistroScreen
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroViewModel
 import com.example.reciclapp.presentation.ui.splash.SplashScreenContent
 import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
+import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 import kotlinx.coroutines.Dispatchers
@@ -60,6 +61,7 @@ fun NavGraph(
     userViewModel: UserViewModel = hiltViewModel(),
     vendedoresViewModel: VendedoresViewModel = hiltViewModel(),
     compradoresViewModel: CompradoresViewModel = hiltViewModel(),
+    transaccionViewModel: TransaccionViewModel = hiltViewModel(),
     getUserPreferencesUseCase: GetUserPreferencesUseCase
 ) {
     var nextScreen by remember { mutableStateOf("splash") }
@@ -132,11 +134,12 @@ fun NavGraph(
             Comprador(mainNavController = mainNavController, compradorId = userId)
         }
         composable(
-            route = "vendedorPerfil/{userId}",
-            arguments = listOf(navArgument("userId") { type = NavType.StringType })
+            route = "vendedorPerfil/{userId}/{productoId}",
+            arguments = listOf(navArgument("userId") { type = NavType.StringType }, navArgument("productoId") { type = NavType.StringType})
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId") ?: ""
-            Vendedor(navController = mainNavController, vendedorId = userId)
+            val productoId = backStackEntry.arguments?.getString("productoId") ?: ""
+            Vendedor(mainNavController = mainNavController, vendedorId = userId, productoId = productoId)
         }
         composable("map") {
             userViewModel.user.observeAsState().value?.idUsuario?.let { idUsuario ->
@@ -165,35 +168,33 @@ fun NavGraph(
         }
 
         composable(
-            "qr-generator/{productoId}/{usuarioId}",
+            "QRGenerator/{productoId}/{usuarioContactadoId}/{usuarioContactadoIsVendedor}",
             arguments = listOf(
                 navArgument("productoId") { type = NavType.StringType },
-                navArgument("usuarioId") { type = NavType.StringType }
+                navArgument("usuarioContactadoId") { type = NavType.StringType },
+                navArgument("usuarioContactadoIsVendedor") { type = NavType.BoolType }
             )
         ) { backStackEntry ->
             val productoId = backStackEntry.arguments?.getString("productoId") ?: ""
-            val usuarioId = backStackEntry.arguments?.getString("usuarioId") ?: ""
-
-            // Obtener producto y usuario usando viewModels
-            val producto = // Obtener producto usando viewModel
-            val usuario = // Obtener usuario usando viewModel
+            val usuarioId = backStackEntry.arguments?.getString("usuarioContactadoId") ?: ""
+            val usuarioContactadoIsVendedor = backStackEntry.arguments?.getBoolean("usuarioContactadoIsVendedor") ?: false
 
                 QRGeneratorScreen(
-                    producto = producto,
-                    usuarioContactado = usuario,
-                    onQRGenerated = {
-                        navController.navigate("contact-options/$usuarioId")
-                    }
+                    productoId = productoId,
+                    usuarioContactadoId = usuarioId,
+                    usuarioContactadoIsVendedor = usuarioContactadoIsVendedor,
+                    navController = mainNavController,
+                    transaccionViewModel = transaccionViewModel
                 )
         }
 
-        composable("qr-scanner") {
+       /* composable("QRScanner") {
             QRScannerScreen()
         }
 
-        composable("transacciones-pendientes") {
+        composable("TransaccionesPendientes") {
             TransaccionesPendientesScreen()
-        }
+        }*/
     }
 }
 

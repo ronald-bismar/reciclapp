@@ -117,10 +117,11 @@ fun QRScannerScreen(
                     }
 
                     try {
-                        cameraProviderFuture.get().bind(
+                        cameraProviderFuture.get().bindToLifecycle(
+                            lifecycleOwner,
+                            selector,
                             preview,
-                            imageAnalysis,
-                            selector
+                            imageAnalysis
                         )
                     } catch (e: Exception) {
                         Log.e("QRScanner", "Error binding camera", e)
