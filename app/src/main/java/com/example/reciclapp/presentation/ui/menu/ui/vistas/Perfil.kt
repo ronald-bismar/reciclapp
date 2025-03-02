@@ -190,7 +190,7 @@ fun ProfileNuevoObjetoParaVender(navControllerMain: NavHostController, user: Usu
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Añadir Nuevo Reciclaje Para Vender")
             }
-            // Botón para aver mis productos reciclables
+            // Botón para ver mis productos reciclables
             Button(
                 onClick = {
                     if (user.tipoDeUsuario.uppercase() == "COMPRADOR") navControllerMain.navigate("MyProductsScreenComprador")
@@ -205,6 +205,21 @@ fun ProfileNuevoObjetoParaVender(navControllerMain: NavHostController, user: Usu
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Mis productos")
+            }
+
+            Button(
+                onClick = {
+                    navControllerMain.navigate("TransaccionesPendientes")
+                }, modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .fillMaxWidth()
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_arrows),
+                    contentDescription = "Ver mis transacciones pendientes"
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Mis transacciones pendientes")
             }
         }
     }

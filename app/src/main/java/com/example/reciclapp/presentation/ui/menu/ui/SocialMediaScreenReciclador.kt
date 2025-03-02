@@ -50,6 +50,8 @@ import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 
+private const val TAG = "SocialMediaScreenReciclador"
+
 @Composable
 fun SocialMediaScreenVendedores(
     mainNavController: NavController,
@@ -210,10 +212,8 @@ fun CardSocialMediaReciclador(
                     )
                 }
                 IconButton(onClick = {
-                    val profileRoute =
-                        "vendedorPerfil/${productoReciclable.idVendedor}" //vamos a pantalla perfil del vendedor
+                    mainNavController.navigate("VendedorPerfil/${productoReciclable.idVendedor}/${productoReciclable.idProducto}")
 
-                    mainNavController.navigate(profileRoute)
                 }, modifier = Modifier.size(24.dp)) {
                     Icon(
                         imageVector = Icons.Default.Call,

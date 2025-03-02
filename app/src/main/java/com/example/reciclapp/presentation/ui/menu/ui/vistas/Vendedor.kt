@@ -1,6 +1,9 @@
 package com.example.reciclapp.presentation.ui.menu.ui.vistas
 
+import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -29,6 +32,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +52,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.reciclapp.domain.entities.ProductoReciclable
+import com.example.reciclapp.domain.entities.Usuario
+import com.example.reciclapp.presentation.ui.menu.ui.QRGeneratorDialog
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 
 private const val TAG = "Vendedor"
@@ -58,12 +67,15 @@ fun Vendedor(
 ) {
     val context = LocalContext.current
     LaunchedEffect(vendedorId) {
+        Log.d(TAG, "Id del vendedor: $vendedorId")
+        Log.d(TAG, "Id del producto: $productoId")
+
         vendedoresViewModel.fetchVendedorById(vendedorId)
         vendedoresViewModel.fetchProductosByVendedor(vendedorId)
     }
 
     LaunchedEffect(productoId) {
-        Log.d(TAG, "Id del vendedor: $vendedorId")
+        Log.d(TAG, "Id del producto: $productoId")
     }
 
 
@@ -105,40 +117,13 @@ fun Vendedor(
             HorizontalDivider()
             Spacer(modifier = Modifier.height(10.dp))
             // Botones de acciones
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 2.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                ActionButton3(
-                    "Mensaje",
-                    Icons.Default.Email
-                ) {
-
-                    val esVendedor = true
-                    val profileRoute =
-                        "QRGenerator/{$productoId}/{$vendedorId}/{$esVendedor}" //vamos a pantalla perfil del vendedor
-
-                    mainNavController.navigate(profileRoute)
-                    /*openWhatsAppMessage(
-                        context = context,
-                        phoneNumber = "${selectedVendedor.telefono}"
-                    )
-
-                     */
-                } // Ajusta el formato del número
-
-                ActionButton3(
-                    "Llamar",
-                    Icons.Default.Call,
-                ) {
-                    initiateCall(
-                        context = context,
-                        phoneNumber = "${selectedVendedor.telefono}"
-                    )
-                } // Ajusta el formato del número
-            }
+            ActionButtons(
+                selectedVendedor = selectedVendedor,
+                productoId = productoId,
+                vendedorId = vendedorId,
+                context = context,
+                mainNavController = mainNavController
+            )
             Spacer(modifier = Modifier.height(10.dp))
             HorizontalDivider()
 
@@ -255,5 +240,53 @@ fun SoldItemCard(item: ProductoReciclable) {
                     else Color.Green
             )
         }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun ActionButtons(
+    selectedVendedor: Usuario,
+    productoId: String,
+    vendedorId: String,
+    context: Context,
+    mainNavController: NavHostController
+) {
+    var showQRDialog by remember { mutableStateOf(false) }
+    
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 2.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        ActionButton3(
+            "Mensaje",
+            Icons.Default.Email
+        ) {
+            showQRDialog = true
+        }
+
+        ActionButton3(
+            "Llamar",
+            Icons.Default.Call,
+        ) {
+            showQRDialog = true
+        }
+    }
+
+    if (showQRDialog) {
+        QRGeneratorDialog(
+            productoId = productoId,
+            usuarioContactadoId = vendedorId,
+            usuarioContactadoIsVendedor = true,
+            onDismiss = { showQRDialog = false },
+            onContinue = {
+                openWhatsAppMessage(
+                    context = context,
+                    phoneNumber = "${selectedVendedor.telefono}"
+                )
+            }
+        )
     }
 }

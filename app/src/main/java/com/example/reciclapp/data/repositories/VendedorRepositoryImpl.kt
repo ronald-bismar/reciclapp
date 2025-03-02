@@ -13,6 +13,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
+private const val TAG = "VendedorRepositoryImpl"
+
 class VendedorRepositoryImpl @Inject constructor(
     private val service: FirebaseFirestore,
     private val registrarProductoUseCase: RegistrarProductoUseCase,
@@ -20,6 +22,7 @@ class VendedorRepositoryImpl @Inject constructor(
 ) : VendedorRepository {
 
     override suspend fun getVendedor(idVendedor: String): Usuario? {
+        Log.d(TAG, "Id del vendedor: $idVendedor")
         val snapshot = service.collection("usuario")
             .document(idVendedor.toString())
             .get()

@@ -95,7 +95,13 @@ class TransaccionViewModel @Inject constructor(
 
     fun crearTransaccionPendiente(transaccion: TransaccionPendiente) {
         viewModelScope.launch {
-            repository.crearTransaccionPendiente(transaccion)
+            try {
+                repository.crearTransaccionPendiente(transaccion)
+                // La transacción ya incluye el código QR como string en el campo codigoQR
+                // Firebase lo almacenará automáticamente
+            } catch (e: Exception) {
+                Log.e(TAG, "Error al crear la transacción: ${e.message}")
+            }
         }
     }
 

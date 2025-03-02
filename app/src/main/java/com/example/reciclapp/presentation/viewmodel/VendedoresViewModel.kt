@@ -28,6 +28,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val TAG = "VendedoresViewModel"
+
 @HiltViewModel
 class VendedoresViewModel @Inject constructor(
     private val getVendedorUseCase: GetVendedorUseCase,
@@ -76,6 +78,7 @@ class VendedoresViewModel @Inject constructor(
     val isLoading: LiveData<Boolean> = _isLoading
 
     fun fetchVendedorById(idVendedor: String) {
+        Log.d(TAG, "fetchVendedorById: Id vendedor $idVendedor")
         viewModelScope.launch {
             _selectedVendedor.value = getVendedorUseCase.execute(idVendedor)
         }

@@ -32,7 +32,7 @@ import com.example.reciclapp.presentation.ui.menu.ui.IntroductionScreen
 import com.example.reciclapp.presentation.ui.menu.ui.PantallaPresentacion
 import com.example.reciclapp.presentation.ui.menu.ui.PantallaPrincipal
 import com.example.reciclapp.presentation.ui.menu.ui.PresentacionAppScreen
-import com.example.reciclapp.presentation.ui.menu.ui.QRGeneratorScreen
+import com.example.reciclapp.presentation.ui.menu.ui.QRGeneratorDialog
 import com.example.reciclapp.presentation.ui.menu.ui.SocialMediaScreenVendedores
 import com.example.reciclapp.presentation.ui.menu.ui.TransaccionesPendientesScreen
 import com.example.reciclapp.presentation.ui.menu.ui.UserTypeScreen
@@ -134,12 +134,18 @@ fun NavGraph(
             Comprador(mainNavController = mainNavController, compradorId = userId)
         }
         composable(
-            route = "vendedorPerfil/{userId}/{productoId}",
-            arguments = listOf(navArgument("userId") { type = NavType.StringType }, navArgument("productoId") { type = NavType.StringType})
+            route = "VendedorPerfil/{userId}/{productoId}",
+            arguments = listOf(
+                navArgument("userId") { type = NavType.StringType },
+                navArgument("productoId") { type = NavType.StringType })
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId") ?: ""
             val productoId = backStackEntry.arguments?.getString("productoId") ?: ""
-            Vendedor(mainNavController = mainNavController, vendedorId = userId, productoId = productoId)
+            Vendedor(
+                mainNavController = mainNavController,
+                vendedorId = userId,
+                productoId = productoId
+            )
         }
         composable("map") {
             userViewModel.user.observeAsState().value?.idUsuario?.let { idUsuario ->
@@ -177,24 +183,27 @@ fun NavGraph(
         ) { backStackEntry ->
             val productoId = backStackEntry.arguments?.getString("productoId") ?: ""
             val usuarioId = backStackEntry.arguments?.getString("usuarioContactadoId") ?: ""
-            val usuarioContactadoIsVendedor = backStackEntry.arguments?.getBoolean("usuarioContactadoIsVendedor") ?: false
+            val usuarioContactadoIsVendedor =
+                backStackEntry.arguments?.getBoolean("usuarioContactadoIsVendedor") == true
 
-                QRGeneratorScreen(
-                    productoId = productoId,
-                    usuarioContactadoId = usuarioId,
-                    usuarioContactadoIsVendedor = usuarioContactadoIsVendedor,
-                    navController = mainNavController,
-                    transaccionViewModel = transaccionViewModel
+            QRGeneratorDialog(
+                productoId = productoId,
+                usuarioContactadoId = usuarioId,
+                usuarioContactadoIsVendedor = usuarioContactadoIsVendedor,
+                onDismiss = {},
+                onContinue = {},
+                transaccionViewModel = transaccionViewModel,
+
                 )
         }
 
-       /* composable("QRScanner") {
-            QRScannerScreen()
+        composable("TransaccionesPendientes") {
+            TransaccionesPendientesScreen(navController = mainNavController)
         }
 
-        composable("TransaccionesPendientes") {
-            TransaccionesPendientesScreen()
-        }*/
+        composable("QRScanner") {
+             QRScannerScreen({})
+         }
     }
 }
 

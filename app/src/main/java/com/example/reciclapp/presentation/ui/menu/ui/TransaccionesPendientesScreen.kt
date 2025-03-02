@@ -14,26 +14,34 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarToday
+import androidx.compose.material.icons.outlined.QrCode
 import androidx.compose.material.icons.outlined.QrCodeScanner
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -103,11 +111,13 @@ fun TransaccionPendienteItem(
     producto: ProductoReciclable?,
     onScanQR: () -> Unit = {}
 ) {
+    var showQRPreview by remember { mutableStateOf(false) }
+    
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        elevation = CardDefaults.elevatedCardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(
             modifier = Modifier
@@ -116,31 +126,32 @@ fun TransaccionPendienteItem(
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = producto?.nombreProducto ?: "Producto no encontrado",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Text(
-                    text = when(transaccion.estado) {
-                        EstadoTransaccion.PENDIENTE -> "Pendiente"
-                        EstadoTransaccion.COMPLETADA -> "Completada"
-                        EstadoTransaccion.CANCELADA -> "Cancelada"
-                    },
-                    color = when(transaccion.estado) {
-                        EstadoTransaccion.PENDIENTE -> Color(0xFFF39A00)
-                        EstadoTransaccion.COMPLETADA -> Color(0xFF4CAF50)
-                        EstadoTransaccion.CANCELADA -> Color.Red
-                    }
-                )
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = producto?.nombreProducto ?: "Producto no disponible",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Estado: ${transaccion.estado}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+                
+                // Botón para mostrar QR
+                IconButton(onClick = { showQRPreview = true }) {
+                    Icon(
+                        imageVector = Icons.Outlined.QrCode,
+                        contentDescription = "Ver QR",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
+            // Fecha de la transacción
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -172,5 +183,50 @@ fun TransaccionPendienteItem(
                 }
             }
         }
+    }
+
+    // Dialog para mostrar el QR
+    if (showQRPreview) {
+        AlertDialog(
+            onDismissRequest = { showQRPreview = false },
+            title = {
+                Text(
+                    text = "Código QR de la Transacción",
+                    style = MaterialTheme.typography.titleLarge
+                )
+            },
+            text = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Card(
+                        modifier = Modifier
+                            .size(200.dp)
+                            .padding(8.dp),
+                        elevation = CardDefaults.cardElevation(4.dp)
+                    ) {
+                        QRCode(
+                            content = transaccion.codigoQR,
+                            modifier = Modifier.fillMaxSize(),{}
+                        )
+                    }
+                    
+                    Text(
+                        text = "Muestra este código QR para validar la transacción",
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(top = 16.dp)
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showQRPreview = false }) {
+                    Text("Cerrar")
+                }
+            }
+        )
     }
 }

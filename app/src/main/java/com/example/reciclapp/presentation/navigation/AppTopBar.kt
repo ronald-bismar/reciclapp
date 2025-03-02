@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Scanner
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerState
@@ -41,11 +42,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.example.reciclapp.R
 import com.example.reciclapp.presentation.ui.registro.ui.showToast
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -95,6 +98,18 @@ fun AppTopBar(
             }
         },
         actions = {
+            IconButton(onClick = {
+                navControllerMain.navigate("QRScanner") {
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    restoreState = true
+                }
+            }) {
+                Icon(painter = painterResource(id = R.drawable.ic_scanner_qr),
+                    tint = MaterialTheme.colorScheme.surface,
+                    contentDescription = "Subir nuevo producto")
+            }
             IconButton(onClick = {
                 navControllerMain.navigate(if ((user?.tipoDeUsuario?.uppercase()
                         ?: "") == "COMPRADOR"

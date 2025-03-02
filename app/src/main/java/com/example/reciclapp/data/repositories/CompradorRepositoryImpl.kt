@@ -95,7 +95,7 @@ class CompradorRepositoryImpl @Inject constructor(
 
     override suspend fun crearTransaccionPendiente(transaccion: TransaccionPendiente) {
         try {
-            service.collection("TransaccionesPendientes")
+            service.collection("transaccionesPendientes")
                 .document(transaccion.idTransaccion)
                 .set(transaccion)
                 .await()
@@ -109,14 +109,14 @@ class CompradorRepositoryImpl @Inject constructor(
         val transacciones = mutableListOf<TransaccionPendiente>()
         try {
             // Consulta para transacciones donde el usuario es comprador
-            val queryComprador = service.collection("TransaccionesPendientes")
+            val queryComprador = service.collection("transaccionesPendientes")
                 .whereEqualTo("estado", EstadoTransaccion.PENDIENTE)
                 .whereEqualTo("idComprador", idUsuario)
                 .get()
                 .await()
 
             // Consulta para transacciones donde el usuario es vendedor
-            val queryVendedor = service.collection("TransaccionesPendientes")
+            val queryVendedor = service.collection("transaccionesPendientes")
                 .whereEqualTo("estado", EstadoTransaccion.PENDIENTE)
                 .whereEqualTo("idVendedor", idUsuario)
                 .get()
@@ -148,7 +148,7 @@ class CompradorRepositoryImpl @Inject constructor(
     override suspend fun confirmarTransaccion(idTransaccion: String) {
         try {
             // Actualizar el estado de la transacción a COMPLETADA
-            service.collection("TransaccionesPendientes")
+            service.collection("transaccionesPendientes")
                 .document(idTransaccion)
                 .update(mapOf(
                     "estado" to EstadoTransaccion.COMPLETADA
@@ -156,7 +156,8 @@ class CompradorRepositoryImpl @Inject constructor(
                 .await()
 
             // Obtener la transacción para actualizar el producto
-            val transaccionSnapshot = service.collection("TransaccionesPendientes")
+            val transaccionSnapshot = service.collection("transaccionesPendientes" +
+                    "")
                 .document(idTransaccion)
                 .get()
                 .await()
