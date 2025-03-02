@@ -79,12 +79,6 @@ fun ContactCard(usuario: Usuario, viewProfile: () -> Unit, sendMessage: () -> Un
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                  /*  Text(
-                        text = "Puntaje: ${usuario.puntaje}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-*/
 
                     LinearProgressIndicator(
                         progress = usuario.puntaje / 1000f, // Normalizar según el objetivo
