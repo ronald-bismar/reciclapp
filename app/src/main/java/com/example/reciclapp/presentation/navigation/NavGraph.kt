@@ -202,7 +202,7 @@ fun NavGraph(
         }
 
         composable("QRScanner") {
-             QRScannerScreen({})
+             QRScannerScreen()
          }
     }
 }

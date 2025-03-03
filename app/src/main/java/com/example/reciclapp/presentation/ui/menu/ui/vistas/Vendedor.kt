@@ -1,5 +1,6 @@
 package com.example.reciclapp.presentation.ui.menu.ui.vistas
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.util.Log
@@ -58,6 +59,7 @@ import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 
 private const val TAG = "Vendedor"
 
+@SuppressLint("NewApi")
 @Composable
 fun Vendedor(
     mainNavController: NavHostController,

@@ -2,6 +2,7 @@ package com.example.reciclapp.data.repositories
 
 import android.util.Log
 import com.example.reciclapp.domain.entities.ProductoReciclable
+import com.example.reciclapp.domain.entities.TransaccionPendiente
 import com.example.reciclapp.domain.repositories.ProductoRepository
 import com.example.reciclapp.util.ProductosReciclables
 import com.google.firebase.firestore.FirebaseFirestore
@@ -74,14 +75,14 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
     }
 
     override suspend fun listarProductosPorComprador(idComprador: String): MutableList<ProductoReciclable> {
-        val materiales = mutableListOf<ProductoReciclable>()
+        val productos = mutableListOf<ProductoReciclable>()
         val querySnapshot =
             service.collection("productoReciclable").whereEqualTo("idComprador", idComprador).get().await()
         for(document in querySnapshot.documents){
             val material = document.toObject(ProductoReciclable::class.java)
-            material?.let { materiales.add(it) }
+            material?.let { productos.add(it) }
         }
-        return materiales
+        return productos
     }
 
     override suspend fun registrarProductos(productoReciclables: List<ProductoReciclable>) {
@@ -141,4 +142,25 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
         }
         return productos
     }
+
+    override suspend fun listarProductosPorUsuario(idUsuario: String): MutableList<ProductoReciclable> {
+        val productos = mutableListOf<ProductoReciclable>()
+        productos.addAll(listarProductosPorVendedor(idUsuario))
+        productos.addAll(listarProductosPorComprador(idUsuario))
+        return productos
+    }
+
+    override suspend fun marcarProductoComoVendido(transaccionPendiente: TransaccionPendiente) {
+        val productoUpdateData = mapOf(
+            "fueVendida" to true,
+            "idVendedor" to transaccionPendiente.idVendedor,
+            "idComprador" to transaccionPendiente.idComprador
+        )
+
+        service.collection("productoReciclable")
+            .document(transaccionPendiente.idProducto)
+            .update(productoUpdateData)
+            .await()
+    }
+
 }

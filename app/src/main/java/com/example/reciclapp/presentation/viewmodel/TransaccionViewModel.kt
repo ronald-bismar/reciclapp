@@ -11,6 +11,8 @@ import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.repositories.CompradorRepository
 import com.example.reciclapp.domain.repositories.ProductoRepository
 import com.example.reciclapp.domain.usecases.producto.GetProductoUseCase
+import com.example.reciclapp.domain.usecases.producto.ListarProductosPorUsuarioUseCase
+import com.example.reciclapp.domain.usecases.producto.MarcarProductoComoVendidoUseCase
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.example.reciclapp.domain.usecases.usuario.GetUsuarioUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +29,9 @@ class TransaccionViewModel @Inject constructor(
     private val productoRepository: ProductoRepository,
     private val getUserPreferencesUseCase: GetUserPreferencesUseCase,
     private val getProductoUseCase: GetProductoUseCase,
-    private val getUsuarioUseCase: GetUsuarioUseCase
+    private val getUsuarioUseCase: GetUsuarioUseCase,
+    private val listarProductosPorUsuarioUseCase: ListarProductosPorUsuarioUseCase,
+    private val marcarProductoComoVendidoUseCase: MarcarProductoComoVendidoUseCase
 ) : ViewModel() {
 
     private val _transaccionesPendientes = MutableStateFlow<List<TransaccionPendiente>>(emptyList())
@@ -45,6 +49,9 @@ class TransaccionViewModel @Inject constructor(
     private val _usuarioContactado = MutableStateFlow<Usuario?>(null)
     val usuarioContactado: StateFlow<Usuario?> get() = _usuarioContactado
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> get() = _isLoading
+
     init {
         loadMyUserPreferences()
     }
@@ -61,7 +68,7 @@ class TransaccionViewModel @Inject constructor(
             try {
                 val producto = getProductoUseCase.execute(productoId)
                 _productoReciclable.value = producto
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.e(TAG, "Error al cargar el producto: ${e.message}")
             }
         }
@@ -83,7 +90,7 @@ class TransaccionViewModel @Inject constructor(
             try {
                 val userId =
                     _myUser.value?.idUsuario
-                _transaccionesPendientes.value = repository.getTransaccionesPendientes(userId?: "")
+                _transaccionesPendientes.value = repository.getTransaccionesPendientes(userId ?: "")
 
                 val productosIds = _transaccionesPendientes.value.map { it.idProducto }
                 _productos.value = productoRepository.obtenerProductosPorIds(productosIds)
@@ -105,9 +112,30 @@ class TransaccionViewModel @Inject constructor(
         }
     }
 
-    fun confirmarTransaccion(idTransaccion: String) {
+    fun fetchProductosPorMiUsuarioUseCase(idUsuario: String = _myUser.value?.idUsuario ?: "") {
+        _isLoading.value = true
         viewModelScope.launch {
-            repository.confirmarTransaccion(idTransaccion)
+            try {
+                _productos.value = listarProductosPorUsuarioUseCase.execute(idUsuario)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error al cargar los productos: ${e.message}")
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun marcarProductoComoVendido(transaccion: TransaccionPendiente) {
+        _isLoading.value = true
+        try {
+            viewModelScope.launch {
+                repository.confirmarTransaccion(transaccion.idTransaccion)
+                marcarProductoComoVendidoUseCase.execute(transaccion.idProducto)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error al marcar el producto como vendido: ${e.message}")
+        } finally {
+            _isLoading.value = false
         }
     }
 }

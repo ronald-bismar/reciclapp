@@ -47,7 +47,7 @@ object ProductoModule {
     }
 
     @Provides
-    fun provideListarProductosPorUsuarioUseCase(repository: ProductoRepository): ListarProductosDeVendedorUseCase {
+    fun provideListarProductosPorVendedorUseCase(repository: ProductoRepository): ListarProductosDeVendedorUseCase {
         return ListarProductosDeVendedorUseCase(repository)
     }
 
@@ -60,4 +60,15 @@ object ProductoModule {
     fun provideListarMaterialesUseCase(repository: ProductoRepository): ListarProductosPorCompradorUseCase {
         return ListarProductosPorCompradorUseCase(repository)
     }
+
+    @Provides
+    fun provideListarProductosPorUsuarioUseCase(repository: ProductoRepository): ListarProductosPorUsuarioUseCase {
+        return ListarProductosPorUsuarioUseCase(repository)
+    }
+
+    @Provides
+    fun provideMarcarProductoComoVendidoUseCase(repository: ProductoRepository): MarcarProductoComoVendidoUseCase {
+        return MarcarProductoComoVendidoUseCase(repository)
+    }
+
 }

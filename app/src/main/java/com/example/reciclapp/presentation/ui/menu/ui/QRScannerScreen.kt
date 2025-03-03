@@ -21,17 +21,22 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.reciclapp.domain.entities.TransaccionPendiente
+import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.google.gson.Gson
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.Executors
 
+private const val TAG = "QRScannerScreen"
+
 @OptIn(ExperimentalGetImage::class)
 @Composable
 fun QRScannerScreen(
-    onQRScanned: (TransaccionPendiente) -> Unit
+    transaccionViewModel: TransaccionViewModel = hiltViewModel()
 ) {
+    Log.d(TAG, "QRScannerScreen: ")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
@@ -100,7 +105,7 @@ fun QRScannerScreen(
                                                     jsonString,
                                                     TransaccionPendiente::class.java
                                                 )
-                                                onQRScanned(transaccion)
+                                                transaccionViewModel.marcarProductoComoVendido(transaccion)
                                             } catch (e: Exception) {
                                                 Log.e("QRScanner", "Error parsing QR", e)
                                             }

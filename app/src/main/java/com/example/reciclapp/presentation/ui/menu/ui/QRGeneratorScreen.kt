@@ -1,20 +1,28 @@
 package com.example.reciclapp.presentation.ui.menu.ui
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.Checkbox
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -37,7 +45,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.TransaccionPendiente
+import com.example.reciclapp.presentation.ui.menu.ui.content.mypurchases.TarjetaProducto
 import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -48,6 +58,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import java.time.LocalDateTime
 import java.util.UUID
 
+private const val TAG = "QRGeneratorDialog"
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -59,12 +70,161 @@ fun QRGeneratorDialog(
     onContinue: () -> Unit,
     transaccionViewModel: TransaccionViewModel = hiltViewModel()
 ) {
+    var selectedProductId by remember { mutableStateOf(productoId) }
+    var showProductSelection by remember { mutableStateOf(productoId.isEmpty()) }
+    var hasUsProductSelected by remember { mutableStateOf(false) }
+
+    LaunchedEffect(productoId) {
+        hasUsProductSelected = productoId != "" && productoId.isNotBlank()
+    }
+
+    if (!hasUsProductSelected) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = {
+                Text(
+                    "Seleccionar Producto",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            },
+            text = {
+                ProductSelectionContent(
+                    idUser = transaccionViewModel.myUser.value?.idUsuario ?: "",
+                    isVendedor = usuarioContactadoIsVendedor,
+                    onProductSelected = {
+                        selectedProductId = it
+                        showProductSelection = false
+                    }
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { hasUsProductSelected = selectedProductId.isNotBlank() }) {
+                    Text("Continuar")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    hasUsProductSelected = false
+                    onDismiss
+                }) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    } else {
+        QRGeneratorContent(
+            productoId = selectedProductId,
+            usuarioContactadoId = usuarioContactadoId,
+            usuarioContactadoIsVendedor = usuarioContactadoIsVendedor,
+            onDismiss = onDismiss,
+            onContinue = onContinue,
+            transaccionViewModel = transaccionViewModel
+        )
+    }
+}
+
+@Composable
+fun ProductSelectionContent(
+    idUser: String,
+    isVendedor: Boolean,
+    onProductSelected: (String) -> Unit,
+    transaccionViewModel: TransaccionViewModel = hiltViewModel()
+) {
+    val productos = transaccionViewModel.productos.collectAsState().value
+    var selectedProduct by remember { mutableStateOf<ProductoReciclable?>(null) }
+
+    LaunchedEffect(Unit) {
+        transaccionViewModel.fetchProductosPorMiUsuarioUseCase(idUser)
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        LazyColumn {
+            items(productos) { producto ->
+                ProductSelectionCard(
+                    producto = producto,
+                    isSelected = producto == selectedProduct,
+                    onSelect = {
+                        selectedProduct = producto
+                        onProductSelected(producto.idProducto)
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ProductSelectionCard(
+    producto: ProductoReciclable,
+    isSelected: Boolean,
+    onSelect: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp)
+            .clickable { onSelect() },
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = if (isSelected) 8.dp else 2.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected)
+                MaterialTheme.colorScheme.primaryContainer
+            else MaterialTheme.colorScheme.surface
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = producto.nombreProducto,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = "${producto.cantidad} ${producto.unidadMedida}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    text = "${producto.monedaDeCompra} ${producto.precio}",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+            Checkbox(
+                checked = isSelected,
+                onCheckedChange = { if (it) onSelect() }
+            )
+        }
+    }
+}
+
+@SuppressLint("NewApi")
+@Composable
+fun QRGeneratorContent(
+    productoId: String,
+    usuarioContactadoId: String,
+    usuarioContactadoIsVendedor: Boolean,
+    onDismiss: () -> Unit,
+    onContinue: () -> Unit,
+    transaccionViewModel: TransaccionViewModel = hiltViewModel()
+) {
     val context = LocalContext.current
     var showSuccessDialog by remember { mutableStateOf(false) }
-    
+
     val producto = transaccionViewModel.productoReciclable.collectAsState()
     val usuarioContactado = transaccionViewModel.usuarioContactado.collectAsState()
-    
+
     LaunchedEffect(productoId, usuarioContactadoId) {
         transaccionViewModel.getProductoById(productoId)
         transaccionViewModel.getUsuarioById(usuarioContactadoId)
@@ -74,8 +234,9 @@ fun QRGeneratorDialog(
         JsonObject().apply {
             val idVendedor = if (usuarioContactadoIsVendedor) usuarioContactado.value?.idUsuario
                 ?: "" else transaccionViewModel.myUser.value?.idUsuario ?: ""
-            val idComprador = if (usuarioContactadoIsVendedor) transaccionViewModel.myUser.value?.idUsuario
-                ?: "" else usuarioContactado.value?.idUsuario ?: ""
+            val idComprador =
+                if (usuarioContactadoIsVendedor) transaccionViewModel.myUser.value?.idUsuario
+                    ?: "" else usuarioContactado.value?.idUsuario ?: ""
             addProperty("idTransaccion", UUID.randomUUID().toString())
             addProperty("idProducto", productoId)
             addProperty("idVendedor", idVendedor)
@@ -107,7 +268,7 @@ fun QRGeneratorDialog(
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center
                 )
-                
+
                 Card(
                     modifier = Modifier
                         .height(250.dp)
@@ -119,7 +280,7 @@ fun QRGeneratorDialog(
                     )
                 ) {
                     val qrBitmap = remember { mutableStateOf<Bitmap?>(null) }
-                    
+
                     QRCode(
                         content = transaccionInfo,
                         modifier = Modifier.fillMaxSize(),
@@ -233,5 +394,44 @@ fun QRCode(
                 .padding(12.dp),
             contentScale = ContentScale.Fit
         )
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun seleccionarUnProducto(
+    idUser: String,
+    isVendedor: Boolean,
+    transaccionViewModel: TransaccionViewModel = hiltViewModel(),
+) {
+    val isLoading = transaccionViewModel.isLoading.collectAsState().value
+    val productos = transaccionViewModel.productos.collectAsState().value
+
+    transaccionViewModel.fetchProductosPorMiUsuarioUseCase(idUser)
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Text(
+            "Selecciona un producto por el que quieras contactar al ${if (isVendedor) "vendedor" else "comprador"}",
+            textAlign = TextAlign.Center
+        )
+        Divider()
+        Box(contentAlignment = Alignment.Center) {
+            if (isLoading)
+                CircularProgressIndicator()
+            else if (productos.isEmpty()) {
+                Text("No hay productos disponibles")
+            } else {
+                LazyColumn {
+                    items(productos.size) { index ->
+                        val producto = productos[index]
+                        TarjetaProducto(producto = producto)
+                    }
+                }
+            }
+        }
     }
 }
