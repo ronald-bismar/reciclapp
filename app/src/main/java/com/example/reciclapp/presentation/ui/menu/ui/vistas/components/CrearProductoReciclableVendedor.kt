@@ -140,264 +140,152 @@ fun CrearProductoReciclableVendedor(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp, vertical = 14.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-
+                    .padding(horizontal = 16.dp, vertical = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 Titulo()
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 2.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                
+                // Sección de Categoría y Producto
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    ExposedDropdownMenuBox(
-                        expanded = expandedCategory,
-                        onExpandedChange = { expandedCategory = it },
-                        modifier = Modifier.weight(1f)
+                    Text(
+                        text = "Información del Producto",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Medium
+                    )
+                    
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        OutlinedTextField(
-                            value = selectedCategory?.nombre ?: "Categoria",
-                            onValueChange = {},
-                            readOnly = true,
-                            trailingIcon = {
-                                Icon(
-                                    Icons.Filled.KeyboardArrowDown,
-                                    contentDescription = "expandir",
-                                    modifier = Modifier.graphicsLayer {
-                                        rotationZ = if (expandedCategory) 180f else 0f
-                                    }
-                                )
-                            },
-                            modifier = Modifier
-                                .menuAnchor()
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(MaterialTheme.colorScheme.secondary),
-                            textStyle = MaterialTheme.typography.bodyLarge.copy(
-                                color = Color.White,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-
-                        DropdownMenu(
-                            expanded = expandedCategory,
-                            onDismissRequest = { expandedCategory = false },
-                            modifier = Modifier
-                                .exposedDropdownSize()
-                                .background(Color.White)
-                                .clip(RoundedCornerShape(12.dp))
-                        ) {
-                            ListOfCategorias.categorias.forEach { categoria ->
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(
-                                            text = categoria.nombre,
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = Color(0xFF2C2C2C)
-                                        )
-                                    },
-                                    onClick = {
-                                        selectedCategory = categoria
-                                        selectedProduct = null
-                                        selectedUnidad = ""
-                                        expandedCategory = false
-                                        puntosCalculados = categoria.calcularPuntosTransaccion(
-                                            categoria,
-                                            cantidad.toDoubleOrNull() ?: 0.0
-                                        )
-                                    },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
-                                    colors = MenuDefaults.itemColors(textColor = Color(0xFF2C2C2C))
-                                )
-                            }
-                        }
-                    }
-                    // Dropdown Producto
-                    ExposedDropdownMenuBox(
-                        expanded = expandedProducts,
-                        onExpandedChange = { expandedProducts = it },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        OutlinedTextField(
-                            value = selectedProduct?.nombreProducto ?: "Producto",
-                            onValueChange = {},
-                            readOnly = true,
-                            trailingIcon = {
-                                Icon(
-                                    Icons.Filled.KeyboardArrowDown,
-                                    contentDescription = "expandir",
-                                    modifier = Modifier.graphicsLayer {
-                                        rotationZ = if (expandedProducts) 180f else 0f
-                                    }
-                                )
-                            },
-                            modifier = Modifier
-                                .menuAnchor()
-                                .fillMaxWidth()
-                                .background(Color.White),
-                            shape = RoundedCornerShape(12.dp),
-                            textStyle = MaterialTheme.typography.bodyLarge.copy(
-                                color = Color(0xFF2C2C2C),
-                                fontSize = 18.sp
-                            )
-                        )
-
-                        DropdownMenu(
-                            expanded = expandedProducts,
-                            onDismissRequest = { expandedProducts = false },
-                            modifier = Modifier
-                                .exposedDropdownSize()
-                                .background(
-                                    color = Color.White,
-                                    shape = RoundedCornerShape(10.dp)
-                                )
-                        ) {
-                            val productos =
-                                selectedCategory?.let { productosPredeterminados.filter { selectedCategory!!.idCategoria == it.idCategoria } }
-                                    ?: productosPredeterminados
-
-                            Log.d("Productos", "${productos.size}")
-
-                            productos.forEach { producto ->
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(
-                                            text = producto.nombreProducto,
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = Color(0xFF2C2C2C)
-                                        )
-                                    },
-                                    onClick = {
-                                        selectedProduct = producto
-                                        selectedUnidad = ""
-                                        expandedProducts = false
-                                    },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
-                                    colors = MenuDefaults.itemColors(
-                                        textColor = Color(0xFF2C2C2C)
-                                    )
-                                )
-                            }
-                        }
-                    }
-                }
-
-                TextoPuntosPorTransaccion(puntosCalculados)
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 2.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "Cantidad",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(bottom = 4.dp),
-                            fontWeight = FontWeight.Medium
-                        )
-                        OutlinedTextField(
-                            value = cantidad,
-                            onValueChange = {
-                                cantidad = it
-                                puntosCalculados = selectedCategory?.calcularPuntosTransaccion(
-                                    selectedCategory!!, it.toDoubleOrNull() ?: 0.0
-                                ) ?: 0
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
-                                focusedBorderColor = MaterialTheme.colorScheme.primary
-                            ),
-                            shape = RoundedCornerShape(12.dp),
-                            textStyle = MaterialTheme.typography.bodyLarge.copy(
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Medium,
-                                textAlign = TextAlign.Center
-                            )
-                        )
-
-                    }
-
-                    // Columna para "Unidad de medida" (3/4 del espacio)
-                    Column(modifier = Modifier.weight(2f)) {
-                        Text(
-                            text = "Unidad de medida",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(bottom = 4.dp),
-                            fontWeight = FontWeight.Medium
-                        )
+                        // Categoría
                         ExposedDropdownMenuBox(
-                            expanded = expandedUnidadDeMedida,
-                            onExpandedChange = { expandedUnidadDeMedida = it }
+                            expanded = expandedCategory,
+                            onExpandedChange = { expandedCategory = it },
+                            modifier = Modifier.weight(1f)
                         ) {
                             OutlinedTextField(
-                                value = selectedUnidad ?: "",
+                                value = selectedCategory?.nombre ?: "Categoria",
                                 onValueChange = {},
                                 readOnly = true,
-                                modifier = Modifier
-                                    .menuAnchor()
-                                    .fillMaxWidth(),
                                 trailingIcon = {
                                     Icon(
                                         Icons.Filled.KeyboardArrowDown,
-                                        contentDescription = "expandir"
+                                        contentDescription = "expandir",
+                                        modifier = Modifier.graphicsLayer {
+                                            rotationZ = if (expandedCategory) 180f else 0f
+                                        }
                                     )
                                 },
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
-                                    focusedBorderColor = MaterialTheme.colorScheme.primary
-                                ),
-                                shape = RoundedCornerShape(12.dp),
+                                modifier = Modifier
+                                    .menuAnchor()
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(MaterialTheme.colorScheme.secondary),
                                 textStyle = MaterialTheme.typography.bodyLarge.copy(
-                                    color = MaterialTheme.colorScheme.onSurface,
+                                    color = Color.White,
                                     fontSize = 18.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    textAlign = TextAlign.Center
+                                    fontWeight = FontWeight.Medium
                                 )
                             )
+
                             DropdownMenu(
-                                expanded = expandedUnidadDeMedida,
-                                onDismissRequest = { expandedUnidadDeMedida = false },
+                                expanded = expandedCategory,
+                                onDismissRequest = { expandedCategory = false },
                                 modifier = Modifier
                                     .exposedDropdownSize()
-                                    .background(
-                                        color = Color.White,
-                                    )
+                                    .background(Color.White)
                                     .clip(RoundedCornerShape(12.dp))
                             ) {
-                                val unidadesDeMedida = selectedCategory?.unidadDeMedida?.split(", ")
-                                    ?: ListOfCategorias.categorias.flatMap {
-                                        it.unidadDeMedida.split(
-                                            ", "
-                                        )
-                                    }.distinct()
-
-                                val unidadesSinRepetir = unidadesDeMedida.distinct()
-
-                                unidadesSinRepetir.forEach { unidadDeMedida ->
+                                ListOfCategorias.categorias.forEach { categoria ->
                                     DropdownMenuItem(
                                         text = {
                                             Text(
-                                                text = unidadDeMedida,
+                                                text = categoria.nombre,
                                                 style = MaterialTheme.typography.bodyMedium,
                                                 color = Color(0xFF2C2C2C)
                                             )
                                         },
                                         onClick = {
-                                            selectedUnidad = unidadDeMedida
-                                            expandedUnidadDeMedida = false
+                                            selectedCategory = categoria
+                                            selectedProduct = null
+                                            selectedUnidad = ""
+                                            expandedCategory = false
+                                            puntosCalculados = categoria.calcularPuntosTransaccion(
+                                                categoria,
+                                                cantidad.toDoubleOrNull() ?: 0.0
+                                            )
+                                        },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp),
+                                        colors = MenuDefaults.itemColors(textColor = Color(0xFF2C2C2C))
+                                    )
+                                }
+                            }
+                        }
+
+                        // Producto
+                        ExposedDropdownMenuBox(
+                            expanded = expandedProducts,
+                            onExpandedChange = { expandedProducts = it },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            OutlinedTextField(
+                                value = selectedProduct?.nombreProducto ?: "Producto",
+                                onValueChange = {},
+                                readOnly = true,
+                                trailingIcon = {
+                                    Icon(
+                                        Icons.Filled.KeyboardArrowDown,
+                                        contentDescription = "expandir",
+                                        modifier = Modifier.graphicsLayer {
+                                            rotationZ = if (expandedProducts) 180f else 0f
+                                        }
+                                    )
+                                },
+                                modifier = Modifier
+                                    .menuAnchor()
+                                    .fillMaxWidth()
+                                    .background(Color.White),
+                                shape = RoundedCornerShape(12.dp),
+                                textStyle = MaterialTheme.typography.bodyLarge.copy(
+                                    color = Color(0xFF2C2C2C),
+                                    fontSize = 18.sp
+                                )
+                            )
+
+                            DropdownMenu(
+                                expanded = expandedProducts,
+                                onDismissRequest = { expandedProducts = false },
+                                modifier = Modifier
+                                    .exposedDropdownSize()
+                                    .background(
+                                        color = Color.White,
+                                        shape = RoundedCornerShape(10.dp)
+                                    )
+                            ) {
+                                val productos =
+                                    selectedCategory?.let { productosPredeterminados.filter { selectedCategory!!.idCategoria == it.idCategoria } }
+                                        ?: productosPredeterminados
+
+                                Log.d("Productos", "${productos.size}")
+
+                                productos.forEach { producto ->
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(
+                                                text = producto.nombreProducto,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                color = Color(0xFF2C2C2C)
+                                            )
+                                        },
+                                        onClick = {
+                                            selectedProduct = producto
+                                            selectedUnidad = ""
+                                            expandedProducts = false
                                         },
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -411,15 +299,136 @@ fun CrearProductoReciclableVendedor(
                         }
                     }
                 }
+
+                // Puntos por transacción
+                TextoPuntosPorTransaccion(puntosCalculados)
+
+                // Sección de Cantidad y Unidad de Medida
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     Text(
-                        text = "Precio",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(bottom = 4.dp),
+                        text = "Detalles del Material",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Medium
+                    )
+                    
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        // Cantidad
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Cantidad",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium
+                            )
+                            OutlinedTextField(
+                                value = cantidad,
+                                onValueChange = {
+                                    cantidad = it
+                                    puntosCalculados = selectedCategory?.calcularPuntosTransaccion(
+                                        selectedCategory!!, it.toDoubleOrNull() ?: 0.0
+                                    ) ?: 0
+                                },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                        }
+
+                        // Unidad de medida
+                        Column(modifier = Modifier.weight(2f)) {
+                            Text(
+                                text = "Unidad de medida",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium
+                            )
+                            ExposedDropdownMenuBox(
+                                expanded = expandedUnidadDeMedida,
+                                onExpandedChange = { expandedUnidadDeMedida = it }
+                            ) {
+                                OutlinedTextField(
+                                    value = selectedUnidad ?: "",
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    modifier = Modifier
+                                        .menuAnchor()
+                                        .fillMaxWidth(),
+                                    trailingIcon = {
+                                        Icon(
+                                            Icons.Filled.KeyboardArrowDown,
+                                            contentDescription = "expandir"
+                                        )
+                                    },
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                                        focusedBorderColor = MaterialTheme.colorScheme.primary
+                                    ),
+                                    shape = RoundedCornerShape(12.dp),
+                                    textStyle = MaterialTheme.typography.bodyLarge.copy(
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        textAlign = TextAlign.Center
+                                    )
+                                )
+                                DropdownMenu(
+                                    expanded = expandedUnidadDeMedida,
+                                    onDismissRequest = { expandedUnidadDeMedida = false },
+                                    modifier = Modifier
+                                        .exposedDropdownSize()
+                                        .background(
+                                            color = Color.White,
+                                        )
+                                        .clip(RoundedCornerShape(12.dp))
+                                ) {
+                                    val unidadesDeMedida = selectedCategory?.unidadDeMedida?.split(", ")
+                                        ?: ListOfCategorias.categorias.flatMap {
+                                            it.unidadDeMedida.split(
+                                                ", "
+                                            )
+                                        }.distinct()
+
+                                    val unidadesSinRepetir = unidadesDeMedida.distinct()
+
+                                    unidadesSinRepetir.forEach { unidadDeMedida ->
+                                        DropdownMenuItem(
+                                            text = {
+                                                Text(
+                                                    text = unidadDeMedida,
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    color = Color(0xFF2C2C2C)
+                                                )
+                                            },
+                                            onClick = {
+                                                selectedUnidad = unidadDeMedida
+                                                expandedUnidadDeMedida = false
+                                            },
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 16.dp),
+                                            colors = MenuDefaults.itemColors(
+                                                textColor = Color(0xFF2C2C2C)
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Sección de Precio
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "Precio de Venta",
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Medium
                     )
                     OutlinedTextField(
@@ -427,55 +436,49 @@ fun CrearProductoReciclableVendedor(
                         onValueChange = { precio = it },
                         prefix = { Text("Bs. ") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
-                            focusedBorderColor = MaterialTheme.colorScheme.primary
-                        ),
-                        shape = RoundedCornerShape(12.dp),
-                        textStyle = MaterialTheme.typography.bodyLarge.copy(
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Medium,
-                        )
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp)
                     )
                 }
 
-                ImagePickerPanel(
-                    imageUris = imageUris,
-                    onImagesSelected = { imageUris = it }
-                )
-
-                // Detalles adicionales
+                // Sección de Imágenes
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 2.dp)
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+                    Text(
+                        text = "Fotos del Material",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Medium
+                    )
+                    ImagePickerPanel(
+                        imageUris = imageUris,
+                        onImagesSelected = { imageUris = it }
+                    )
+                }
+
+                // Sección de Detalles
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "Detalles Adicionales",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Medium
+                    )
                     OutlinedTextField(
                         value = detalles,
                         onValueChange = { detalles = it },
-                        placeholder = {
-                            Text(
-                                text = "Detalles adicionales",
-                                color = Color.Gray,
-                                fontSize = 18.sp // Tamaño del placeholder
-                            )
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        minLines = 2,
-                        colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedBorderColor = Color.Transparent, // Borde no enfocado transparente
-                            focusedBorderColor = Color.Transparent,   // Borde enfocado transparente
-                            disabledBorderColor = Color.Transparent,  // Borde deshabilitado transparente
-                            errorBorderColor = Color.Transparent      // Borde de error transparente
-                        ),
-                        shape = RoundedCornerShape(8.dp),
-                        textStyle = LocalTextStyle.current.copy(
-                            fontSize = 18.sp // Tamaño del texto ingresado
-                        )
+                        placeholder = { Text("Describe los detalles específicos del material...") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(120.dp),
+                        shape = RoundedCornerShape(12.dp)
                     )
                 }
 
+                // Botón de acción
                 Button(
                     onClick = {
                         val cantidadValue = cantidad.toIntOrNull() ?: 0
@@ -527,15 +530,18 @@ fun CrearProductoReciclableVendedor(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp),
+                        .padding(vertical = 8.dp),
+                    shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary
                     )
                 ) {
-                    Text(if (isUpdatingProduct) "Actualizar Producto" else "Registrar Producto")
+                    Text(
+                        text = if (isUpdatingProduct) "Actualizar Producto" else "Publicar Material",
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
                 }
             }
-
         }
     }
 }

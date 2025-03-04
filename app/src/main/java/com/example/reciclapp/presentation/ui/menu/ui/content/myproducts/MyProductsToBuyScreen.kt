@@ -2,9 +2,11 @@ package com.example.reciclapp.presentation.ui.menu.ui.content.mypurchases
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,6 +43,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -58,193 +61,170 @@ fun MyProductsToBuyScreen(
     compradoresViewModel: CompradoresViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-
-    // Obtener la lista de productos que el comprador compra habitualmente
     val productosComprados = compradoresViewModel.productos.collectAsState().value
     val isLoading = compradoresViewModel.isLoading.value
 
-    // Cargar los productos cuando la pantalla se inicia
     LaunchedEffect(Unit) {
         compradoresViewModel.myUser.value?.idUsuario?.let { userId ->
             compradoresViewModel.fetchProductosByComprador(userId)
         }
     }
 
-    // Mostrar la pantalla
-    Scaffold { paddingValues ->
+    Scaffold(
+        topBar = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Mis Materiales",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "Materiales reciclables que buscas comprar",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
-                            MaterialTheme.colorScheme.surface
-                        )
-                    )
-                )
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(paddingValues)
         ) {
-            if (isLoading == true) {
-                // Mostrar un indicador de carga mientras se cargan los productos
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                )
-            } else {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    // Encabezado
-                    item {
-                        Text(
-                            text = "Productos que compras",
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-
-                    // Mostrar la lista de productos
-                    items(productosComprados) { producto ->
-                        TarjetaProducto(producto)
-                    }
-
-                    // Mensaje si no hay productos
-                    item {
-                        if (productosComprados.isEmpty()) {
-                            EmptyProductsMessage()
-                        }
-                    }
-                }
+            when {
+                isLoading == true -> LoadingState()
+                productosComprados.isEmpty() -> EmptyState()
+                else -> ProductList(productosComprados)
             }
         }
     }
 }
 
 @Composable
-fun TarjetaProducto(producto: ProductoReciclable) {
+private fun LoadingState() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(48.dp)
+        )
+    }
+}
+
+@Composable
+private fun EmptyState() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.ShoppingBag,
+            contentDescription = null,
+            modifier = Modifier
+                .size(80.dp)
+                .padding(bottom = 16.dp),
+            tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
+        )
+        Text(
+            text = "¡Comienza tu lista de materiales!",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Medium,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Agrega los materiales reciclables que buscas comprar regularmente",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 32.dp)
+        )
+    }
+}
+
+@Composable
+private fun ProductList(productos: List<ProductoReciclable>) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = PaddingValues(vertical = 16.dp)
+    ) {
+        items(productos) { producto ->
+            TarjetaProductoMejorada(producto)
+        }
+    }
+}
+
+@Composable
+private fun TarjetaProductoMejorada(producto: ProductoReciclable) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp)),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.elevatedCardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+            .clip(RoundedCornerShape(16.dp))
+            .clickable { /* Acción al hacer clic */ },
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.padding(16.dp)
         ) {
-            // Imagen del producto con overlay de categoría
-            Box(modifier = Modifier.size(90.dp)) {
-
-                // Badge de categoría en la esquina
-                Surface(
-                    color = MaterialTheme.colorScheme.secondary,
-                    shape = RoundedCornerShape(topStart = 12.dp, bottomEnd = 12.dp),
-                    modifier = Modifier.align(Alignment.TopCenter)
-                ) {
-                    Text(
-                        text = producto.categoria,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.White,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Contenido central
-            Column(
-                modifier = Modifier.weight(1f)
+            // Encabezado con nombre y categoría
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                // Nombre del producto
                 Text(
                     text = producto.nombreProducto,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    modifier = Modifier.weight(1f)
                 )
-
-                // Descripción breve
-                Text(
-                    text = producto.detallesProducto,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(vertical = 4.dp)
+                ProductoEtiqueta(
+                    texto = producto.categoria,
+                    color = MaterialTheme.colorScheme.primary
                 )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                // Fila de detalles
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // Cantidad y unidad
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Scale,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "${producto.cantidad} ${producto.unidadMedida}",
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
-
-                    // Puntos
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.EmojiEvents,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "${producto.puntosPorCompra} pts",
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
-                }
             }
-
-            // Precio destacado
-            Box(
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                    .background(
-                        MaterialTheme.colorScheme.secondaryContainer,
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(vertical = 8.dp, horizontal = 12.dp)
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            // Detalles del producto
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                // Cantidad y unidad
+                DetalleItem(
+                    icon = Icons.Outlined.Scale,
+                    text = "${producto.cantidad} ${producto.unidadMedida}"
+                )
+                
+                // Puntos
+                DetalleItem(
+                    icon = Icons.Outlined.EmojiEvents,
+                    text = "${producto.puntosPorCompra} pts",
+                    color = MaterialTheme.colorScheme.secondary
+                )
+                
+                // Precio
                 Text(
                     text = "${producto.precio} Bs",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         }
@@ -252,9 +232,10 @@ fun TarjetaProducto(producto: ProductoReciclable) {
 }
 
 @Composable
-fun ProductoDetalle(
+private fun DetalleItem(
     icon: ImageVector,
-    texto: String
+    text: String,
+    color: Color = MaterialTheme.colorScheme.onSurface
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -263,13 +244,13 @@ fun ProductoDetalle(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(16.dp)
+            tint = color,
+            modifier = Modifier.size(18.dp)
         )
         Text(
-            text = texto,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            text = text,
+            style = MaterialTheme.typography.bodyMedium,
+            color = color
         )
     }
 }
@@ -289,40 +270,6 @@ fun ProductoEtiqueta(
             color = color,
             style = MaterialTheme.typography.labelMedium
         )
-    }
-}
-
-@Composable
-fun EmptyProductsMessage() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(32.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.ShoppingBag,
-                contentDescription = null,
-                modifier = Modifier.size(64.dp),
-                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-            )
-            Text(
-                text = "Aún no has seleccionado productos",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-            )
-            Text(
-                text = "¡Explora los productos disponibles y añade los que sueles comprar!",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-        }
     }
 }
 
@@ -351,5 +298,5 @@ fun MyProductsToBuyScreenPreview(){
         emisionCO2Kilo = 2.0,
         pesoPorUnidad = 0.02 // 20 gramos por botella
     )
-    TarjetaProducto(botellaPlastica)
+    TarjetaProductoMejorada(botellaPlastica)
 }

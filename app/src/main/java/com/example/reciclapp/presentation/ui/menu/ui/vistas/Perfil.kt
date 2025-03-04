@@ -170,7 +170,7 @@ fun ProfileSettings(user: Usuario) {
 
 @Composable
 fun ProfileNuevoObjetoParaVender(navControllerMain: NavHostController, user: Usuario) {
-    ProfileSection("Nuevo reciclaje para vender")
+    ProfileSection("Mi Reciclaje")
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -181,14 +181,18 @@ fun ProfileNuevoObjetoParaVender(navControllerMain: NavHostController, user: Usu
             // Botón para añadir nuevo objeto vendido
             Button(
                 onClick = {
-                    navControllerMain.navigate("AñadirProductoReciclable")
+                    navControllerMain.navigate(if ((user.tipoDeUsuario.uppercase()
+                            ?: "") == "COMPRADOR"
+                    ) "AñadirProductoReciclableComprador" else "AñadirProductoReciclable") {
+                        restoreState = true
+                    }
                 }, modifier = Modifier
                     .padding(vertical = 16.dp)
                     .fillMaxWidth()
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Añadir")
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Añadir Nuevo Reciclaje Para Vender")
+                Text("Añadir Nuevo Reciclaje Para ${if(user.tipoDeUsuario.uppercase() == "COMPRADOR") "Comprar" else "Vender"}")
             }
             // Botón para ver mis productos reciclables
             Button(

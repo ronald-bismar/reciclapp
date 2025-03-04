@@ -63,16 +63,7 @@ fun TransaccionesPendientesScreen(
         viewModel.cargarTransaccionesPendientes()
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Transacciones Pendientes") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
-            )
-        }
-    ) { paddingValues ->
+    Scaffold { paddingValues ->
         if (transacciones.isEmpty()) {
             Box(
                 modifier = Modifier
