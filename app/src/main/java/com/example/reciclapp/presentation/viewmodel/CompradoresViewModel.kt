@@ -12,6 +12,7 @@ import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.usecases.comentario.ListarComentariosDeCompradorUseCase
 import com.example.reciclapp.domain.usecases.comprador.GetCompradorUseCase
+import com.example.reciclapp.domain.usecases.comprador.GetCompradoresUseCase
 import com.example.reciclapp.domain.usecases.producto.ActualizarProductoUseCase
 import com.example.reciclapp.domain.usecases.producto.CalcularCO2AhorradoEnKilos
 import com.example.reciclapp.domain.usecases.producto.ListarProductosPorCompradorUseCase
@@ -41,7 +42,8 @@ class CompradoresViewModel @Inject constructor(
     private val obtenerProductosPredeterminados: ObtenerProductosPredeterminados,
     private val actualizarProductoUseCase: ActualizarProductoUseCase,
     private val registrarProductoUseCase: RegistrarProductoUseCase,
-    private val calcularCO2AhorradoEnKilos: CalcularCO2AhorradoEnKilos
+    private val calcularCO2AhorradoEnKilos: CalcularCO2AhorradoEnKilos,
+    private val getCompradoresUseCase: GetCompradoresUseCase
 ) :
     ViewModel(
     ) {
@@ -84,6 +86,10 @@ class CompradoresViewModel @Inject constructor(
 
     private val _productosActivos = MutableStateFlow(0)
     val productosActivos: StateFlow<Int> = _productosActivos
+
+    private val _compradores = MutableStateFlow<List<Usuario>>(emptyList())
+    val compradores: StateFlow<List<Usuario>> = _compradores
+
 
     private fun loadMyUserPreferences() {
         viewModelScope.launch {
@@ -228,5 +234,20 @@ class CompradoresViewModel @Inject constructor(
     fun resetProductToUpdate() {
         _productToUpdate.value = null
     }
+
+    // Add this new method after your existing methods
+    fun fetchCompradores() {
+        viewModelScope.launch {
+            try {
+                val listaCompradores = getCompradoresUseCase.execute()
+                // Ordenar compradores por puntaje de mayor a menor
+                _compradores.value = listaCompradores.sortedByDescending { it.puntaje }
+            } catch (e: Exception) {
+                Log.e("CompradoresViewModel", "Error al obtener compradores", e)
+                _compradores.value = emptyList()
+            }
+        }
+    }
+
 
 }

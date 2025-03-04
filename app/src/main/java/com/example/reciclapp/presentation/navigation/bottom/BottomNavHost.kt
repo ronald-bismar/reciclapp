@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.presentation.ui.menu.ui.ContactListScreen
 import com.example.reciclapp.presentation.ui.menu.ui.ItemsMenu
+import com.example.reciclapp.presentation.ui.menu.ui.RankingCompradoresScreen
 import com.example.reciclapp.presentation.ui.menu.ui.SocialMediaScreenVendedores
 import com.example.reciclapp.presentation.ui.menu.ui.content.newsandtips.GlobalWasteApi
 import com.example.reciclapp.presentation.ui.menu.ui.content.newsandtips.NewsTipsScreen
@@ -52,5 +53,9 @@ fun BottomNavHost(
         composable(ItemsMenu.PantallaHistorialCompras.ruta) {
             HistorialComprasScreen()
         }
+        composable(ItemsMenu.PantallaRankingCompradores.ruta) {
+            RankingCompradoresScreen()
+        }
+
     }
 }

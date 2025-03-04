@@ -3,6 +3,7 @@ package com.example.reciclapp.presentation.ui.menu.ui
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
@@ -43,5 +44,9 @@ sealed class ItemsMenu(
 
     data object PantallaHistorialCompras : ItemsMenu(Icons.Default.ShoppingCart , "Compras", "HistorialCompras") {
         override val route: String = "HistorialCompras"
+    }
+
+    data object PantallaRankingCompradores: ItemsMenu(Icons.Default.Leaderboard, "Ranking", "RankingCompradores") {
+        override val route: String = "RankingCompradores"
     }
 }

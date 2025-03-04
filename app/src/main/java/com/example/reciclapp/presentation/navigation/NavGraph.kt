@@ -33,6 +33,7 @@ import com.example.reciclapp.presentation.ui.menu.ui.PantallaPresentacion
 import com.example.reciclapp.presentation.ui.menu.ui.PantallaPrincipal
 import com.example.reciclapp.presentation.ui.menu.ui.PresentacionAppScreen
 import com.example.reciclapp.presentation.ui.menu.ui.QRGeneratorDialog
+import com.example.reciclapp.presentation.ui.menu.ui.RankingCompradoresScreen
 import com.example.reciclapp.presentation.ui.menu.ui.SocialMediaScreenVendedores
 import com.example.reciclapp.presentation.ui.menu.ui.TransaccionesPendientesScreen
 import com.example.reciclapp.presentation.ui.menu.ui.UserTypeScreen
@@ -204,6 +205,10 @@ fun NavGraph(
         composable("QRScanner") {
              QRScannerScreen()
          }
+
+        composable("RankingCompradores"){
+            RankingCompradoresScreen(compradoresViewModel)
+        }
     }
 }
 

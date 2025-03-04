@@ -212,7 +212,7 @@ fun CardSocialMediaReciclador(
                     )
                 }
                 IconButton(onClick = {
-                    mainNavController.navigate("VendedorPerfil/${productoReciclable.idVendedor}/${productoReciclable.idProducto}")
+                    mainNavController.navigate("VendedorPerfil/${if(productoReciclable.idVendedor.isEmpty()) null else productoReciclable.idVendedor}/${productoReciclable.idProducto}")
 
                 }, modifier = Modifier.size(24.dp)) {
                     Icon(

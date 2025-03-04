@@ -21,8 +21,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Checkbox
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -47,7 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.TransaccionPendiente
-import com.example.reciclapp.presentation.ui.menu.ui.content.mypurchases.TarjetaProducto
 import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -91,8 +88,9 @@ fun QRGeneratorDialog(
             },
             text = {
                 ProductSelectionContent(
-                    idUser = transaccionViewModel.myUser.value?.idUsuario ?: "",
-                    isVendedor = usuarioContactadoIsVendedor,
+                    myIdUser = transaccionViewModel.myUser.value?.idUsuario ?: "",
+                    usuarioContactadoId = usuarioContactadoId,
+                    usuarioContactadoEsVendedor = usuarioContactadoIsVendedor,
                     onProductSelected = {
                         selectedProductId = it
                         showProductSelection = false
@@ -127,8 +125,9 @@ fun QRGeneratorDialog(
 
 @Composable
 fun ProductSelectionContent(
-    idUser: String,
-    isVendedor: Boolean,
+    myIdUser: String,
+    usuarioContactadoId: String,
+    usuarioContactadoEsVendedor: Boolean,
     onProductSelected: (String) -> Unit,
     transaccionViewModel: TransaccionViewModel = hiltViewModel()
 ) {
@@ -136,7 +135,10 @@ fun ProductSelectionContent(
     var selectedProduct by remember { mutableStateOf<ProductoReciclable?>(null) }
 
     LaunchedEffect(Unit) {
-        transaccionViewModel.fetchProductosPorMiUsuarioUseCase(idUser)
+        if (usuarioContactadoEsVendedor)
+            transaccionViewModel.fetchProductosPorUsuario(usuarioContactadoId) //Veo uno de sus productos del vendedor
+        else
+            transaccionViewModel.fetchProductosPorUsuario(myIdUser)//Le envio uno de mis productos por el cual quiero contactar al comprador
     }
 
     Column(
@@ -363,7 +365,7 @@ fun QRCode(
     val height = bitMatrix.height
     val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
 
-    val qrColor = MaterialTheme.colorScheme.primary.toArgb()
+    val qrColor = android.graphics.Color.BLACK
     val backgroundColor = MaterialTheme.colorScheme.surface.toArgb()
 
     for (x in 0 until width) {
@@ -394,44 +396,5 @@ fun QRCode(
                 .padding(12.dp),
             contentScale = ContentScale.Fit
         )
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun seleccionarUnProducto(
-    idUser: String,
-    isVendedor: Boolean,
-    transaccionViewModel: TransaccionViewModel = hiltViewModel(),
-) {
-    val isLoading = transaccionViewModel.isLoading.collectAsState().value
-    val productos = transaccionViewModel.productos.collectAsState().value
-
-    transaccionViewModel.fetchProductosPorMiUsuarioUseCase(idUser)
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceEvenly
-    ) {
-        Text(
-            "Selecciona un producto por el que quieras contactar al ${if (isVendedor) "vendedor" else "comprador"}",
-            textAlign = TextAlign.Center
-        )
-        Divider()
-        Box(contentAlignment = Alignment.Center) {
-            if (isLoading)
-                CircularProgressIndicator()
-            else if (productos.isEmpty()) {
-                Text("No hay productos disponibles")
-            } else {
-                LazyColumn {
-                    items(productos.size) { index ->
-                        val producto = productos[index]
-                        TarjetaProducto(producto = producto)
-                    }
-                }
-            }
-        }
     }
 }

@@ -125,12 +125,26 @@ class TransaccionViewModel @Inject constructor(
         }
     }
 
+    fun fetchProductosPorUsuario(idUsuario: String) {
+        _isLoading.value = true
+        viewModelScope.launch {
+            try {
+                _productos.value = listarProductosPorUsuarioUseCase.execute(idUsuario)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error al cargar los productos: ${e.message}")
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+
     fun marcarProductoComoVendido(transaccion: TransaccionPendiente) {
         _isLoading.value = true
         try {
             viewModelScope.launch {
                 repository.confirmarTransaccion(transaccion.idTransaccion)
-                marcarProductoComoVendidoUseCase.execute(transaccion.idProducto)
+                marcarProductoComoVendidoUseCase.execute(transaccion)
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error al marcar el producto como vendido: ${e.message}")

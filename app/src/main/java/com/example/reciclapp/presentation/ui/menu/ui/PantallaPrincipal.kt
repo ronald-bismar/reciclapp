@@ -81,7 +81,7 @@ fun PantallaPrincipal(navControllerMain: NavController, tipoDeUsuario: String?) 
     )
 
     val navigationItemsComprador = listOf(
-        ItemsMenu.Pantalla1,
+        ItemsMenu.PantallaRankingCompradores,
         ItemsMenu.Pantalla2,
         ItemsMenu.Pantalla5,
         ItemsMenu.Pantalla4Vendedores,
