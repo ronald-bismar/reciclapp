@@ -44,8 +44,6 @@ fun RankingCompradoresScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
     ) {
-        // Header
-        RankingHeader()
 
         // Top 3 Podium
         if (compradores.isNotEmpty()) {
