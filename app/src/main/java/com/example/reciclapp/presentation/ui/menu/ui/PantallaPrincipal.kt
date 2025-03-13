@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 /**
  * PantallaPrincipal es la función principal que configura la pantalla inicial del menú.
  * Utiliza varios componentes de Jetpack Compose para crear una interfaz de usuario
- * que incluye un Drawer de navegación, un Bottom Sheet y una Floating Action Button.
+ * que incluye un Drawer de navegación.
  *
  * @param navControllerMain El NavController principal para la navegación entre pantallas.
  */
@@ -52,26 +52,19 @@ fun PantallaPrincipal(navControllerMain: NavController, tipoDeUsuario: String?) 
     val vendedoresViewModel: VendedoresViewModel = hiltViewModel()
     val compradoresViewModel: CompradoresViewModel = hiltViewModel()
 
-    // Estado del Drawer de navegación
     val drawerState = rememberDrawerState(DrawerValue.Closed)
-    // Alcance para las corutinas
     val scope = rememberCoroutineScope()
-    // Controlador de navegación para la navegación interna de la pantalla principal
     val navController = rememberNavController()
-    // Estado del Bottom Sheet modal
     val bottomSheetState = rememberModalBottomSheetState()
 
-    // Estado para manejar la carga del tipo de usuario
     var isLoading by remember { mutableStateOf(true) }
 
-    // Observar cambios en el tipo de usuario
     LaunchedEffect(tipoDeUsuario) {
         if (tipoDeUsuario != null) {
             isLoading = false // El tipo de usuario ya está cargado
         }
     }
 
-    // Elementos de navegación en el menú inferior
     val navigationItemsVendedor = listOf(
         ItemsMenu.Pantalla1,
         ItemsMenu.Pantalla2,
@@ -88,21 +81,17 @@ fun PantallaPrincipal(navControllerMain: NavController, tipoDeUsuario: String?) 
         ItemsMenu.PantallaHistorialCompras,
     )
 
-    // Determinar la navegación predeterminada según el tipo de usuario
     val navegacionPredeterminada = when (tipoDeUsuario?.uppercase()) {
         "COMPRADOR" -> navigationItemsComprador
         "VENDEDOR" -> navigationItemsVendedor
-        else -> emptyList() // Si el tipo de usuario no está cargado, no mostrar botones
+        else -> emptyList()
     }
 
-    // Cargar productos del vendedor si es necesario
     LaunchedEffect(userViewModel.user.value) {
         userViewModel.user.value?.let {
             vendedoresViewModel.fetchProductosByVendedor(it.idUsuario)
         }
     }
-
-    Log.d("MyUser", "MyUser: $tipoDeUsuario")
 
     // Mostrar el contenido principal
     ModalNavigationDrawer(

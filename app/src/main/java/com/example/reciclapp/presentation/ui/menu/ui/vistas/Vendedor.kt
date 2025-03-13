@@ -76,11 +76,6 @@ fun Vendedor(
         vendedoresViewModel.fetchProductosByVendedor(vendedorId)
     }
 
-    LaunchedEffect(productoId) {
-        Log.d(TAG, "Id del producto: $productoId")
-    }
-
-
     val selectedVendedor = vendedoresViewModel.selectedVendedor.collectAsState().value
     val productos = vendedoresViewModel.productos.collectAsState().value
 

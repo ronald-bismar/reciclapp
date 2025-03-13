@@ -20,7 +20,6 @@ fun NewsTipsScreen(api: GlobalWasteApi) {
     var newsTips by remember { mutableStateOf<List<NewsTipResponse>>(emptyList()) }
     val scope = rememberCoroutineScope()
 
-    // Fetch data from the API
     LaunchedEffect(Unit) {
         scope.launch {
             try {
@@ -32,9 +31,7 @@ fun NewsTipsScreen(api: GlobalWasteApi) {
         }
     }
 
-    // Main container for the screen
     Surface(modifier = Modifier.fillMaxSize()) {
-        // Check if data is available
         if (newsTips.isNotEmpty()) {
             LazyColumn(
                 modifier = Modifier
@@ -47,7 +44,6 @@ fun NewsTipsScreen(api: GlobalWasteApi) {
                 }
             }
         } else {
-            // Show loading or error message
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.fillMaxSize()
