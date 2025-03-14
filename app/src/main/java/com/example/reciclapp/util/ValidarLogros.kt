@@ -1,7 +1,11 @@
 package com.example.reciclapp.util
 
+import android.util.Log
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 object ValidarLogros {
     fun validarRecicladorNovato(transacciones: List<ProductoReciclable>): Boolean {
@@ -25,14 +29,17 @@ object ValidarLogros {
         return transaccionesPorDia.any { it.value.size >= 5 } // Ejemplo: 5 transacciones en un día
     }
     fun validarPuntosDorados(puntosTotales: Int): Boolean {
+        Log.d("ValidarPuntos", "Puntos totales: $puntosTotales")
         return puntosTotales >= 1000
     }
 
     fun validarPuntosDePlatino(puntosTotales: Int): Boolean {
+        Log.d("ValidarPuntos", "Puntos totales: $puntosTotales")
         return puntosTotales >= 5000
     }
 
     fun validarPuntosLegendarios(puntosTotales: Int): Boolean {
+        Log.d("ValidarPuntos", "Puntos totales: $puntosTotales")
         return puntosTotales >= 10000
     }
     fun validarAmigoDelMedioAmbiente(transacciones: List<ProductoReciclable>): Boolean {
@@ -120,21 +127,37 @@ object ValidarLogros {
     fun validarComunidadActiva(interacciones: Int): Boolean {
         return interacciones >= 10
     }
+
     fun validarRecicladorDeVerano(transacciones: List<ProductoReciclable>): Boolean {
+        Log.d("ValidarRecicladorDeVerano", "Transacciones: $transacciones")
+        val dateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
         val transaccionesVerano = transacciones.filter {
-            val mes = it.fechaPublicacion.substring(5, 7).toInt()
-            mes in 6..8 // Verano: junio, julio, agosto
+            val date = dateFormat.parse(it.fechaPublicacion)
+            val calendar = Calendar.getInstance()
+            if (date != null) {
+                calendar.time = date
+            }
+            val mes = calendar.get(Calendar.MONTH) + 1 // Calendar.MONTH is zero-based
+            mes in 6..8
         }
         return transaccionesVerano.size >= 20
     }
 
     fun validarRecicladorDeInvierno(transacciones: List<ProductoReciclable>): Boolean {
+        val dateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
+
         val transaccionesInvierno = transacciones.filter {
-            val mes = it.fechaPublicacion.substring(5, 7).toInt()
-            mes in 12 downTo 2 // Invierno: diciembre, enero, febrero
+            val date = dateFormat.parse(it.fechaPublicacion)
+            val calendar = Calendar.getInstance()
+            if (date != null) {
+                calendar.time = date
+            }
+            val mes = calendar.get(Calendar.MONTH) + 1
+            mes == 12 || mes == 1 || mes == 2 // Invierno: diciembre, enero, febrero
         }
         return transaccionesInvierno.size >= 20
     }
+
     fun validarEquipoVerde(transaccionesEnGrupo: Int): Boolean {
         return transaccionesEnGrupo >= 1
     }

@@ -27,7 +27,6 @@ fun BottomNavHost(
     navHostController: NavHostController,
     idUsuario: String,
     userViewModel: UserViewModel,
-    productosDeVendedor: MutableList<ProductoReciclable>
 
 ) {
     val globalWasteApi = remember { GlobalWasteApi.create() }
@@ -39,7 +38,7 @@ fun BottomNavHost(
             NewsTipsScreen(api = globalWasteApi)
         }
         composable(ItemsMenu.Pantalla2.ruta) {
-            DetailedStatisticsScreen(userViewModel, productosDeVendedor)
+            DetailedStatisticsScreen(userViewModel)
         }
         composable(ItemsMenu.Pantalla3.ruta) {
             MapsView(idUsuario, mainNavController)

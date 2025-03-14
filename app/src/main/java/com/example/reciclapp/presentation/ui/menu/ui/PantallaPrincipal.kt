@@ -1,7 +1,6 @@
 package com.example.reciclapp.presentation.ui.menu.ui
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -65,6 +64,7 @@ fun PantallaPrincipal(navControllerMain: NavController, tipoDeUsuario: String?) 
         }
     }
 
+
     val navigationItemsVendedor = listOf(
         ItemsMenu.Pantalla1,
         ItemsMenu.Pantalla2,
@@ -87,9 +87,9 @@ fun PantallaPrincipal(navControllerMain: NavController, tipoDeUsuario: String?) 
         else -> emptyList()
     }
 
-    LaunchedEffect(userViewModel.user.value) {
+    LaunchedEffect(userViewModel.user.value, Unit) {
         userViewModel.user.value?.let {
-            vendedoresViewModel.fetchProductosByVendedor(it.idUsuario)
+            userViewModel.user.value?.let { userViewModel.initDataScreenStatistics(userViewModel.user.value!!) }
         }
     }
 
@@ -132,9 +132,8 @@ fun PantallaPrincipal(navControllerMain: NavController, tipoDeUsuario: String?) 
                 BottomNavHost(
                     mainNavController = navControllerMain,
                     navHostController = navController,
-                    userViewModel.user?.value?.idUsuario ?: "",
+                    userViewModel.user.value?.idUsuario ?: "",
                     userViewModel,
-                    vendedoresViewModel.productos.collectAsState().value
                 )
             }
         }

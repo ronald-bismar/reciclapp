@@ -1,9 +1,12 @@
 package com.example.reciclapp.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.reciclapp.domain.entities.Categoria
+import com.example.reciclapp.domain.entities.Logro
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.usecases.comprador.GetCompradoresUseCase
@@ -13,6 +16,7 @@ import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferences
 import com.example.reciclapp.domain.usecases.usuario.ActualizarUsuarioUseCase
 import com.example.reciclapp.domain.usecases.vendedor.GetVendedoresUseCase
 import com.example.reciclapp.util.ImpactoAmbientalUtil
+import com.example.reciclapp.util.Logros
 import com.example.reciclapp.util.NombreNivelUsuario
 import com.example.reciclapp.util.ProductosReciclables
 import com.example.reciclapp.util.ValidarLogros.actualizarLogrosUsuario
@@ -131,9 +135,11 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun fetchProductosByVendedor(userId: String) {
+    fun fetchProductosByVendedor(user: Usuario) {
         viewModelScope.launch {
-            _productosAsVendedor.value = listarProductosDeVendedorUseCase.execute(userId)
+            _productosAsVendedor.value = listarProductosDeVendedorUseCase.execute(user.idUsuario)
+            initDataScreenStatistics(user)
+
             /*contarProductosActivos()
             calcularCO2AhorradoEnKilos()
             calcularMeGustasEnProductos()*/
@@ -157,21 +163,36 @@ class UserViewModel @Inject constructor(
     private val _cantidadArbolesBeneficiados = MutableStateFlow<Int>(0)
     val cantidadArbolesBeneficiados: StateFlow<Int> = _cantidadArbolesBeneficiados
 
-    private val _puntosPorCategoria = MutableStateFlow<Map<String, Int>>(emptyMap())
-    val puntosPorCategoria: StateFlow<Map<String, Int>> = _puntosPorCategoria
-
     private val _nombreYPuntosPorCategoria = MutableStateFlow<Map<String, Int>>(emptyMap())
     val nombreYPuntosPorCategoria: StateFlow<Map<String, Int>> = _nombreYPuntosPorCategoria
 
-    fun initDataScreenStatistics(user: Usuario) {
-        viewModelScope.launch {
-            fetchProductosByVendedor(user.idUsuario)
+    private val _logrosEncontrados = MutableStateFlow<List<Logro>>(emptyList())
+    val logrosEncontrados: StateFlow<List<Logro>> = _logrosEncontrados
 
-        }
+
+    fun initDataScreenStatistics(user: Usuario) {
+
+        fetchProductosByVendedor(user)
+
+        val categorias = ListOfCategorias.categorias
+
+        Log.d("Puntaje","productos: ${_productosAsVendedor.value.size}")
+
+        val puntosTotales = _productosAsVendedor.value
+            .filter { producto -> producto.fueVendida }
+            .sumOf { producto ->
+                // Find the category for the product
+                val categoria = categorias.find { it.idCategoria == producto.idCategoria }
+                // Sum the points from the transaction and the category points
+                producto.puntosPorCompra + (categoria?.puntosPorTransaccion ?: 0)
+            }
+
+        Log.d("Puntaje","puntaje : $puntosTotales")
+
         _user.value = actualizarLogrosUsuario(
             usuario = user,
             transacciones = _productosAsVendedor.value.filter { producto -> producto.fueVendida },
-            puntosTotales = user.puntaje,
+            puntosTotales = puntosTotales,
             co2Evitado = _productosAsVendedor.value.sumOf { producto -> producto.emisionCO2Kilo },
             residuosReducidosEnUnidades = _productosAsVendedor.value.sumOf { producto -> if (producto.unidadMedida == "Unidades (u)") producto.cantidad.toDouble() else 0.0 },
             compartidosEnRedes = 0,
@@ -181,8 +202,9 @@ class UserViewModel @Inject constructor(
         )
 
         _user.value?.apply {
-            nombreNivel = NombreNivelUsuario.obtenerNombreNivel(this.puntaje ?: 0)
-            nivel = NombreNivelUsuario.obtenerNivel(this.puntaje ?: 0)
+            nombreNivel = NombreNivelUsuario.obtenerNombreNivel(this.puntaje)
+            nivel = NombreNivelUsuario.obtenerNivel(this.puntaje)
+            puntaje = puntosTotales
         }
 
         val (porcentajeLogrado, siguienteNivel) = NombreNivelUsuario.calcularProgreso(
@@ -197,8 +219,11 @@ class UserViewModel @Inject constructor(
 
         _cantidadArbolesBeneficiados.value = ImpactoAmbientalUtil.calcularArbolesSalvados(_productosAsVendedor.value.filter { it.fueVendida })
 
-        _puntosPorCategoria.value = ProductosReciclables.obtenerPuntosPorCategoria()
         _nombreYPuntosPorCategoria.value = ProductosReciclables.obtenerNombreYPuntosPorCategoria()
+
+        _logrosEncontrados.value = Logros.listaDeLogros.filter { logro ->
+            _user.value?.logrosPorId?.split(",")?.contains(logro.idLogro) == true
+        }
 
         _user.value?.let { updateUser(it) }
     }

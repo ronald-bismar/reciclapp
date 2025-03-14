@@ -63,6 +63,7 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
             val productoReciclable = document.toObject(ProductoReciclable::class.java)
             productoReciclable?.let { productosDeVendedor.add(it) }
         }
+        Log.d(TAG,"listarProductosPorVendedor ${productosDeVendedor.size}")
         return productosDeVendedor
     }
 

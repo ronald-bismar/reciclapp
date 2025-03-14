@@ -1,6 +1,7 @@
 package com.example.reciclapp.presentation.ui.menu.ui.content.statistics
 
 import RachaReciclaje
+import android.util.Log
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -35,6 +36,8 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,72 +61,29 @@ import com.example.reciclapp.util.ValidarLogros.actualizarLogrosUsuario
 private const val TAG = "PantallaPrincipal"
 
 @Composable
-fun DetailedStatisticsScreen(
-    userViewModel: UserViewModel,
-    productosDeVendedor: MutableList<ProductoReciclable>,
-) {
+fun DetailedStatisticsScreen(userViewModel: UserViewModel) {
     val modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)
 
-    val usuarioSinLogrosActualizados = userViewModel.user.value
+    val usuarioConLogrosActualizados = userViewModel.user.value
+    val logrosEncontrados = userViewModel.logrosEncontrados.collectAsState().value
+    val porcentajeLogrado = userViewModel.porcentajeLogradoEnNivelActual.collectAsState().value
+    val siguienteNivel = userViewModel.siguienteNivel.collectAsState().value
+    val nombreYPuntosPorCategoria = userViewModel.nombreYPuntosPorCategoria.collectAsState().value
+    val rachaSemanal = userViewModel.rachaSemanal.collectAsState().value
+    val rachaMensual = userViewModel.rachaMensual.collectAsState().value
+    val cantidadArbolesBeneficiados = userViewModel.cantidadArbolesBeneficiados.collectAsState().value
 
-    val usuarioConLogrosActualizados = usuarioSinLogrosActualizados?.let {
-        actualizarLogrosUsuario(
-            usuario = usuarioSinLogrosActualizados,
-            transacciones = productosDeVendedor.filter { producto -> producto.fueVendida },
-            puntosTotales = it.puntaje,
-            co2Evitado = productosDeVendedor.sumOf { producto -> producto.emisionCO2Kilo },
-            residuosReducidosEnUnidades = productosDeVendedor.sumOf { producto -> if (producto.unidadMedida == "Unidades (u)") producto.cantidad.toDouble() else 0.0 },
-            compartidosEnRedes = 0,
-            interacciones = 0,
-            transaccionesEnGrupo = 0,
-            eventosParticipados = 0
-        )
-    }
-
-    usuarioConLogrosActualizados?.apply {
-        nombreNivel = NombreNivelUsuario.obtenerNombreNivel(this.puntaje ?: 0)
-        nivel = NombreNivelUsuario.obtenerNivel(this.puntaje ?: 0)
-    }
-
-    val (porcentajeLogrado, siguienteNivel) = NombreNivelUsuario.calcularProgreso(
-        usuarioConLogrosActualizados?.puntaje ?: 0
-    )
-
-    val rachaSemanal = RachaReciclaje.calcularRachaSemanal(productosDeVendedor.filter { it.fueVendida })
-    val rachaMensual = RachaReciclaje.calcularRachaMensual(productosDeVendedor.filter { it.fueVendida })
-
-    val cantidadArbolesBeneficiados = ImpactoAmbientalUtil.calcularArbolesSalvados(productosDeVendedor.filter { it.fueVendida })
-
-    // Obtener puntos por categoría (usando idCategoria)
-    val puntosPorCategoria = ProductosReciclables.obtenerPuntosPorCategoria()
-    println("Puntos por categoría (usando idCategoria):")
-    puntosPorCategoria.forEach { (idCategoria, puntos) ->
-        println("Categoría $idCategoria: $puntos puntos")
-    }
-
-    val nombreYPuntosPorCategoria = ProductosReciclables.obtenerNombreYPuntosPorCategoria()
-
-    //TODO actualizar al usuario en firebase despues de sacar sus puntos actuales
-    usuarioConLogrosActualizados?.let { userViewModel.updateUser(it) }
-
-    val listaDeIds = usuarioConLogrosActualizados?.logrosPorId?.split(",") ?: emptyList()
-
-    val cantidadDeLogrosAnteriores =
-        usuarioSinLogrosActualizados?.logrosPorId?.split(",")?.size ?: 0
-    val cantidadDeLogrosActuales = usuarioConLogrosActualizados?.logrosPorId?.split(",")?.size ?: 0
-
-    // Filtrar la lista de logros para encontrar los que coinciden con los IDs
-    val logrosEncontrados: List<Logro> = Logros.listaDeLogros.filter { logro ->
-        listaDeIds.contains(logro.idLogro)
+    LaunchedEffect(usuarioConLogrosActualizados) {
+        Log.d(TAG, "DetailedStatisticsScreen: $usuarioConLogrosActualizados")
     }
 
     LazyColumn(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        if (cantidadDeLogrosActuales > cantidadDeLogrosAnteriores)
+        if (logrosEncontrados.isNotEmpty())
             item {
                 BadgeNuevoLogro(
                     ultimoLogro = logrosEncontrados.last(),
