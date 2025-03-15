@@ -1,5 +1,6 @@
 package com.example.reciclapp.util
 
+import android.util.Log
 import com.example.reciclapp.domain.entities.ProductoReciclable
 
 // TODO: Realizar la investigación más precisa para los pesos por unidad
@@ -60,12 +61,12 @@ object ProductosReciclables {
     }
 
     // Función para obtener el nombre de la categoría y el total de puntos
-    fun obtenerNombreYPuntosPorCategoria(): Map<String, Int> {
+    fun obtenerNombreYPuntosPorCategoria(productos : List<ProductoReciclable>): Map<String, Int> {
         // Mapa para almacenar el nombre de la categoría y el total de puntos
         val nombreYPuntosPorCategoria = mutableMapOf<String, Int>()
 
         // Recorrer todos los productos
-        productosPredeterminados.forEach { producto ->
+        productos.forEach { producto ->
             // Obtener el nombre de la categoría (puedes usar un mapa de categorías si lo tienes)
             val nombreCategoria = when (producto.idCategoria) {
                 "1" -> "Plásticos"
@@ -83,6 +84,7 @@ object ProductosReciclables {
             nombreYPuntosPorCategoria[nombreCategoria] = nombreYPuntosPorCategoria.getOrDefault(nombreCategoria, 0) + producto.puntosPorCompra
         }
 
+        Log.d("Puntaje","nombre: $nombreYPuntosPorCategoria")
         return nombreYPuntosPorCategoria
     }
 }

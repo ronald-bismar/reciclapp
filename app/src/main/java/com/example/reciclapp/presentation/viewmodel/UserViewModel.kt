@@ -219,7 +219,7 @@ class UserViewModel @Inject constructor(
 
         _cantidadArbolesBeneficiados.value = ImpactoAmbientalUtil.calcularArbolesSalvados(_productosAsVendedor.value.filter { it.fueVendida })
 
-        _nombreYPuntosPorCategoria.value = ProductosReciclables.obtenerNombreYPuntosPorCategoria()
+        _nombreYPuntosPorCategoria.value = ProductosReciclables.obtenerNombreYPuntosPorCategoria(_productosAsVendedor.value)
 
         _logrosEncontrados.value = Logros.listaDeLogros.filter { logro ->
             _user.value?.logrosPorId?.split(",")?.contains(logro.idLogro) == true

@@ -521,6 +521,9 @@ fun LogrosDesbloqueados(logrosEncontrados: List<Logro>) {
 
 @Composable
 fun EstadisticasCategorias(nombreYPuntosPorCategoria: Map<String, Int>) {
+
+    Log.d(TAG, "EstadisticasCategoriasasd: $nombreYPuntosPorCategoria")
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
