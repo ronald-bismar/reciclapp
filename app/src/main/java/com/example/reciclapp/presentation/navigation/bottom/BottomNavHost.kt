@@ -18,6 +18,7 @@ import com.example.reciclapp.presentation.ui.menu.ui.content.newsandtips.GlobalW
 import com.example.reciclapp.presentation.ui.menu.ui.content.newsandtips.NewsTipsScreen
 import com.example.reciclapp.presentation.ui.menu.ui.content.statistics.DetailedStatisticsScreen
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.mapa.MapsView
+import com.example.reciclapp.presentation.viewmodel.UbicacionViewModel
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -25,8 +26,8 @@ import com.example.reciclapp.presentation.viewmodel.UserViewModel
 fun BottomNavHost(
     mainNavController: NavController,
     navHostController: NavHostController,
-    idUsuario: String,
     userViewModel: UserViewModel,
+    ubicacionViewModel: UbicacionViewModel
 
 ) {
     val globalWasteApi = remember { GlobalWasteApi.create() }
@@ -41,7 +42,7 @@ fun BottomNavHost(
             DetailedStatisticsScreen(userViewModel)
         }
         composable(ItemsMenu.Pantalla3.ruta) {
-            MapsView(idUsuario, mainNavController)
+            MapsView(mainNavController, ubicacionViewModel)
         }
         composable(ItemsMenu.Pantalla4.ruta) {
             ContactListScreen(mainNavController)

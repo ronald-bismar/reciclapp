@@ -57,7 +57,6 @@ fun SocialMediaScreenVendedores(
     vendedoresViewModel: VendedoresViewModel = hiltViewModel()
 ) {
 
-    // Evitar recargar los datos innecesariamente
     LaunchedEffect(Unit) {
         vendedoresViewModel.fetchAllProducts()
     }
@@ -125,7 +124,6 @@ fun EmptyProductsMessage() {
         }
     }
 }
-
 
 @Composable
 fun CardSocialMediaReciclador(

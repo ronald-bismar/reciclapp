@@ -19,6 +19,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.example.reciclapp.presentation.ui.CompartirScreen.CompartirScreen
 import com.example.reciclapp.presentation.ui.aboutus.AboutUsScreen
@@ -48,6 +49,7 @@ import com.example.reciclapp.presentation.ui.registro.ui.RegistroViewModel
 import com.example.reciclapp.presentation.ui.splash.SplashScreenContent
 import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
 import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
+import com.example.reciclapp.presentation.viewmodel.UbicacionViewModel
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 import kotlinx.coroutines.Dispatchers
@@ -63,15 +65,16 @@ fun NavGraph(
     vendedoresViewModel: VendedoresViewModel = hiltViewModel(),
     compradoresViewModel: CompradoresViewModel = hiltViewModel(),
     transaccionViewModel: TransaccionViewModel = hiltViewModel(),
+    ubicacionViewModel: UbicacionViewModel = hiltViewModel(),
     getUserPreferencesUseCase: GetUserPreferencesUseCase
 ) {
     var nextScreen by remember { mutableStateOf("splash") }
-    var tipoDeUsuario by remember { mutableStateOf("") }
+    var usuario by remember { mutableStateOf(Usuario()) }
 
     LaunchedEffect(Unit) {
-        val (screen, userType) = getNextScreenAndKindUser(getUserPreferencesUseCase)
+        val (screen, user) = getNextScreenAndKindUser(getUserPreferencesUseCase)
         nextScreen = screen
-        tipoDeUsuario = userType
+        usuario = user
     }
 
     NavHost(navController = mainNavController, startDestination = "splash") {
@@ -92,7 +95,7 @@ fun NavGraph(
             RegistroScreen(registroViewModel, mainNavController)
         }
         composable("menu") {
-            PantallaPrincipal(mainNavController, tipoDeUsuario)
+            PantallaPrincipal(mainNavController, usuario)
         }
         composable("pantalla presentacion") {
             PantallaPresentacion(mainNavController)
@@ -150,7 +153,7 @@ fun NavGraph(
         }
         composable("map") {
             userViewModel.user.observeAsState().value?.idUsuario?.let { idUsuario ->
-                MapsView(idUsuario = idUsuario, mainNavController = mainNavController)
+                MapsView(mainNavController = mainNavController, ubicacionViewModel =  ubicacionViewModel)
             }
         }
 
@@ -212,10 +215,10 @@ fun NavGraph(
     }
 }
 
-suspend fun getNextScreenAndKindUser(getUserPreferencesUseCase: GetUserPreferencesUseCase): Pair<String, String> {
+suspend fun getNextScreenAndKindUser(getUserPreferencesUseCase: GetUserPreferencesUseCase): Pair<String, Usuario> {
     val userPreferences = withContext(Dispatchers.IO) { getUserPreferencesUseCase.execute() }
     val nextScreen = if (userPreferences?.nombre != "") "menu" else "login"
-    val tipoDeUsuario = userPreferences?.tipoDeUsuario ?: ""
+    val usuario = userPreferences ?: Usuario()
 
-    return nextScreen to tipoDeUsuario
+    return nextScreen to usuario
 }

@@ -1,6 +1,7 @@
 package com.example.reciclapp.presentation.ui.menu.ui.vistas.mapa
 
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.os.Build
 import android.util.Log
@@ -52,6 +53,7 @@ import com.example.reciclapp.presentation.animations.AnimatedTransitionDialog
 import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
 import com.example.reciclapp.presentation.viewmodel.MarkerData
 import com.example.reciclapp.presentation.viewmodel.UbicacionViewModel
+import com.example.reciclapp.presentation.viewmodel.UserViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
@@ -64,12 +66,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MapsView(
-    idUsuario: String,
     mainNavController: NavController,
-    ubicacionViewModel: UbicacionViewModel = hiltViewModel(),
+    ubicacionViewModel: UbicacionViewModel,
 ) {
     val myCurrentLocation by ubicacionViewModel.myCurrentLocation.collectAsState()
     val mapView = rememberMapViewWithLifecycle()
@@ -80,21 +82,9 @@ fun MapsView(
     var showDialog by remember { mutableStateOf(false) }
     var selectedMarker by remember { mutableStateOf<MarkerData?>(null) }
 
-
-    Log.d("BitmapDescriptor", "BitmapDescriptor: $markers")
-
-    // Request location permissions and fetch locations if granted
-    LaunchedEffect(locationPermissionState.status) {
-        if (locationPermissionState.status.isGranted) {
-            ubicacionViewModel.fetchLocationsAndUsers()
-            ubicacionViewModel.getMyCurrentLocation(idUsuario)
-        } else {
-            locationPermissionState.launchPermissionRequest()
-        }
-    }
-
     // Move camera to my current location when it changes and is not null
     LaunchedEffect(myCurrentLocation) {
+        Log.d("CurrentLocation", "My current location: $myCurrentLocation")
         googleMap?.let { map ->
             myCurrentLocation?.let { location ->
                 val myLocationLatLng = LatLng(location.latitude, location.longitude)
@@ -104,7 +94,8 @@ fun MapsView(
     }
 
     // Update map markers when markers change
-    LaunchedEffect(markers) {
+    LaunchedEffect(markers, googleMap) {
+        Log.d("Markers", "Markers: $markers")
         googleMap?.let { map ->
             updateMapMarkers(map, markers) { markerData ->
                 selectedMarker = markerData
@@ -113,13 +104,12 @@ fun MapsView(
         }
     }
 
-
     Box(modifier = Modifier.fillMaxSize()) {
         // Map view
         AndroidView(
             factory = {
                 mapView.apply {
-                    getMapAsync { map ->
+                    getMapAsync @androidx.annotation.RequiresPermission(allOf = [android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION]) { map ->
                         googleMap = map
                         if (locationPermissionState.status.isGranted) {
                             map.isMyLocationEnabled = true
@@ -152,7 +142,7 @@ fun MapsView(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(15.dp)
-                .background(Color.Gray.copy(alpha = 0.4f), shape = RoundedCornerShape(8.dp))
+                .background(Color.White.copy(alpha = 0.4f), shape = RoundedCornerShape(8.dp))
         ) {
             Text(
                 text = "Mapa Compradores de Reciclaje",
@@ -179,16 +169,16 @@ private fun setupMap(
     googleMap: GoogleMap,
     locationPermissionState: PermissionState
 ) {
-    myLocation?.let {
-        val location = LatLng(it.latitude, it.longitude)
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 13f))
+    myLocation?.let { location ->
+        val latLng = LatLng(location.latitude, location.longitude)
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f))
 
         if (locationPermissionState.status.isGranted) {
+            @SuppressLint("MissingPermission")
             googleMap.isMyLocationEnabled = true
         }
     }
 }
-
 private fun updateMapMarkers(
     googleMap: GoogleMap,
     markers: List<MarkerData>,
@@ -313,7 +303,6 @@ fun rememberMapViewWithLifecycle(): MapView {
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
-            mapView.onDestroy()
         }
     }
     return mapView

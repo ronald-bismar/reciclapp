@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.reciclapp.domain.entities.Categoria
 import com.example.reciclapp.domain.entities.Logro
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
@@ -137,12 +136,9 @@ class UserViewModel @Inject constructor(
 
     fun fetchProductosByVendedor(user: Usuario) {
         viewModelScope.launch {
-            _productosAsVendedor.value = listarProductosDeVendedorUseCase.execute(user.idUsuario)
-            initDataScreenStatistics(user)
-
-            /*contarProductosActivos()
-            calcularCO2AhorradoEnKilos()
-            calcularMeGustasEnProductos()*/
+            val productos = listarProductosDeVendedorUseCase.execute(user.idUsuario)
+            _productosAsVendedor.value = productos
+            initDataScreenStatistics(user, productos)
         }
     }
 
@@ -170,15 +166,12 @@ class UserViewModel @Inject constructor(
     val logrosEncontrados: StateFlow<List<Logro>> = _logrosEncontrados
 
 
-    fun initDataScreenStatistics(user: Usuario) {
-
-        fetchProductosByVendedor(user)
-
+    fun initDataScreenStatistics(user: Usuario, productos: List<ProductoReciclable>) {
         val categorias = ListOfCategorias.categorias
 
-        Log.d("Puntaje","productos: ${_productosAsVendedor.value.size}")
+        Log.d("Puntaje","productos: ${productos.size}")
 
-        val puntosTotales = _productosAsVendedor.value
+        val puntosTotales = productos
             .filter { producto -> producto.fueVendida }
             .sumOf { producto ->
                 // Find the category for the product
@@ -191,10 +184,10 @@ class UserViewModel @Inject constructor(
 
         _user.value = actualizarLogrosUsuario(
             usuario = user,
-            transacciones = _productosAsVendedor.value.filter { producto -> producto.fueVendida },
+            transacciones = productos.filter { producto -> producto.fueVendida },
             puntosTotales = puntosTotales,
-            co2Evitado = _productosAsVendedor.value.sumOf { producto -> producto.emisionCO2Kilo },
-            residuosReducidosEnUnidades = _productosAsVendedor.value.sumOf { producto -> if (producto.unidadMedida == "Unidades (u)") producto.cantidad.toDouble() else 0.0 },
+            co2Evitado = productos.sumOf { producto -> producto.emisionCO2Kilo },
+            residuosReducidosEnUnidades = productos.sumOf { producto -> if (producto.unidadMedida == "Unidades (u)") producto.cantidad.toDouble() else 0.0 },
             compartidosEnRedes = 0,
             interacciones = 0,
             transaccionesEnGrupo = 0,
@@ -214,12 +207,12 @@ class UserViewModel @Inject constructor(
         _porcentajeLogradoEnNivelActual.value = porcentajeLogrado
         _siguienteNivel.value = siguienteNivel
 
-        _rachaSemanal.value = RachaReciclaje.calcularRachaSemanal(_productosAsVendedor.value.filter { it.fueVendida })
-        _rachaMensual.value = RachaReciclaje.calcularRachaMensual(_productosAsVendedor.value.filter { it.fueVendida })
+        _rachaSemanal.value = RachaReciclaje.calcularRachaSemanal(productos.filter { it.fueVendida })
+        _rachaMensual.value = RachaReciclaje.calcularRachaMensual(productos.filter { it.fueVendida })
 
-        _cantidadArbolesBeneficiados.value = ImpactoAmbientalUtil.calcularArbolesSalvados(_productosAsVendedor.value.filter { it.fueVendida })
+        _cantidadArbolesBeneficiados.value = ImpactoAmbientalUtil.calcularArbolesSalvados(productos.filter { it.fueVendida })
 
-        _nombreYPuntosPorCategoria.value = ProductosReciclables.obtenerNombreYPuntosPorCategoria(_productosAsVendedor.value)
+        _nombreYPuntosPorCategoria.value = ProductosReciclables.obtenerNombreYPuntosPorCategoria(productos)
 
         _logrosEncontrados.value = Logros.listaDeLogros.filter { logro ->
             _user.value?.logrosPorId?.split(",")?.contains(logro.idLogro) == true
@@ -227,4 +220,5 @@ class UserViewModel @Inject constructor(
 
         _user.value?.let { updateUser(it) }
     }
+
 }

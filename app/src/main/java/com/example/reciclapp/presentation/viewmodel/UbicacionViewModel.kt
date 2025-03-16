@@ -14,12 +14,15 @@ import com.example.reciclapp.domain.usecases.ubicacionGPS.RegistrarUbicacionDeUs
 import com.example.reciclapp.util.GenerateID
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -50,6 +53,17 @@ class UbicacionViewModel @Inject constructor(
 
     private val _markers = MutableStateFlow<List<MarkerData>>(emptyList())
     val markers: StateFlow<List<MarkerData>> = _markers
+
+    private val _mapCameraPosition = MutableStateFlow<CameraPosition?>(null)
+    val mapCameraPosition = _mapCameraPosition.asStateFlow()
+
+    private val _mapInitialized = MutableStateFlow(false)
+    val mapInitialized = _mapInitialized.asStateFlow()
+
+    fun saveMapState(map: GoogleMap) {
+        _mapCameraPosition.value = map.cameraPosition
+        _mapInitialized.value = true
+    }
 
     @SuppressLint("MissingPermission")
     fun getMyCurrentLocation(idUsuario: String){

@@ -15,7 +15,6 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,13 +25,18 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.navigation.AppTopBar
 import com.example.reciclapp.presentation.navigation.bottom.BottomNavHost
 import com.example.reciclapp.presentation.navigation.bottom.BottomSheetContent
 import com.example.reciclapp.presentation.navigation.drawer.DrawerContent
 import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
+import com.example.reciclapp.presentation.viewmodel.UbicacionViewModel
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.launch
 
 /**
@@ -43,13 +47,14 @@ import kotlinx.coroutines.launch
  * @param navControllerMain El NavController principal para la navegación entre pantallas.
  */
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
-fun PantallaPrincipal(navControllerMain: NavController, tipoDeUsuario: String?) {
+fun PantallaPrincipal(navControllerMain: NavController, usuario: Usuario) {
     // ViewModel para manejar el estado del usuario
     val userViewModel: UserViewModel = hiltViewModel()
     val vendedoresViewModel: VendedoresViewModel = hiltViewModel()
     val compradoresViewModel: CompradoresViewModel = hiltViewModel()
+    val ubicacionViewModel: UbicacionViewModel = hiltViewModel()
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -58,8 +63,21 @@ fun PantallaPrincipal(navControllerMain: NavController, tipoDeUsuario: String?) 
 
     var isLoading by remember { mutableStateOf(true) }
 
-    LaunchedEffect(tipoDeUsuario) {
-        if (tipoDeUsuario != null) {
+    // Data MapsView.kt
+    val locationPermissionState =
+        rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
+
+    LaunchedEffect(locationPermissionState.status) {
+        if (locationPermissionState.status.isGranted) {
+            ubicacionViewModel.fetchLocationsAndUsers()
+            ubicacionViewModel.getMyCurrentLocation(usuario.idUsuario)
+        } else {
+            locationPermissionState.launchPermissionRequest()
+        }
+    }
+
+    LaunchedEffect(usuario) {
+        if (true) {
             isLoading = false // El tipo de usuario ya está cargado
         }
     }
@@ -81,7 +99,7 @@ fun PantallaPrincipal(navControllerMain: NavController, tipoDeUsuario: String?) 
         ItemsMenu.PantallaHistorialCompras,
     )
 
-    val navegacionPredeterminada = when (tipoDeUsuario?.uppercase()) {
+    val navegacionPredeterminada = when (usuario.tipoDeUsuario?.uppercase()) {
         "COMPRADOR" -> navigationItemsComprador
         "VENDEDOR" -> navigationItemsVendedor
         else -> emptyList()
@@ -89,7 +107,7 @@ fun PantallaPrincipal(navControllerMain: NavController, tipoDeUsuario: String?) 
 
     LaunchedEffect(userViewModel.user.value, Unit) {
         userViewModel.user.value?.let {
-            userViewModel.user.value?.let { userViewModel.initDataScreenStatistics(userViewModel.user.value!!) }
+            userViewModel.fetchProductosByVendedor(userViewModel.user.value!!)
         }
     }
 
@@ -132,8 +150,8 @@ fun PantallaPrincipal(navControllerMain: NavController, tipoDeUsuario: String?) 
                 BottomNavHost(
                     mainNavController = navControllerMain,
                     navHostController = navController,
-                    userViewModel.user.value?.idUsuario ?: "",
-                    userViewModel,
+                    userViewModel = userViewModel,
+                    ubicacionViewModel = ubicacionViewModel
                 )
             }
         }

@@ -38,11 +38,6 @@ fun MenuScreen(
 ) {
     val currentRoute = currentRoute(navController)
 
-    // Si la ruta actual es nula o no pertenece a `menuItems`, navegar a la tercera pantalla
-    if (currentRoute == null || menuItems.none { it.ruta == currentRoute }) {
-        navController.navigate(menuItems[2].ruta) // Navegar a la tercera pantalla
-    }
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
