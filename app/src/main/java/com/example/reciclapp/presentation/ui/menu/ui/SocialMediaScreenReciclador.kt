@@ -54,16 +54,10 @@ private const val TAG = "SocialMediaScreenReciclador"
 @Composable
 fun SocialMediaScreenVendedores(
     mainNavController: NavController,
-    vendedoresViewModel: VendedoresViewModel = hiltViewModel()
+    vendedoresViewModel: VendedoresViewModel
 ) {
 
-    LaunchedEffect(Unit) {
-        vendedoresViewModel.fetchAllProducts()
-    }
-
     val productos by vendedoresViewModel.productos.collectAsStateWithLifecycle()
-
-    Log.d("Productos","Productos: $productos")
 
     Box(
         modifier = Modifier

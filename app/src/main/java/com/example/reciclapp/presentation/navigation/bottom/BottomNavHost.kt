@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.reciclapp.domain.entities.ProductoReciclable
+import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.ui.menu.ui.ContactListScreen
 import com.example.reciclapp.presentation.ui.menu.ui.ItemsMenu
 import com.example.reciclapp.presentation.ui.menu.ui.RankingCompradoresScreen
@@ -20,6 +21,7 @@ import com.example.reciclapp.presentation.ui.menu.ui.content.statistics.Detailed
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.mapa.MapsView
 import com.example.reciclapp.presentation.viewmodel.UbicacionViewModel
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
+import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -27,7 +29,8 @@ fun BottomNavHost(
     mainNavController: NavController,
     navHostController: NavHostController,
     userViewModel: UserViewModel,
-    ubicacionViewModel: UbicacionViewModel
+    ubicacionViewModel: UbicacionViewModel,
+    vendedoresViewModel: VendedoresViewModel
 
 ) {
     val globalWasteApi = remember { GlobalWasteApi.create() }
@@ -45,10 +48,10 @@ fun BottomNavHost(
             MapsView(mainNavController, ubicacionViewModel)
         }
         composable(ItemsMenu.Pantalla4.ruta) {
-            ContactListScreen(mainNavController)
+            ContactListScreen(mainNavController, userViewModel.user.value?: Usuario(), userViewModel)
         }
         composable(ItemsMenu.Pantalla5.ruta) {
-            SocialMediaScreenVendedores(mainNavController)
+            SocialMediaScreenVendedores(mainNavController, vendedoresViewModel)
         }
         composable(ItemsMenu.PantallaHistorialCompras.ruta) {
             HistorialComprasScreen()

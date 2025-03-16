@@ -220,5 +220,4 @@ class UserViewModel @Inject constructor(
 
         _user.value?.let { updateUser(it) }
     }
-
 }

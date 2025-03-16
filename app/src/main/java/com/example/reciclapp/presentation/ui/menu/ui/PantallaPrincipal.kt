@@ -1,6 +1,7 @@
 package com.example.reciclapp.presentation.ui.menu.ui
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -63,6 +64,12 @@ fun PantallaPrincipal(navControllerMain: NavController, usuario: Usuario) {
 
     var isLoading by remember { mutableStateOf(true) }
 
+    LaunchedEffect(usuario) {
+        if (true) {
+            isLoading = false // El tipo de usuario ya está cargado
+        }
+    }
+
     // Data MapsView.kt
     val locationPermissionState =
         rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -76,11 +83,14 @@ fun PantallaPrincipal(navControllerMain: NavController, usuario: Usuario) {
         }
     }
 
-    LaunchedEffect(usuario) {
-        if (true) {
-            isLoading = false // El tipo de usuario ya está cargado
-        }
-    }
+    // Data ContactListScreen.kt
+    Log.d("PantallaPrincipal", "Tipo de usuario: ${usuario.tipoDeUsuario}")
+        if (usuario.tipoDeUsuario == "comprador")
+            userViewModel.fetchVendedores()
+        else userViewModel.fetchCompradores()
+
+    //Data SocialMediaScreenVendedores.kt
+    vendedoresViewModel.fetchAllProducts()
 
 
     val navigationItemsVendedor = listOf(
@@ -151,7 +161,8 @@ fun PantallaPrincipal(navControllerMain: NavController, usuario: Usuario) {
                     mainNavController = navControllerMain,
                     navHostController = navController,
                     userViewModel = userViewModel,
-                    ubicacionViewModel = ubicacionViewModel
+                    ubicacionViewModel = ubicacionViewModel,
+                    vendedoresViewModel = vendedoresViewModel
                 )
             }
         }

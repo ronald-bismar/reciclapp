@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.initiateCall
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.openWhatsAppMessage
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
@@ -31,27 +32,18 @@ import com.example.reciclapp.presentation.viewmodel.UserViewModel
 @Composable
 fun ContactListScreen(
     navController: NavController,
-    userViewModel: UserViewModel = hiltViewModel()
+    user: Usuario,
+    userViewModel: UserViewModel
 ) {
-    val user = userViewModel.user.observeAsState().value
+
     val context = LocalContext.current
-
-    LaunchedEffect(user) {
-        user?.let {
-            if (it.tipoDeUsuario == "comprador")
-                userViewModel.fetchVendedores()
-            else userViewModel.fetchCompradores()
-        }
-    }
-
-    val usuarios = if (user?.tipoDeUsuario == "comprador") {
+    val usuarios = if (user.tipoDeUsuario == "comprador") {
         userViewModel.vendedores.collectAsState().value
     } else {
         userViewModel.compradores.collectAsState().value
     }
 
-    Log.d("ContactListScreen", "Vendedores: ${userViewModel.vendedores.collectAsState().value}")
-    Log.d("ContactListScreen", "Compradores: ${userViewModel.compradores.collectAsState().value}")
+    Log.d("ContactListScreen", "Usuarios: $usuarios")
 
     Column(
         modifier = Modifier
@@ -61,7 +53,7 @@ fun ContactListScreen(
     ) {
         Text(
             text =
-            if (user?.tipoDeUsuario == "comprador")
+            if (user.tipoDeUsuario == "comprador")
                 "Vendedores Cercanos"
             else "Compradores Cercanos",
             fontSize = 24.sp,

@@ -86,7 +86,7 @@ fun NavGraph(
             }
         }
         composable("socialmediascreen") {
-            SocialMediaScreenVendedores(mainNavController)
+            SocialMediaScreenVendedores(mainNavController, vendedoresViewModel)
         }
         composable("login") {
             LoginScreen(loginViewModel, mainNavController)
