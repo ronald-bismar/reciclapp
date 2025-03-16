@@ -16,7 +16,8 @@ private const val PREFERENCES_NAME = "user_preferences"
 
 val Context.dataStore by preferencesDataStore(name = PREFERENCES_NAME)
 
-class UserPreferencesRepositoryImpl @Inject constructor(private val context: Context) : UserPreferencesRepository {
+class UserPreferencesRepositoryImpl @Inject constructor(private val context: Context) :
+    UserPreferencesRepository {
     private val dataStore = context.dataStore
 
     private val ID_USUARIO_KEY = stringPreferencesKey("id_usuario")
@@ -33,8 +34,7 @@ class UserPreferencesRepositoryImpl @Inject constructor(private val context: Con
     private val NIVEL_KEY = stringPreferencesKey("nivel")
     private val LOGROS_POR_ID_KEY = stringPreferencesKey("logros_por_id")
 
-    override suspend fun getUser(): Usuario? {
-        Log.d("UserPreferencesRepository", "Obteniendo usuario")
+    override suspend fun getUser(): Usuario {
         return try {
             val preferences = context.dataStore.data.first()
             val id = preferences[ID_USUARIO_KEY] ?: ""
@@ -52,13 +52,24 @@ class UserPreferencesRepositoryImpl @Inject constructor(private val context: Con
             val logrosPorId = preferences[LOGROS_POR_ID_KEY] ?: ""
 
             Usuario(
-                id, name, lastName, phone, email, password, direccion, urlImagenPerfil, tipoUsuario,
-                puntaje, nombreNivel, nivel, logrosPorId
+                id,
+                name,
+                lastName,
+                phone,
+                email,
+                password,
+                direccion,
+                urlImagenPerfil,
+                tipoUsuario,
+                puntaje,
+                nombreNivel,
+                nivel,
+                logrosPorId
             )
         } catch (e: Exception) {
             Log.e("UserPreferencesRepository", "Error al obtener el usuario: ${e.message}")
             e.printStackTrace()
-            null
+            Usuario()
         }
     }
 

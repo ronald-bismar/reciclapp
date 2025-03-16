@@ -51,14 +51,14 @@ import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransaccionesPendientesScreen(
-    viewModel: TransaccionViewModel = hiltViewModel(),
+    transaccionViewModel: TransaccionViewModel,
     navController: NavController
 ) {
-    val transacciones by viewModel.transaccionesPendientes.collectAsState()
-    val productos by viewModel.productos.collectAsState()
+    val transacciones by transaccionViewModel.transaccionesPendientes.collectAsState()
+    val productos by transaccionViewModel.productos.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.cargarTransaccionesPendientes()
+        transaccionViewModel.cargarTransaccionesPendientes()
     }
 
     Scaffold { paddingValues ->

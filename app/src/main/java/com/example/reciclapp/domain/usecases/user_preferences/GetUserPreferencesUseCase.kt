@@ -5,7 +5,7 @@ import com.example.reciclapp.domain.repositories.UserPreferencesRepository
 import javax.inject.Inject
 
 class GetUserPreferencesUseCase @Inject constructor(private val userPreferencesRepository: UserPreferencesRepository) {
-    suspend fun execute(): Usuario?{
+    suspend fun execute(): Usuario{
        return userPreferencesRepository.getUser()
     }
 }

@@ -4,12 +4,11 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
@@ -17,24 +16,26 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.reciclapp.util.TipoDeUsuario
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.navigation.AppTopBar
 import com.example.reciclapp.presentation.navigation.bottom.BottomNavHost
-import com.example.reciclapp.presentation.navigation.bottom.BottomSheetContent
 import com.example.reciclapp.presentation.navigation.drawer.DrawerContent
 import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
 import com.example.reciclapp.presentation.viewmodel.UbicacionViewModel
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
+import com.example.reciclapp.util.ItemsMenu
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -45,136 +46,124 @@ import kotlinx.coroutines.launch
  * Utiliza varios componentes de Jetpack Compose para crear una interfaz de usuario
  * que incluye un Drawer de navegación.
  *
- * @param navControllerMain El NavController principal para la navegación entre pantallas.
+ * @param navHostControllerMain El NavController principal para la navegación entre pantallas.
  */
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
-fun PantallaPrincipal(navControllerMain: NavController, usuario: Usuario) {
-    // ViewModel para manejar el estado del usuario
-    val userViewModel: UserViewModel = hiltViewModel()
-    val vendedoresViewModel: VendedoresViewModel = hiltViewModel()
-    val compradoresViewModel: CompradoresViewModel = hiltViewModel()
-    val ubicacionViewModel: UbicacionViewModel = hiltViewModel()
+fun PantallaPrincipal(
+    userViewModel: UserViewModel,
+    vendedoresViewModel: VendedoresViewModel,
+    compradoresViewModel: CompradoresViewModel,
+    ubicacionViewModel: UbicacionViewModel,
+    navHostControllerMain: NavController,
+) {
 
+    userViewModel.loadUserPreferences()
+
+    val usuarioLogueado = userViewModel.user.value
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
-    val bottomSheetState = rememberModalBottomSheetState()
 
-    var isLoading by remember { mutableStateOf(true) }
-
-    LaunchedEffect(usuario) {
-        if (true) {
-            isLoading = false // El tipo de usuario ya está cargado
+    if (usuarioLogueado?.idUsuario == "") {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
         }
-    }
+    } else {
 
-    // Data MapsView.kt
-    val locationPermissionState =
-        rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
+        // Data MapsView.kt
+        val locationPermissionState =
+            rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
 
-    LaunchedEffect(locationPermissionState.status) {
-        if (locationPermissionState.status.isGranted) {
-            ubicacionViewModel.fetchLocationsAndUsers()
-            ubicacionViewModel.getMyCurrentLocation(usuario.idUsuario)
-        } else {
-            locationPermissionState.launchPermissionRequest()
+        LaunchedEffect(locationPermissionState.status) {
+            if (locationPermissionState.status.isGranted) {
+                ubicacionViewModel.fetchLocationsAndUsers()
+                ubicacionViewModel.getMyCurrentLocation(usuarioLogueado!!.idUsuario)
+            } else {
+                locationPermissionState.launchPermissionRequest()
+            }
         }
-    }
 
-    // Data ContactListScreen.kt
-    Log.d("PantallaPrincipal", "Tipo de usuario: ${usuario.tipoDeUsuario}")
-        if (usuario.tipoDeUsuario == "comprador")
-            userViewModel.fetchVendedores()
-        else userViewModel.fetchCompradores()
-
-    //Data SocialMediaScreenVendedores.kt
-    vendedoresViewModel.fetchAllProducts()
-
-
-    val navigationItemsVendedor = listOf(
-        ItemsMenu.Pantalla1,
-        ItemsMenu.Pantalla2,
-        ItemsMenu.Pantalla3,
-        ItemsMenu.Pantalla4,
-        ItemsMenu.Pantalla5
-    )
-
-    val navigationItemsComprador = listOf(
-        ItemsMenu.PantallaRankingCompradores,
-        ItemsMenu.Pantalla2,
-        ItemsMenu.Pantalla5,
-        ItemsMenu.Pantalla4Vendedores,
-        ItemsMenu.PantallaHistorialCompras,
-    )
-
-    val navegacionPredeterminada = when (usuario.tipoDeUsuario?.uppercase()) {
-        "COMPRADOR" -> navigationItemsComprador
-        "VENDEDOR" -> navigationItemsVendedor
-        else -> emptyList()
-    }
-
-    LaunchedEffect(userViewModel.user.value, Unit) {
-        userViewModel.user.value?.let {
-            userViewModel.fetchProductosByVendedor(userViewModel.user.value!!)
+        // Data ContactListScreen.kt
+        when (usuarioLogueado!!.tipoDeUsuario.uppercase()) {
+            TipoDeUsuario.COMPRADOR -> userViewModel.fetchVendedores()
+            TipoDeUsuario.VENDEDOR -> userViewModel.fetchCompradores()
         }
-    }
 
-    // Mostrar el contenido principal
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        gesturesEnabled = drawerState.isOpen,
-        drawerContent = {
-            DrawerContent(
-                mainNavController = navControllerMain,
-                onItemClick = { scope.launch { drawerState.close() } },
-            )
-        }
-    ) {
-        Scaffold(
-            topBar = {
-                AppTopBar(
-                    navControllerMain = navControllerMain,
-                    navController = navController,
-                    drawerState = drawerState,
-                    scope = scope,
-                    userViewModel = userViewModel
+        //Data SocialMediaScreenVendedores.kt
+        vendedoresViewModel.fetchAllProducts()
+
+        //Data StatisticsScreen.kt (para sacar stadisticas de los productos)
+        userViewModel.fetchProductosByVendedor(usuarioLogueado)
+
+
+        val navigationItemsVendedor = listOf(
+            ItemsMenu.PantallaV1,
+            ItemsMenu.PantallaV2,
+            ItemsMenu.PantallaV3,
+            ItemsMenu.PantallaV4,
+            ItemsMenu.PantallaV5
+        )
+
+        val navigationItemsComprador = listOf(
+            ItemsMenu.PantallaC1,
+            ItemsMenu.PantallaC2,
+            ItemsMenu.PantallaC3,
+            ItemsMenu.PantallaC4,
+            ItemsMenu.PantallaC5,
+        )
+
+        val navegacionPredeterminada =
+            when (usuarioLogueado.tipoDeUsuario.uppercase()) {
+                TipoDeUsuario.COMPRADOR -> navigationItemsComprador
+                TipoDeUsuario.VENDEDOR -> navigationItemsVendedor
+                else -> emptyList()
+            }
+
+        val startDestination =
+            if (navegacionPredeterminada.size > 2) navegacionPredeterminada[2].ruta else ItemsMenu.PantallaV3.ruta
+
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            gesturesEnabled = drawerState.isOpen,
+            drawerContent = {
+                DrawerContent(
+                    mainNavController = navHostControllerMain,
+                    onItemClick = { scope.launch { drawerState.close() } },
                 )
-            },
-            bottomBar = {
-                if (isLoading) {
-                    // Mostrar un indicador de carga mientras se carga el tipo de usuario
-                    CircularProgressIndicator(modifier = Modifier.padding(16.dp))
-                } else {
-                    // Mostrar los botones de navegación cuando el tipo de usuario esté cargado
+            }
+        ) {
+            Scaffold(
+                topBar = {
+                    AppTopBar(
+                        navControllerMain = navHostControllerMain,
+                        navController = navController,
+                        drawerState = drawerState,
+                        scope = scope,
+                        userViewModel = userViewModel
+                    )
+                },
+                bottomBar = {
                     MenuScreen(
                         navController = navController,
                         menuItems = navegacionPredeterminada,
                     )
-                }
-            },
-            floatingActionButtonPosition = FabPosition.End
-        ) { innerPadding ->
-            Box(modifier = Modifier.padding(innerPadding)) {
-                BottomNavHost(
-                    mainNavController = navControllerMain,
-                    navHostController = navController,
-                    userViewModel = userViewModel,
-                    ubicacionViewModel = ubicacionViewModel,
-                    vendedoresViewModel = vendedoresViewModel
-                )
-            }
-        }
-    }
 
-    // Configuración del Bottom Sheet modal
-    if (bottomSheetState.isVisible) {
-        ModalBottomSheet(
-            sheetState = bottomSheetState,
-            onDismissRequest = { scope.launch { bottomSheetState.hide() } }
-        ) {
-            BottomSheetContent()
+                },
+            ) { innerPadding ->
+                Box(modifier = Modifier.padding(innerPadding)) {
+                    BottomNavHost(
+                        mainNavController = navHostControllerMain,
+                        navHostController = navController,
+                        userViewModel = userViewModel,
+                        ubicacionViewModel = ubicacionViewModel,
+                        vendedoresViewModel = vendedoresViewModel,
+                        compradoresViewModel = compradoresViewModel,
+                        startDestination = startDestination
+                    )
+                }
+            }
         }
     }
 }

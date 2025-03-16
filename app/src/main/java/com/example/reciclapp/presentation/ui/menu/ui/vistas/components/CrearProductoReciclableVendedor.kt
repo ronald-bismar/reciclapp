@@ -76,8 +76,8 @@ private const val TAG = "AddItemCardVendedor"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CrearProductoReciclableVendedor(
-    mainNavController: NavHostController,
-    vendedoresViewModel: VendedoresViewModel
+    vendedoresViewModel: VendedoresViewModel,
+    mainNavController: NavHostController
 ) {
 
     var selectedCategory by remember { mutableStateOf<Categoria?>(null) }
@@ -107,7 +107,8 @@ fun CrearProductoReciclableVendedor(
     LaunchedEffect(productToUpdate) {
         if (productToUpdate != null) {
             selectedProduct = productToUpdate
-            selectedCategory = ListOfCategorias.categorias.find { it.idCategoria == productToUpdate!!.idCategoria }
+            selectedCategory =
+                ListOfCategorias.categorias.find { it.idCategoria == productToUpdate!!.idCategoria }
             selectedUnidad = productToUpdate!!.unidadMedida
             cantidad = productToUpdate!!.cantidad.toString()
             precio = productToUpdate!!.precio.toString()
@@ -144,7 +145,7 @@ fun CrearProductoReciclableVendedor(
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 Titulo()
-                
+
                 // Sección de Categoría y Producto
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -155,7 +156,7 @@ fun CrearProductoReciclableVendedor(
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Medium
                     )
-                    
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -221,7 +222,11 @@ fun CrearProductoReciclableVendedor(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(horizontal = 16.dp),
-                                        colors = MenuDefaults.itemColors(textColor = Color(0xFF2C2C2C))
+                                        colors = MenuDefaults.itemColors(
+                                            textColor = Color(
+                                                0xFF2C2C2C
+                                            )
+                                        )
                                     )
                                 }
                             }
@@ -313,7 +318,7 @@ fun CrearProductoReciclableVendedor(
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Medium
                     )
-                    
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -385,12 +390,13 @@ fun CrearProductoReciclableVendedor(
                                         )
                                         .clip(RoundedCornerShape(12.dp))
                                 ) {
-                                    val unidadesDeMedida = selectedCategory?.unidadDeMedida?.split(", ")
-                                        ?: ListOfCategorias.categorias.flatMap {
-                                            it.unidadDeMedida.split(
-                                                ", "
-                                            )
-                                        }.distinct()
+                                    val unidadesDeMedida =
+                                        selectedCategory?.unidadDeMedida?.split(", ")
+                                            ?: ListOfCategorias.categorias.flatMap {
+                                                it.unidadDeMedida.split(
+                                                    ", "
+                                                )
+                                            }.distinct()
 
                                     val unidadesSinRepetir = unidadesDeMedida.distinct()
 
@@ -495,7 +501,8 @@ fun CrearProductoReciclableVendedor(
                                         cantidad = cantidadValue,
                                         unidadMedida = selectedUnidad ?: "",
                                         puntosPorCompra = puntosCalculados,
-                                        idVendedor = vendedoresViewModel.user.value?.idUsuario ?: "0"
+                                        idVendedor = vendedoresViewModel.user.value?.idUsuario
+                                            ?: "0"
                                     ),
                                     imageUris,
                                     context
@@ -520,7 +527,8 @@ fun CrearProductoReciclableVendedor(
                                         puntosPorCompra = puntosCalculados,
                                         meGusta = 0,
                                         fueVendida = false,
-                                        idVendedor = vendedoresViewModel.user.value?.idUsuario ?: "0"
+                                        idVendedor = vendedoresViewModel.user.value?.idUsuario
+                                            ?: "0"
                                     ),
                                     imageUris,
                                     context

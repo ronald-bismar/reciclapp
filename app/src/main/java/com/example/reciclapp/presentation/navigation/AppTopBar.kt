@@ -92,9 +92,11 @@ fun AppTopBar(
         ),
         navigationIcon = {
             IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                Icon(Icons.Filled.Menu,
+                Icon(
+                    Icons.Filled.Menu,
                     tint = MaterialTheme.colorScheme.surface,
-                    contentDescription = "Menú")
+                    contentDescription = "Menú"
+                )
             }
         },
         actions = {
@@ -106,23 +108,29 @@ fun AppTopBar(
                     restoreState = true
                 }
             }) {
-                Icon(painter = painterResource(id = R.drawable.ic_scanner_qr),
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_scanner_qr),
                     tint = MaterialTheme.colorScheme.surface,
-                    contentDescription = "Subir nuevo producto")
+                    contentDescription = "Subir nuevo producto"
+                )
             }
             IconButton(onClick = {
-                navControllerMain.navigate(if ((user?.tipoDeUsuario?.uppercase()
-                        ?: "") == "COMPRADOR"
-                ) "AñadirProductoReciclableComprador" else "AñadirProductoReciclable") {
+                navControllerMain.navigate(
+                    if ((user?.tipoDeUsuario?.uppercase()
+                            ?: "") == "COMPRADOR"
+                    ) "AñadirProductoReciclableComprador" else "AñadirProductoReciclable"
+                ) {
                     popUpTo(navController.graph.startDestinationId) {
                         saveState = true
                     }
                     restoreState = true
                 }
             }) {
-                Icon(imageVector = Icons.Filled.Add,
+                Icon(
+                    imageVector = Icons.Filled.Add,
                     tint = MaterialTheme.colorScheme.surface,
-                    contentDescription = "Subir nuevo producto")
+                    contentDescription = "Subir nuevo producto"
+                )
             }
             // Muestra la imagen del usuario si está disponible
             IconButton(onClick = {
@@ -152,9 +160,11 @@ fun AppTopBar(
             IconButton(onClick = {
                 showMenu = !showMenu
             }) {
-                Icon(imageVector = Icons.Filled.MoreVert,
+                Icon(
+                    imageVector = Icons.Filled.MoreVert,
                     tint = MaterialTheme.colorScheme.surface,
-                    contentDescription = "Más opciones")
+                    contentDescription = "Más opciones"
+                )
             }
             // Menú desplegable con opciones
             DropdownMenu(
@@ -169,11 +179,11 @@ fun AppTopBar(
                     onMenuItemClick = { item ->
                         showMenu = !showMenu
                         Toast.makeText(context, item.message, Toast.LENGTH_SHORT).show()
-                    }
+                    }, userViewModel
                 )
             }
         },
-      //  modifier = Modifier.height(30.dp)
+        //  modifier = Modifier.height(30.dp)
     )
 
     // Maneja el estado de logout
@@ -183,7 +193,7 @@ fun AppTopBar(
                 navControllerMain.navigate("login") {
                     popUpTo("menu") {
                         inclusive = true
-                    } // Asegura que la pila de navegación se limpie
+                    }
                 }
             }
 
@@ -191,6 +201,7 @@ fun AppTopBar(
                 showToast(context, "No se pudo salir de la cuenta")
             }
         }
+        userViewModel.resetStateLogout()
     }
 }
 
@@ -214,15 +225,11 @@ data class MenuItem(
  * @param onMenuItemClick Función de callback que se llama cuando se hace clic en un ítem del menú.
  */
 @Composable
-fun DropdownMenuItems(navController: NavHostController, onMenuItemClick: (MenuItem) -> Unit) {
-    // Obtiene la instancia del ViewModel del usuario
-    val userViewModel: UserViewModel = hiltViewModel()
+fun DropdownMenuItems(navController: NavHostController, onMenuItemClick: (MenuItem) -> Unit, userViewModel: UserViewModel) {
 
     val context = LocalContext.current as Activity
-    // Lista de ítems para el menú desplegable
     val items = listOf(
 
-       // MenuItem("Mi perfil", Icons.Filled.Person, "Mi perfil"),
         MenuItem("Cerrar sesión", Icons.Filled.Face, "Cerrando sesión"),
         MenuItem("Salir", Icons.Filled.Close, "Salir")
     )
@@ -234,12 +241,7 @@ fun DropdownMenuItems(navController: NavHostController, onMenuItemClick: (MenuIt
                 .border(1.dp, Color.White),
             onClick = {
                 when (item.text) {
-                //   "Mi perfil" -> navController.navigate("perfil")
-                    "Cambiar usuario" -> navController.navigate("premium")
-                    "Cerrar sesión" -> {
-                        userViewModel.logOutUser()
-                    }
-
+                    "Cerrar sesión" -> userViewModel.logOutUser()
                     "Salir" -> context.finishAffinity()
                 }
                 onMenuItemClick(item)
@@ -257,7 +259,3 @@ fun DropdownMenuItems(navController: NavHostController, onMenuItemClick: (MenuIt
         }
     }
 }
- // hola a todos soy yo ?
-
-
-//asdasdasdasdasd

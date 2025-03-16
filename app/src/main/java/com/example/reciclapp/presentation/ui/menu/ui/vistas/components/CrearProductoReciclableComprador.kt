@@ -76,8 +76,8 @@ private const val TAG = "AddItemCardVendedor"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CrearProductoReciclableComprador(
-    mainNavController: NavHostController,
-    compradoresViewModel: CompradoresViewModel
+    compradoresViewModel: CompradoresViewModel,
+    mainNavController: NavHostController
 ) {
 
     var selectedCategory by remember { mutableStateOf<Categoria?>(null) }
@@ -104,7 +104,8 @@ fun CrearProductoReciclableComprador(
     LaunchedEffect(productToUpdate) {
         if (productToUpdate != null) {
             selectedProduct = productToUpdate
-            selectedCategory = ListOfCategorias.categorias.find { it.idCategoria == productToUpdate!!.idCategoria }
+            selectedCategory =
+                ListOfCategorias.categorias.find { it.idCategoria == productToUpdate!!.idCategoria }
             selectedUnidad = productToUpdate!!.unidadMedida
             precio = productToUpdate!!.precio.toString()
             detalles = productToUpdate!!.detallesProducto
@@ -140,7 +141,7 @@ fun CrearProductoReciclableComprador(
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 Titulo()
-                
+
                 // Sección de Categoría y Producto
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -151,7 +152,7 @@ fun CrearProductoReciclableComprador(
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Medium
                     )
-                    
+
                     // Categoría
                     Column(
                         modifier = Modifier.fillMaxWidth(),
@@ -217,13 +218,17 @@ fun CrearProductoReciclableComprador(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(horizontal = 16.dp),
-                                        colors = MenuDefaults.itemColors(textColor = Color(0xFF2C2C2C))
+                                        colors = MenuDefaults.itemColors(
+                                            textColor = Color(
+                                                0xFF2C2C2C
+                                            )
+                                        )
                                     )
                                 }
                             }
                         }
                     }
-                    
+
                     // Producto
                     Column(
                         modifier = Modifier.fillMaxWidth(),
@@ -304,7 +309,7 @@ fun CrearProductoReciclableComprador(
                         }
                     }
                 }
-                
+
                 // Sección de Precio y Unidad de Medida
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -315,7 +320,7 @@ fun CrearProductoReciclableComprador(
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Medium
                     )
-                    
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -368,12 +373,13 @@ fun CrearProductoReciclableComprador(
                                         )
                                         .clip(RoundedCornerShape(12.dp))
                                 ) {
-                                    val unidadesDeMedida = selectedCategory?.unidadDeMedida?.split(", ")
-                                        ?: ListOfCategorias.categorias.flatMap {
-                                            it.unidadDeMedida.split(
-                                                ", "
-                                            )
-                                        }.distinct()
+                                    val unidadesDeMedida =
+                                        selectedCategory?.unidadDeMedida?.split(", ")
+                                            ?: ListOfCategorias.categorias.flatMap {
+                                                it.unidadDeMedida.split(
+                                                    ", "
+                                                )
+                                            }.distinct()
 
                                     val unidadesSinRepetir = unidadesDeMedida.distinct()
 
@@ -401,7 +407,7 @@ fun CrearProductoReciclableComprador(
                                 }
                             }
                         }
-                        
+
                         // Precio (1/3 del espacio)
                         Column(
                             modifier = Modifier.weight(1f),
@@ -430,7 +436,7 @@ fun CrearProductoReciclableComprador(
                         }
                     }
                 }
-                
+
                 // Sección de Detalles
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -461,7 +467,7 @@ fun CrearProductoReciclableComprador(
                         )
                     )
                 }
-                
+
                 // Botón de acción
                 Button(
                     onClick = {
@@ -476,7 +482,8 @@ fun CrearProductoReciclableComprador(
                                         precio = precioValue,
                                         fechaModificacion = Date().toString(),
                                         unidadMedida = selectedUnidad ?: "",
-                                        idComprador = compradoresViewModel.myUser.value?.idUsuario ?: "0"
+                                        idComprador = compradoresViewModel.myUser.value?.idUsuario
+                                            ?: "0"
                                     )
                                 )
                             }
@@ -497,7 +504,8 @@ fun CrearProductoReciclableComprador(
                                         unidadMedida = selectedUnidad ?: "",
                                         meGusta = 0,
                                         fueVendida = false,
-                                        idComprador = compradoresViewModel.myUser.value?.idUsuario ?: "0"
+                                        idComprador = compradoresViewModel.myUser.value?.idUsuario
+                                            ?: "0"
                                     )
                                 )
                             }
@@ -509,9 +517,9 @@ fun CrearProductoReciclableComprador(
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        text = if (isUpdatingProduct) 
-                            "Actualizar Producto" 
-                        else 
+                        text = if (isUpdatingProduct)
+                            "Actualizar Producto"
+                        else
                             "Registrar Producto",
                         modifier = Modifier.padding(vertical = 8.dp)
                     )

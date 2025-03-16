@@ -1,5 +1,6 @@
 package com.example.reciclapp.presentation.ui.login.ui
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -114,6 +115,7 @@ fun LoginContent(
                 result.isSuccess -> {
                     showToast(context, "Bienvenido")
                     navController.navigate("menu") {
+                        Log.d("LoginScreen", "Navegando a la pantalla principal")
                         popUpTo("login") { inclusive = true }
                     }
                 }

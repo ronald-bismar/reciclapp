@@ -46,8 +46,8 @@ import com.example.reciclapp.presentation.viewmodel.UserViewModel
 
 @Composable
 fun UserTypeScreen(
+    userViewModel: UserViewModel,
     mainNavController: NavController,
-    userViewModel: UserViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current

@@ -81,16 +81,15 @@ import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Perfil(userViewModel: UserViewModel, navControllerMain: NavHostController) {
+fun Perfil(userViewModel: UserViewModel, vendedoresViewModel: VendedoresViewModel, navControllerMain: NavHostController) {
 
-    val userViewModelVendedores: VendedoresViewModel = hiltViewModel()
     val context = LocalContext.current
     val user by userViewModel.user.observeAsState()
     val updateState by userViewModel.updateUserState.observeAsState()
     var showDialog by remember { mutableStateOf(false) }
 
-    LaunchedEffect(userViewModelVendedores) {
-        userViewModelVendedores.showToast.collect { message ->
+    LaunchedEffect(vendedoresViewModel) {
+        vendedoresViewModel.showToast.collect { message ->
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
     }

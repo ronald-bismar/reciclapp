@@ -82,7 +82,7 @@ import kotlinx.coroutines.flow.collectLatest
 private const val TAG = "MyProductsScreen"
 
 @Composable
-fun MyProductsScreen(mainNavController: NavHostController, vendedoresViewModel: VendedoresViewModel) {
+fun MyProductsScreen(vendedoresViewModel: VendedoresViewModel, mainNavController: NavHostController) {
 
 
     val context = LocalContext.current

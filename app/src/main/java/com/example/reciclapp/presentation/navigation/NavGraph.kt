@@ -2,14 +2,12 @@ package com.example.reciclapp.presentation.navigation
 
 import CrearProductoReciclableComprador
 import CrearProductoReciclableVendedor
-import HistorialComprasScreen
 import QRScannerScreen
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -34,8 +32,6 @@ import com.example.reciclapp.presentation.ui.menu.ui.PantallaPresentacion
 import com.example.reciclapp.presentation.ui.menu.ui.PantallaPrincipal
 import com.example.reciclapp.presentation.ui.menu.ui.PresentacionAppScreen
 import com.example.reciclapp.presentation.ui.menu.ui.QRGeneratorDialog
-import com.example.reciclapp.presentation.ui.menu.ui.RankingCompradoresScreen
-import com.example.reciclapp.presentation.ui.menu.ui.SocialMediaScreenVendedores
 import com.example.reciclapp.presentation.ui.menu.ui.TransaccionesPendientesScreen
 import com.example.reciclapp.presentation.ui.menu.ui.UserTypeScreen
 import com.example.reciclapp.presentation.ui.menu.ui.content.myproducts.MyProductsScreen
@@ -43,7 +39,6 @@ import com.example.reciclapp.presentation.ui.menu.ui.content.mypurchases.MyProdu
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Comprador
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Perfil
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Vendedor
-import com.example.reciclapp.presentation.ui.menu.ui.vistas.mapa.MapsView
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroScreen
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroViewModel
 import com.example.reciclapp.presentation.ui.splash.SplashScreenContent
@@ -58,16 +53,19 @@ import kotlinx.coroutines.withContext
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavGraph(
-    mainNavController: NavHostController,
-    loginViewModel: LoginViewModel = hiltViewModel(),
-    registroViewModel: RegistroViewModel = hiltViewModel(),
-    userViewModel: UserViewModel = hiltViewModel(),
-    vendedoresViewModel: VendedoresViewModel = hiltViewModel(),
-    compradoresViewModel: CompradoresViewModel = hiltViewModel(),
-    transaccionViewModel: TransaccionViewModel = hiltViewModel(),
-    ubicacionViewModel: UbicacionViewModel = hiltViewModel(),
-    getUserPreferencesUseCase: GetUserPreferencesUseCase
+    mainNavHostController: NavHostController, getUserPreferencesUseCase: GetUserPreferencesUseCase
 ) {
+
+    //Declaramos aqui nuestros view models para enviarlos a cada pantalla y asi persistir los datos
+
+    val loginViewModel: LoginViewModel = hiltViewModel()
+    val registroViewModel: RegistroViewModel = hiltViewModel()
+    val userViewModel: UserViewModel = hiltViewModel()
+    val vendedoresViewModel: VendedoresViewModel = hiltViewModel()
+    val compradoresViewModel: CompradoresViewModel = hiltViewModel()
+    val transaccionViewModel: TransaccionViewModel = hiltViewModel()
+    val ubicacionViewModel: UbicacionViewModel = hiltViewModel()
+
     var nextScreen by remember { mutableStateOf("splash") }
     var usuario by remember { mutableStateOf(Usuario()) }
 
@@ -77,34 +75,38 @@ fun NavGraph(
         usuario = user
     }
 
-    NavHost(navController = mainNavController, startDestination = "splash") {
+    NavHost(navController = mainNavHostController, startDestination = "splash") {
         composable("splash") {
             SplashScreenContent {
-                mainNavController.navigate(nextScreen) {
+                mainNavHostController.navigate(nextScreen) {
                     popUpTo("splash") { inclusive = true }
                 }
             }
         }
-        composable("socialmediascreen") {
-            SocialMediaScreenVendedores(mainNavController, vendedoresViewModel)
-        }
+
         composable("login") {
-            LoginScreen(loginViewModel, mainNavController)
+            LoginScreen(loginViewModel, mainNavHostController)
         }
         composable("registro") {
-            RegistroScreen(registroViewModel, mainNavController)
+            RegistroScreen(registroViewModel, mainNavHostController)
         }
         composable("menu") {
-            PantallaPrincipal(mainNavController, usuario)
+            PantallaPrincipal(
+                userViewModel,
+                vendedoresViewModel,
+                compradoresViewModel,
+                ubicacionViewModel,
+                mainNavHostController,
+            )
         }
         composable("pantalla presentacion") {
-            PantallaPresentacion(mainNavController)
+            PantallaPresentacion(mainNavHostController)
         }
         composable("presentacion app") {
-            PresentacionAppScreen(mainNavController)
+            PresentacionAppScreen(mainNavHostController)
         }
         composable("introduction screen") {
-            IntroductionScreen(mainNavController)
+            IntroductionScreen(mainNavHostController)
         }
         composable("Que es Reciclapp") {
             SimpleAyudaScreen()
@@ -124,18 +126,19 @@ fun NavGraph(
         composable("Calificanos") {
             CalificanosScreen()
         }
+
         composable("perfil") {
-            Perfil(userViewModel = userViewModel, mainNavController)
+            Perfil(userViewModel, vendedoresViewModel, mainNavHostController)
         }
         composable("tipoDeUsuario") {
-            UserTypeScreen(mainNavController)
+            UserTypeScreen(userViewModel, mainNavHostController)
         }
         composable(
             route = "compradorPerfil/{userId}",
             arguments = listOf(navArgument("userId") { type = NavType.StringType })
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId") ?: ""
-            Comprador(mainNavController = mainNavController, compradorId = userId)
+            Comprador(mainNavController = mainNavHostController, compradorId = userId)
         }
         composable(
             route = "VendedorPerfil/{userId}/{productoId}",
@@ -146,35 +149,24 @@ fun NavGraph(
             val userId = backStackEntry.arguments?.getString("userId") ?: ""
             val productoId = backStackEntry.arguments?.getString("productoId") ?: ""
             Vendedor(
-                mainNavController = mainNavController,
-                vendedorId = userId,
-                productoId = productoId
+                mainNavHostController, userId, productoId, vendedoresViewModel
             )
-        }
-        composable("map") {
-            userViewModel.user.observeAsState().value?.idUsuario?.let { idUsuario ->
-                MapsView(mainNavController = mainNavController, ubicacionViewModel =  ubicacionViewModel)
-            }
         }
 
         composable("AñadirProductoReciclable") {
-            CrearProductoReciclableVendedor(mainNavController, vendedoresViewModel)
+            CrearProductoReciclableVendedor(vendedoresViewModel, mainNavHostController)
         }
 
         composable("AñadirProductoReciclableComprador") {
-            CrearProductoReciclableComprador(mainNavController, compradoresViewModel)
+            CrearProductoReciclableComprador(compradoresViewModel, mainNavHostController)
         }
 
         composable("MyProductsScreen") {
-            MyProductsScreen(mainNavController, vendedoresViewModel)
+            MyProductsScreen(vendedoresViewModel, mainNavHostController)
         }
 
         composable("MyProductsScreenComprador") {
-            MyProductsToBuyScreen(mainNavController, compradoresViewModel)
-        }
-
-        composable("HistorialCompras") {
-            HistorialComprasScreen(compradoresViewModel)
+            MyProductsToBuyScreen(compradoresViewModel)
         }
 
         composable(
@@ -182,8 +174,9 @@ fun NavGraph(
             arguments = listOf(
                 navArgument("productoId") { type = NavType.StringType },
                 navArgument("usuarioContactadoId") { type = NavType.StringType },
-                navArgument("usuarioContactadoIsVendedor") { type = NavType.BoolType }
-            )
+                navArgument("usuarioContactadoIsVendedor") {
+                    type = NavType.BoolType
+                })
         ) { backStackEntry ->
             val productoId = backStackEntry.arguments?.getString("productoId") ?: ""
             val usuarioId = backStackEntry.arguments?.getString("usuarioContactadoId") ?: ""
@@ -197,28 +190,23 @@ fun NavGraph(
                 onDismiss = {},
                 onContinue = {},
                 transaccionViewModel = transaccionViewModel,
-
-                )
+            )
         }
 
         composable("TransaccionesPendientes") {
-            TransaccionesPendientesScreen(navController = mainNavController)
+            TransaccionesPendientesScreen(transaccionViewModel, mainNavHostController)
         }
 
         composable("QRScanner") {
-             QRScannerScreen()
-         }
-
-        composable("RankingCompradores"){
-            RankingCompradoresScreen(compradoresViewModel)
+            QRScannerScreen(transaccionViewModel)
         }
     }
 }
 
 suspend fun getNextScreenAndKindUser(getUserPreferencesUseCase: GetUserPreferencesUseCase): Pair<String, Usuario> {
     val userPreferences = withContext(Dispatchers.IO) { getUserPreferencesUseCase.execute() }
-    val nextScreen = if (userPreferences?.nombre != "") "menu" else "login"
-    val usuario = userPreferences ?: Usuario()
+    val nextScreen = if (userPreferences.nombre != "") "menu" else "login"
+    val usuario = userPreferences
 
     return nextScreen to usuario
 }

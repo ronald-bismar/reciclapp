@@ -29,7 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.reciclapp.presentation.viewmodel.UserViewModel
+import com.example.reciclapp.util.ItemsMenu
 
 @Composable
 fun MenuScreen(

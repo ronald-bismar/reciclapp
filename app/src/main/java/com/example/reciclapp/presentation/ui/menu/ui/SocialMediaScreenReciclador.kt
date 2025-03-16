@@ -53,8 +53,8 @@ private const val TAG = "SocialMediaScreenReciclador"
 
 @Composable
 fun SocialMediaScreenVendedores(
+    vendedoresViewModel: VendedoresViewModel,
     mainNavController: NavController,
-    vendedoresViewModel: VendedoresViewModel
 ) {
 
     val productos by vendedoresViewModel.productos.collectAsStateWithLifecycle()

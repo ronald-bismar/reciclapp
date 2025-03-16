@@ -44,7 +44,7 @@ class LoginViewModel @Inject constructor(
         android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
 
 
-    suspend fun onLoginSelected() {
+    fun onLoginSelected() {
         _isLoading.value = true
         viewModelScope.launch {
             runCatching { //try
@@ -55,9 +55,9 @@ class LoginViewModel @Inject constructor(
                 } else {
                     _loginState.value = Result.failure(Exception("Usuario no encontrado"))
                 }
-            }.onFailure { e -> //catch
+            }.onFailure { e ->
                 _loginState.value = Result.failure(e)
-            }.also { //finally
+            }.also {
                 _isLoading.value = false
             }
         }

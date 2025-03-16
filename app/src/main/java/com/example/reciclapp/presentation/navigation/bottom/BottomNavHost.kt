@@ -9,16 +9,16 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.ui.menu.ui.ContactListScreen
-import com.example.reciclapp.presentation.ui.menu.ui.ItemsMenu
+import com.example.reciclapp.util.ItemsMenu
 import com.example.reciclapp.presentation.ui.menu.ui.RankingCompradoresScreen
 import com.example.reciclapp.presentation.ui.menu.ui.SocialMediaScreenVendedores
 import com.example.reciclapp.presentation.ui.menu.ui.content.newsandtips.GlobalWasteApi
 import com.example.reciclapp.presentation.ui.menu.ui.content.newsandtips.NewsTipsScreen
 import com.example.reciclapp.presentation.ui.menu.ui.content.statistics.DetailedStatisticsScreen
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.mapa.MapsView
+import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
 import com.example.reciclapp.presentation.viewmodel.UbicacionViewModel
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
@@ -30,35 +30,44 @@ fun BottomNavHost(
     navHostController: NavHostController,
     userViewModel: UserViewModel,
     ubicacionViewModel: UbicacionViewModel,
-    vendedoresViewModel: VendedoresViewModel
-
+    vendedoresViewModel: VendedoresViewModel,
+    compradoresViewModel: CompradoresViewModel,
+    startDestination: String
 ) {
     val globalWasteApi = remember { GlobalWasteApi.create() }
     NavHost(
         navController = navHostController,
-        startDestination = ItemsMenu.Pantalla3.ruta
+        startDestination = startDestination
     ) {
-        composable(ItemsMenu.Pantalla1.ruta) {
+        composable(ItemsMenu.PantallaV1.ruta) {
             NewsTipsScreen(api = globalWasteApi)
         }
-        composable(ItemsMenu.Pantalla2.ruta) {
+        composable(ItemsMenu.PantallaV2.ruta) {
             DetailedStatisticsScreen(userViewModel)
         }
-        composable(ItemsMenu.Pantalla3.ruta) {
+        composable(ItemsMenu.PantallaV3.ruta) {
             MapsView(mainNavController, ubicacionViewModel)
         }
-        composable(ItemsMenu.Pantalla4.ruta) {
+        composable(ItemsMenu.PantallaV4.ruta) {
             ContactListScreen(mainNavController, userViewModel.user.value?: Usuario(), userViewModel)
         }
-        composable(ItemsMenu.Pantalla5.ruta) {
-            SocialMediaScreenVendedores(mainNavController, vendedoresViewModel)
+        composable(ItemsMenu.PantallaV5.ruta) {
+            SocialMediaScreenVendedores(vendedoresViewModel, mainNavController)
         }
-        composable(ItemsMenu.PantallaHistorialCompras.ruta) {
-            HistorialComprasScreen()
+        composable(ItemsMenu.PantallaC1.ruta) {
+            RankingCompradoresScreen(compradoresViewModel)
         }
-        composable(ItemsMenu.PantallaRankingCompradores.ruta) {
-            RankingCompradoresScreen()
+        composable(ItemsMenu.PantallaC2.ruta) {
+            DetailedStatisticsScreen(userViewModel)
         }
-
+        composable(ItemsMenu.PantallaC3.ruta) {
+            SocialMediaScreenVendedores(vendedoresViewModel, mainNavController)
+        }
+        composable(ItemsMenu.PantallaC4.ruta) {
+            ContactListScreen(mainNavController, userViewModel.user.value?: Usuario(), userViewModel)
+        }
+        composable(ItemsMenu.PantallaC5.ruta) {
+            HistorialComprasScreen(compradoresViewModel)
+        }
     }
 }

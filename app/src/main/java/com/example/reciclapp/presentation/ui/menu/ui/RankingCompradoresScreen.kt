@@ -17,7 +17,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
@@ -25,10 +24,10 @@ import com.example.reciclapp.util.NombreNivelUsuario
 
 @Composable
 fun RankingCompradoresScreen(
-    viewModel: CompradoresViewModel = hiltViewModel()
+    compradoresViewModel: CompradoresViewModel
 ) {
-    val compradores by viewModel.compradores.collectAsState()
-    val currentUser by viewModel.myUser.observeAsState()
+    val compradores by compradoresViewModel.compradores.collectAsState()
+    val currentUser by compradoresViewModel.myUser.observeAsState()
     var userRank by remember { mutableStateOf<Int?>(null) }
 
     LaunchedEffect(compradores, currentUser) {
@@ -36,7 +35,7 @@ fun RankingCompradoresScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.fetchCompradores()
+        compradoresViewModel.fetchCompradores()
     }
 
     Column(

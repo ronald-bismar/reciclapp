@@ -34,7 +34,7 @@ private const val TAG = "QRScannerScreen"
 @OptIn(ExperimentalGetImage::class)
 @Composable
 fun QRScannerScreen(
-    transaccionViewModel: TransaccionViewModel = hiltViewModel()
+    transaccionViewModel: TransaccionViewModel
 ) {
     Log.d(TAG, "QRScannerScreen: ")
     val context = LocalContext.current

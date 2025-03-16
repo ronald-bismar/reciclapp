@@ -65,15 +65,13 @@ fun QRGeneratorDialog(
     usuarioContactadoIsVendedor: Boolean,
     onDismiss: () -> Unit,
     onContinue: () -> Unit,
-    transaccionViewModel: TransaccionViewModel = hiltViewModel()
+    transaccionViewModel: TransaccionViewModel
 ) {
     var selectedProductId by remember { mutableStateOf(productoId) }
     var showProductSelection by remember { mutableStateOf(productoId.isEmpty()) }
     var hasUsProductSelected by remember { mutableStateOf(false) }
 
-    LaunchedEffect(productoId) {
-        hasUsProductSelected = productoId != "" && productoId.isNotBlank()
-    }
+    hasUsProductSelected = productoId != "" && productoId.isNotBlank()
 
     if (!hasUsProductSelected) {
         AlertDialog(

@@ -57,8 +57,7 @@ private const val TAG = "MyPurchasesScreen"
 
 @Composable
 fun MyProductsToBuyScreen(
-    mainNavController: NavHostController,
-    compradoresViewModel: CompradoresViewModel = hiltViewModel()
+    compradoresViewModel: CompradoresViewModel,
 ) {
     val context = LocalContext.current
     val productosComprados = compradoresViewModel.productos.collectAsState().value

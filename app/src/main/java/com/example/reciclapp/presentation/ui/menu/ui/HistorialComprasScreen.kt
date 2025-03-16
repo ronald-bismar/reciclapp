@@ -50,7 +50,7 @@ import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
 
 @Composable
 fun HistorialComprasScreen(
-    compradoresViewModel: CompradoresViewModel = hiltViewModel()
+    compradoresViewModel: CompradoresViewModel
 ) {
     val context = LocalContext.current
 

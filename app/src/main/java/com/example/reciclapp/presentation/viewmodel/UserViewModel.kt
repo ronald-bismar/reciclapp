@@ -20,6 +20,7 @@ import com.example.reciclapp.util.NombreNivelUsuario
 import com.example.reciclapp.util.ProductosReciclables
 import com.example.reciclapp.util.ValidarLogros.actualizarLogrosUsuario
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -35,11 +36,11 @@ class UserViewModel @Inject constructor(
     private val listarProductosDeVendedorUseCase: ListarProductosDeVendedorUseCase,
 ) : ViewModel() {
 
-    private val _user = MutableLiveData<Usuario?>()
-    val user: LiveData<Usuario?> get() = _user
+    private val _user = MutableLiveData<Usuario>(Usuario())
+    val user: LiveData<Usuario> get() = _user
 
-    private val _logOutState = MutableLiveData<Result<Boolean?>>()
-    val logOutState: LiveData<Result<Boolean?>> get() = _logOutState
+    private val _logOutState = MutableLiveData<Result<Boolean?>?>()
+    val logOutState: LiveData<Result<Boolean?>?> get() = _logOutState
 
     private val _updateUserState = MutableLiveData<Result<Boolean?>?>()
     val updateUserState: LiveData<Result<Boolean?>?> get() = _updateUserState
@@ -66,11 +67,6 @@ class UserViewModel @Inject constructor(
         MutableStateFlow<MutableList<ProductoReciclable>>(mutableListOf())
     val productosAsVendedor: StateFlow<MutableList<ProductoReciclable>> = _productosAsVendedor
 
-
-    init {
-        loadUserPreferences()
-    }
-
     fun verifyAutorizeChangeKindUser(correo: String, password: String) {
         _autorizeChangeKindUser.value =
             _user.value?.correo?.equals(correo) == true &&
@@ -81,11 +77,12 @@ class UserViewModel @Inject constructor(
         _autorizeChangeKindUser.value = null
     }
 
-    private fun loadUserPreferences() {
-        viewModelScope.launch {
-            _user.value = getUserPreferencesUseCase.execute()
+    fun loadUserPreferences() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _user.postValue(getUserPreferencesUseCase.execute())
         }
     }
+
 
     fun updateUser(user: Usuario) {
         viewModelScope.launch {
@@ -113,13 +110,17 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 deleteSessionUserPreferencesUseCase.execute()
-                _user.value = null
+                _user.value = Usuario()
             }.onSuccess {
                 _logOutState.value = Result.success(true)
             }.onFailure {
                 _logOutState.value = Result.failure(it)
             }
         }
+    }
+
+    fun resetStateLogout() {
+        _logOutState.value = null
     }
 
     fun fetchVendedores() {
@@ -169,7 +170,7 @@ class UserViewModel @Inject constructor(
     fun initDataScreenStatistics(user: Usuario, productos: List<ProductoReciclable>) {
         val categorias = ListOfCategorias.categorias
 
-        Log.d("Puntaje","productos: ${productos.size}")
+        Log.d("Puntaje", "productos: ${productos.size}")
 
         val puntosTotales = productos
             .filter { producto -> producto.fueVendida }
@@ -180,7 +181,7 @@ class UserViewModel @Inject constructor(
                 producto.puntosPorCompra + (categoria?.puntosPorTransaccion ?: 0)
             }
 
-        Log.d("Puntaje","puntaje : $puntosTotales")
+        Log.d("Puntaje", "puntaje : $puntosTotales")
 
         _user.value = actualizarLogrosUsuario(
             usuario = user,
@@ -207,12 +208,16 @@ class UserViewModel @Inject constructor(
         _porcentajeLogradoEnNivelActual.value = porcentajeLogrado
         _siguienteNivel.value = siguienteNivel
 
-        _rachaSemanal.value = RachaReciclaje.calcularRachaSemanal(productos.filter { it.fueVendida })
-        _rachaMensual.value = RachaReciclaje.calcularRachaMensual(productos.filter { it.fueVendida })
+        _rachaSemanal.value =
+            RachaReciclaje.calcularRachaSemanal(productos.filter { it.fueVendida })
+        _rachaMensual.value =
+            RachaReciclaje.calcularRachaMensual(productos.filter { it.fueVendida })
 
-        _cantidadArbolesBeneficiados.value = ImpactoAmbientalUtil.calcularArbolesSalvados(productos.filter { it.fueVendida })
+        _cantidadArbolesBeneficiados.value =
+            ImpactoAmbientalUtil.calcularArbolesSalvados(productos.filter { it.fueVendida })
 
-        _nombreYPuntosPorCategoria.value = ProductosReciclables.obtenerNombreYPuntosPorCategoria(productos)
+        _nombreYPuntosPorCategoria.value =
+            ProductosReciclables.obtenerNombreYPuntosPorCategoria(productos)
 
         _logrosEncontrados.value = Logros.listaDeLogros.filter { logro ->
             _user.value?.logrosPorId?.split(",")?.contains(logro.idLogro) == true

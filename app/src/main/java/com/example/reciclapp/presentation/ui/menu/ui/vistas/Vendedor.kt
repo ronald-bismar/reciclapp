@@ -55,6 +55,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.ui.menu.ui.QRGeneratorDialog
+import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 
 private const val TAG = "Vendedor"
@@ -65,7 +66,7 @@ fun Vendedor(
     mainNavController: NavHostController,
     vendedorId: String,
     productoId: String,
-    vendedoresViewModel: VendedoresViewModel = hiltViewModel()
+    vendedoresViewModel: VendedoresViewModel
 ) {
     val context = LocalContext.current
     LaunchedEffect(vendedorId) {
@@ -203,7 +204,8 @@ fun SoldItemCard(item: ProductoReciclable) {
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface)
-            .padding(horizontal = 6.dp, vertical = 20.dp), verticalAlignment = Alignment.CenterVertically
+            .padding(horizontal = 6.dp, vertical = 20.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
             painter = rememberAsyncImagePainter(model = item.urlImagenProducto),
@@ -233,8 +235,7 @@ fun SoldItemCard(item: ProductoReciclable) {
                         Color(0xFFFF6B6B)
                     else
                         Color.Red
-                }
-                    else Color.Green
+                } else Color.Green
             )
         }
     }
@@ -250,7 +251,7 @@ fun ActionButtons(
     mainNavController: NavHostController
 ) {
     var showQRDialog by remember { mutableStateOf(false) }
-    
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -273,6 +274,7 @@ fun ActionButtons(
     }
 
     if (showQRDialog) {
+        val transaccionViewModel: TransaccionViewModel = hiltViewModel()
         QRGeneratorDialog(
             productoId = productoId,
             usuarioContactadoId = vendedorId,
@@ -283,7 +285,7 @@ fun ActionButtons(
                     context = context,
                     phoneNumber = "${selectedVendedor.telefono}"
                 )
-            }
+            }, transaccionViewModel
         )
     }
 }
