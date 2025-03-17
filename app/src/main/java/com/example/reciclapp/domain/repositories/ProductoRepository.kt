@@ -2,6 +2,7 @@ package com.example.reciclapp.domain.repositories
 
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.TransaccionPendiente
+import com.example.reciclapp.domain.entities.Usuario
 
 interface ProductoRepository {
     suspend fun getProducto(idProducto: String): ProductoReciclable?
@@ -19,4 +20,5 @@ interface ProductoRepository {
     suspend fun obtenerProductosPorIds(ids: List<String>): List<ProductoReciclable>
     suspend fun listarProductosPorUsuario(idUsuario: String): MutableList<ProductoReciclable>
     suspend fun marcarProductoComoVendido(transaccionPendiente: TransaccionPendiente)
+    suspend fun obtenerProductoYVendedor(): List<Pair<ProductoReciclable, Usuario>>
 }

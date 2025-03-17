@@ -4,6 +4,7 @@ import com.example.reciclapp.data.repositories.ProductoRepositoryImpl
 import com.example.reciclapp.domain.repositories.ProductoRepository
 import com.example.reciclapp.domain.usecases.producto.ListarProductosPorCompradorUseCase
 import com.example.reciclapp.domain.usecases.producto.*
+import com.example.reciclapp.domain.usecases.vendedor.GetVendedoresUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -69,6 +70,11 @@ object ProductoModule {
     @Provides
     fun provideMarcarProductoComoVendidoUseCase(repository: ProductoRepository): MarcarProductoComoVendidoUseCase {
         return MarcarProductoComoVendidoUseCase(repository)
+    }
+
+    @Provides
+    fun provideObtenerProductosConVendedoresUseCase(repository: ProductoRepository): ObtenerProductoVendedorUseCase {
+        return ObtenerProductoVendedorUseCase(repository)
     }
 
 }

@@ -1,7 +1,6 @@
 package com.example.reciclapp.util
 
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 object FechaUtils {

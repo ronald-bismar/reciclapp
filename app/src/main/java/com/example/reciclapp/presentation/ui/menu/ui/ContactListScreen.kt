@@ -78,7 +78,7 @@ fun ContactListScreen(
                     ContactCard(
                         usuario,
                         viewProfile = {
-                            val profileRoute = if (user!!.tipoDeUsuario == "comprador") {
+                            val profileRoute = if (user.tipoDeUsuario == "comprador") {
                                 "VendedorPerfil/${usuario.idUsuario}/${" "}"
                             } else {
                                 "compradorPerfil/${usuario.idUsuario}"

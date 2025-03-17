@@ -87,15 +87,24 @@ fun PantallaPrincipal(
 
         // Data ContactListScreen.kt
         when (usuarioLogueado!!.tipoDeUsuario.uppercase()) {
-            TipoDeUsuario.COMPRADOR -> userViewModel.fetchVendedores()
             TipoDeUsuario.VENDEDOR -> userViewModel.fetchCompradores()
         }
 
         //Data SocialMediaScreenVendedores.kt
-        vendedoresViewModel.fetchAllProducts()
+        vendedoresViewModel.fetchAllProductsAndVendedor()
 
         //Data StatisticsScreen.kt (para sacar stadisticas de los productos)
         userViewModel.fetchProductosByVendedor(usuarioLogueado)
+
+        /**Datos para pantallas como comprador**/
+
+        // RankingScreen.kt y ContactListScreen.kt como comprador
+        when (usuarioLogueado.tipoDeUsuario.uppercase()) {
+            TipoDeUsuario.COMPRADOR -> userViewModel.fetchVendedores()
+        }
+
+        // HistorialComprasScreen.kt
+        compradoresViewModel.fetchProductosByComprador(usuarioLogueado.idUsuario)
 
 
         val navigationItemsVendedor = listOf(

@@ -14,6 +14,7 @@ import com.example.reciclapp.domain.usecases.producto.CalcularCO2AhorradoEnKilos
 import com.example.reciclapp.domain.usecases.producto.EliminarProductoUseCase
 import com.example.reciclapp.domain.usecases.producto.ListarProductosDeVendedorUseCase
 import com.example.reciclapp.domain.usecases.producto.ListarTodosLosProductosUseCase
+import com.example.reciclapp.domain.usecases.producto.ObtenerProductoVendedorUseCase
 import com.example.reciclapp.domain.usecases.producto.ObtenerProductosPredeterminados
 import com.example.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
 import com.example.reciclapp.domain.usecases.producto.UpdateLikedProductoUseCase
@@ -41,7 +42,8 @@ class VendedoresViewModel @Inject constructor(
     private val calcularCO2AhorradoEnKilos: CalcularCO2AhorradoEnKilos,
     private val obtenerProductosPredeterminados: ObtenerProductosPredeterminados,
     private val eliminarProductoUseCase: EliminarProductoUseCase,
-    private val actualizarProductoUseCase: ActualizarProductoUseCase
+    private val actualizarProductoUseCase: ActualizarProductoUseCase,
+    private val getProductoVendedorUseCase: ObtenerProductoVendedorUseCase
 ) : ViewModel() {
     private val _showToast = MutableSharedFlow<String>()
     val showToast: SharedFlow<String> = _showToast
@@ -67,6 +69,9 @@ class VendedoresViewModel @Inject constructor(
 
     private val _productosPredeterminados = MutableStateFlow<MutableList<ProductoReciclable>>(mutableListOf())
     val productosPredeterminados: StateFlow<MutableList<ProductoReciclable>> = _productosPredeterminados
+
+    private val _productosConVendedores = MutableStateFlow<List<Pair<ProductoReciclable, Usuario>>>(emptyList())
+    val productosConVendedores: StateFlow<List<Pair<ProductoReciclable, Usuario>>> = _productosConVendedores
 
     private val _co2AhorradoEnKilos = MutableStateFlow(0.0)
     val co2AhorradoEnKilos: StateFlow<Double> = _co2AhorradoEnKilos
@@ -121,6 +126,12 @@ class VendedoresViewModel @Inject constructor(
     fun fetchAllProducts() {
         viewModelScope.launch {
             _productos.value = listarTodosLosProductosUseCase.execute().toMutableList()
+        }
+    }
+
+    fun fetchAllProductsAndVendedor() {
+        viewModelScope.launch {
+            _productosConVendedores.value = getProductoVendedorUseCase.execute()
         }
     }
 

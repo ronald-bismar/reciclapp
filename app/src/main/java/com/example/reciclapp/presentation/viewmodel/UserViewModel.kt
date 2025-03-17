@@ -83,6 +83,10 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun resetUpdateUserState(){
+        _updateUserState.value = null
+    }
+
 
     fun updateUser(user: Usuario) {
         viewModelScope.launch {

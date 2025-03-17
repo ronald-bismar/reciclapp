@@ -68,12 +68,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 import com.example.reciclapp.util.FechaUtils
@@ -96,8 +100,6 @@ fun MyProductsScreen(vendedoresViewModel: VendedoresViewModel, mainNavController
 
     LaunchedEffect(Unit) {
         vendedoresViewModel.user.value?.let { vendedoresViewModel.fetchProductosByVendedor(it.idUsuario)
-        Log.d(TAG,"Vendedor encontrado: ${vendedoresViewModel.user.value}")
-
         }
     }
 
@@ -150,7 +152,7 @@ fun MyProductsScreen(vendedoresViewModel: VendedoresViewModel, mainNavController
                         text = "Mis Productos 🌱",
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.secondary
                     )
                 }
 
@@ -425,13 +427,18 @@ fun TarjetaProducto(producto: ProductoReciclable, mainNavController: NavHostCont
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(
-                        painter = rememberAsyncImagePainter(producto.urlImagenProducto),
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(producto.urlImagenProducto)
+                            .crossfade(true)
+                            .build(),
                         contentDescription = producto.nombreProducto,
                         modifier = Modifier
                             .size(100.dp)
                             .clip(RoundedCornerShape(12.dp)),
-                        contentScale = ContentScale.Crop
+                        contentScale = ContentScale.Crop,
+                        placeholder = painterResource(R.drawable.icono_defecto),
+                        error = painterResource(R.drawable.icono_defecto)
                     )
 
                     Column(

@@ -34,10 +34,6 @@ fun RankingCompradoresScreen(
         userRank = compradores.indexOfFirst { it.idUsuario == currentUser?.idUsuario }
     }
 
-    LaunchedEffect(Unit) {
-        compradoresViewModel.fetchCompradores()
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -49,14 +45,12 @@ fun RankingCompradoresScreen(
             TopThreeSection(compradores.take(3))
         }
 
-        // Current User Position Card (if user is a buyer)
         currentUser?.let { user ->
             if (userRank != null && userRank!! >= 0) {
-                CurrentUserRankCard(user, userRank!! + 1)
+                CurrentUserRankCard(userRank!! + 1)
             }
         }
 
-        // Full Ranking List
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -69,34 +63,6 @@ fun RankingCompradoresScreen(
                     isCurrentUser = comprador.idUsuario == currentUser?.idUsuario
                 )
             }
-        }
-    }
-}
-
-@Composable
-fun RankingHeader() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primaryContainer)
-            .padding(16.dp)
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Icon(
-                imageVector = Icons.Default.EmojiEvents,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(48.dp)
-            )
-            Text(
-                text = "Ranking de Recicladores",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
         }
     }
 }
@@ -160,7 +126,7 @@ fun PodiumItem(usuario: Usuario, position: Int, scale: Float) {
 }
 
 @Composable
-fun CurrentUserRankCard(user: Usuario, position: Int) {
+fun CurrentUserRankCard(position: Int) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

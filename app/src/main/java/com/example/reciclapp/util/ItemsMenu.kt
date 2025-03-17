@@ -60,16 +60,4 @@ sealed class ItemsMenu(
     data object PantallaC5 : ItemsMenu(Icons.Default.ShoppingCart, "Compras", "HistorialCompras") {
         override val route: String = "pantallaC5"
     }
-
-    fun itemsVendedores(): List<ItemsMenu> {
-        return listOf(
-            PantallaV1, PantallaV2, PantallaV3, PantallaV4, PantallaV5
-        )
-    }
-
-    fun itemsCompradores(): List<ItemsMenu> {
-        return listOf(
-            PantallaC1, PantallaC2, PantallaC3, PantallaC4, PantallaC5
-        )
-    }
 }

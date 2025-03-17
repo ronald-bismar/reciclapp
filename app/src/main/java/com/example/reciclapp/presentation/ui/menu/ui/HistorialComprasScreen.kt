@@ -52,18 +52,9 @@ import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
 fun HistorialComprasScreen(
     compradoresViewModel: CompradoresViewModel
 ) {
-    val context = LocalContext.current
 
-    // Obtener la lista de productos vendidos
     val productosVendidos = compradoresViewModel.getProductosVendidos()
     val isLoading = compradoresViewModel.isLoading.value
-
-    // Cargar los productos cuando la pantalla se inicia
-    LaunchedEffect(Unit) {
-        compradoresViewModel.myUser.value?.idUsuario?.let { userId ->
-            compradoresViewModel.fetchProductosByComprador(userId)
-        }
-    }
 
     // Mostrar la pantalla
     Scaffold { paddingValues ->
@@ -80,7 +71,6 @@ fun HistorialComprasScreen(
                 )
         ) {
             if (isLoading == true) {
-                // Mostrar un indicador de carga mientras se cargan los productos
                 CircularProgressIndicator(
                     modifier = Modifier
                         .align(Alignment.Center)
@@ -93,7 +83,6 @@ fun HistorialComprasScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // Encabezado
                     item {
                         Text(
                             text = "Historial de Compras 🛒",
@@ -103,7 +92,6 @@ fun HistorialComprasScreen(
                         )
                     }
 
-                    // Mostrar la lista de productos vendidos
                     items(productosVendidos) { producto ->
                         TarjetaProductoVendido(producto)
                     }
@@ -162,7 +150,6 @@ fun TarjetaProductoVendido(producto: ProductoReciclable) {
                     overflow = TextOverflow.Ellipsis
                 )
 
-                // Descripción breve
                 Text(
                     text = producto.detallesProducto,
                     style = MaterialTheme.typography.bodySmall,
@@ -174,12 +161,10 @@ fun TarjetaProductoVendido(producto: ProductoReciclable) {
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Fila de detalles
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Cantidad y unidad
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.weight(1f)
@@ -217,7 +202,6 @@ fun TarjetaProductoVendido(producto: ProductoReciclable) {
                 }
             }
 
-            // Precio destacado
             Box(
                 modifier = Modifier
                     .padding(start = 8.dp)

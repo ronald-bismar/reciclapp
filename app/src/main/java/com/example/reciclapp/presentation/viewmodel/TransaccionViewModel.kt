@@ -140,6 +140,7 @@ class TransaccionViewModel @Inject constructor(
 
 
     fun marcarProductoComoVendido(transaccion: TransaccionPendiente) {
+        Log.d(TAG, "marcarProductoComoVendido: Iniciando")
         _isLoading.value = true
         try {
             viewModelScope.launch {

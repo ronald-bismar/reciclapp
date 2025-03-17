@@ -138,7 +138,7 @@ fun NavGraph(
             arguments = listOf(navArgument("userId") { type = NavType.StringType })
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId") ?: ""
-            Comprador(mainNavController = mainNavHostController, compradorId = userId)
+            Comprador(mainNavController = mainNavHostController, compradorId = userId, compradoresViewModel)
         }
         composable(
             route = "VendedorPerfil/{userId}/{productoId}",

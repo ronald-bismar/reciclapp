@@ -67,6 +67,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -81,6 +82,7 @@ import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.ui.registro.ui.showToast
 import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
+import androidx.core.net.toUri
 
 private const val REQUEST_CALL_PERMISSION = 1
 
@@ -89,7 +91,7 @@ private const val REQUEST_CALL_PERMISSION = 1
 fun Comprador(
     mainNavController: NavController,
     compradorId: String,
-    compradoresViewModel: CompradoresViewModel = hiltViewModel()
+    compradoresViewModel: CompradoresViewModel
 ) {
     LaunchedEffect(compradorId) {
         compradoresViewModel.apply {
@@ -108,10 +110,10 @@ fun Comprador(
     val context = LocalContext.current
 
     LaunchedEffect(stateNewComment) {
-        if(stateNewComment?.isSuccess == true){
-            showToast(context,"Comentario añadido")
-        }else if(stateNewComment?.isFailure == true){
-            showToast(context,"No se pudo subir el comentario")
+        if (stateNewComment?.isSuccess == true) {
+            showToast(context, "Comentario añadido")
+        } else if (stateNewComment?.isFailure == true) {
+            showToast(context, "No se pudo subir el comentario")
         }
 
         compradoresViewModel.resetState()
@@ -131,7 +133,7 @@ fun Comprador(
             SectionTitle("Productos que compra:")
             MaterialList(materiales)
             SectionTitle("Comentarios:")
-            PuntuarUsuario(onComentarioCreado = { newComment, puntuacion  ->
+            PuntuarUsuario(onComentarioCreado = { newComment, puntuacion ->
                 compradoresViewModel.enviarComentario(newComment, puntuacion)
             })
             ComentariosList(comentarios)
@@ -199,7 +201,11 @@ fun PuntuarUsuario(
 
                 // Estrellas para la puntuación
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     for (i in 1..5) {
                         Icon(
@@ -369,7 +375,7 @@ fun initiateCall(context: Context, phoneNumber: String) {
 }
 
 fun openWhatsAppMessage(context: Context, phoneNumber: String) {
-    val uri = Uri.parse("https://wa.me/591$phoneNumber")
+    val uri = "https://wa.me/591$phoneNumber".toUri()
     val intent = Intent(Intent.ACTION_VIEW, uri).apply { setPackage("com.whatsapp") }
     try {
         context.startActivity(intent)
@@ -390,21 +396,31 @@ fun ComentariosList(comentarios: List<Comentario>) {
 
 @Composable
 fun MaterialList(materiales: List<ProductoReciclable>) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        materiales.forEach {
-            val precio: String = if (it.precio < 1) "${it.precio}0"
-            else it.precio.toInt().toString()
-            Text(
-                "${it.nombreProducto}: ${it.monedaDeCompra} $precio por ${it.unidadMedida}",
-                style = MaterialTheme.typography.bodyLarge
-            )
+    if (materiales.isEmpty())
+        Text(
+            "Aun no hay productos registrados que compra este usuario",
+            Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
+        )
+    else
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            materiales.forEach {
+                val precio: String = if (it.precio < 1) "${it.precio}0"
+                else it.precio.toInt().toString()
+                Text(
+                    "${it.nombreProducto}: ${it.monedaDeCompra} $precio por ${it.unidadMedida}",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
         }
-    }
 }
 
 @Composable

@@ -130,6 +130,7 @@ fun Perfil(userViewModel: UserViewModel, vendedoresViewModel: VendedoresViewMode
                 userViewModel.resetUpdateState()
             }
         }
+        userViewModel.resetUpdateUserState()
     }
 }
 

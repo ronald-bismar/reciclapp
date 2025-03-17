@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -51,7 +52,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
+import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.ui.menu.ui.QRGeneratorDialog
@@ -70,8 +73,6 @@ fun Vendedor(
 ) {
     val context = LocalContext.current
     LaunchedEffect(vendedorId) {
-        Log.d(TAG, "Id del vendedor: $vendedorId")
-        Log.d(TAG, "Id del producto: $productoId")
 
         vendedoresViewModel.fetchVendedorById(vendedorId)
         vendedoresViewModel.fetchProductosByVendedor(vendedorId)
@@ -207,12 +208,15 @@ fun SoldItemCard(item: ProductoReciclable) {
             .padding(horizontal = 6.dp, vertical = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = rememberAsyncImagePainter(model = item.urlImagenProducto),
-            contentDescription = null,
+        // Imagen del producto
+        AsyncImage(
+            model = item.urlImagenProducto,
+            contentDescription = "Producto reciclable",
             modifier = Modifier
-                .size(120.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .fillMaxWidth()
+                .height(120.dp),
+            contentScale = ContentScale.Crop,
+            error = painterResource(R.drawable.icono_defecto)
         )
         Spacer(modifier = Modifier.width(16.dp))
         Column {

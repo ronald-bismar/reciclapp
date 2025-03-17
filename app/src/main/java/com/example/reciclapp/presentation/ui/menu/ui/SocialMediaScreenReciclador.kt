@@ -1,7 +1,7 @@
 package com.example.reciclapp.presentation.ui.menu.ui
 
-import android.util.Log
-import androidx.compose.animation.animateContentSize
+import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -16,19 +16,33 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.outlined.Category
+import androidx.compose.material.icons.outlined.Chat
+import androidx.compose.material.icons.outlined.Checkroom
+import androidx.compose.material.icons.outlined.Construction
+import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material.icons.outlined.PhoneAndroid
+import androidx.compose.material.icons.outlined.Recycling
+import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.icons.outlined.ShoppingBag
 import androidx.compose.material.icons.outlined.ShoppingCart
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.outlined.Weekend
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -36,17 +50,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.ProductoReciclable
+import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 
 private const val TAG = "SocialMediaScreenReciclador"
@@ -56,15 +77,18 @@ fun SocialMediaScreenVendedores(
     vendedoresViewModel: VendedoresViewModel,
     mainNavController: NavController,
 ) {
-
-    val productos by vendedoresViewModel.productos.collectAsStateWithLifecycle()
+    val productosConVendedores by vendedoresViewModel.productosConVendedores.collectAsStateWithLifecycle()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(if (isSystemInDarkTheme()) MaterialTheme.colorScheme.surface else Color.LightGray)
+            .background(
+                if (isSystemInDarkTheme()) MaterialTheme.colorScheme.surface else Color.LightGray.copy(
+                    alpha = 0.5f
+                )
+            )
     ) {
-        if (productos.isEmpty()) {
+        if (productosConVendedores.isEmpty()) {
             Box(
                 Modifier
                     .fillMaxSize()
@@ -78,8 +102,8 @@ fun SocialMediaScreenVendedores(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(productos) { producto ->
-                    CardSocialMediaReciclador(productoReciclable = producto, mainNavController)
+                items(productosConVendedores) { (producto, vendedor) ->
+                    CardSocialMediaReciclador(producto, vendedor, mainNavController)
                 }
             }
         }
@@ -119,108 +143,333 @@ fun EmptyProductsMessage() {
     }
 }
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun CardSocialMediaReciclador(
-    productoReciclable: ProductoReciclable, mainNavController: NavController,
+    productoReciclable: ProductoReciclable,
+    vendedor: Usuario,
+    mainNavController: NavController,
+    modifier: Modifier = Modifier,
     vendedoresViewModel: VendedoresViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     var isLiked by remember { mutableStateOf(false) }
     var countLikes by remember { mutableIntStateOf(productoReciclable.meGusta) }
+
+    // Calcular impacto ambiental basado en los datos del producto
+    val emisiones =
+        productoReciclable.emisionCO2Kilo * productoReciclable.pesoPorUnidad * productoReciclable.cantidad
+    val impactoTexto = when {
+        productoReciclable.categoria.contains("Plástico", ignoreCase = true) ->
+            "Evitaste ${String.format("%.1f", emisiones)}kg de CO₂ al ambiente"
+
+        productoReciclable.categoria.contains("Papel", ignoreCase = true) ->
+            "Salvaste ${productoReciclable.cantidad} árboles de ser talados"
+
+        productoReciclable.categoria.contains("Electrónicos", ignoreCase = true) ->
+            "Recuperaste ${
+                String.format(
+                    "%.1f",
+                    productoReciclable.pesoPorUnidad * productoReciclable.cantidad
+                )
+            }kg de materiales valiosos"
+
+        productoReciclable.categoria.contains("Mueble", ignoreCase = true) ->
+            "Salvaste ${
+                String.format(
+                    "%.1f",
+                    productoReciclable.pesoPorUnidad * productoReciclable.cantidad
+                )
+            }kg de madera de ir al vertedero"
+
+        productoReciclable.categoria.contains("Ropa", ignoreCase = true) ->
+            "Ahorraste ${String.format("%.1f", emisiones)}L de agua al medio ambiente"
+
+        productoReciclable.categoria.contains("Metal", ignoreCase = true) ->
+            "Ahorraste ${String.format("%.1f", emisiones)}kg de CO₂ en minería"
+
+        else ->
+            "Tu compra contribuye a reducir ${String.format("%.1f", emisiones)}kg de residuos"
+    }
+
     val precio: String = if (productoReciclable.precio < 1) "${productoReciclable.precio}0"
     else productoReciclable.precio.toInt().toString()
-    Box(
-        modifier = Modifier
-            .padding(horizontal = 8.dp)
+
+    Card(
+        modifier = modifier
             .fillMaxWidth()
-            .background(Color.White),
+            .padding(horizontal = 4.dp, vertical = 2.dp),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Column(
+        Box(
             modifier = Modifier
-                .padding(15.dp)
-                .animateContentSize(),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+                .fillMaxWidth()
+                .background(Color.White)
         ) {
-            Text(
-                text = "Vendo ${productoReciclable.nombreProducto} para reciclar",
-                style = MaterialTheme.typography.titleLarge,
-                color = Color.Black
-            )
-            Text(
-                text = "Cantidad: ${productoReciclable.cantidad} ${productoReciclable.unidadMedida}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
-            )
-            Text(
-                text = "Puntos por material: ${productoReciclable.puntosPorCompra}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
-            )
-            Text(
-                text = productoReciclable.detallesProducto,
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center,
-                color = Color.Black
-            )
-            Text(
-                text = "$precio ${productoReciclable.unidadMedida}",
-                style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center,
-                color = Color.Black
-            )
-            AsyncImage(
-                model = productoReciclable.urlImagenProducto,
-                contentDescription = "Producto vendido",
+            // Badge de categoría
+            Surface(
+                shape = RoundedCornerShape(16.dp),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
-                contentScale = ContentScale.Crop,
-                error = painterResource(R.drawable.img_reciclando2) // Imagen en caso de error
-            )
-            Text(
-                text = "$countLikes Me gusta",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
-            )
-
-            HorizontalDivider()
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 30.dp)
+                    .padding(12.dp)
+                    .align(Alignment.TopStart)
+                    .zIndex(1f),
             ) {
-                IconButton(onClick = {
-                    isLiked = !isLiked
-                    vendedoresViewModel.updateLikedProducto(productoReciclable, isLiked)
-                    countLikes = if (isLiked) countLikes + 1 else countLikes - 1
-                }, modifier = Modifier.size(24.dp)) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                     Icon(
-                        imageVector = if (isLiked) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
-                        contentDescription = "FavoriteBorder",
-                        tint = if (isLiked) Color.Red else Color.Black
-                    )
-                }
-                IconButton(onClick = {
-                    mainNavController.navigate("VendedorPerfil/${if(productoReciclable.idVendedor.isEmpty()) null else productoReciclable.idVendedor}/${productoReciclable.idProducto}")
+                        imageVector = when {
+                            productoReciclable.categoria.contains(
+                                "Plástico",
+                                ignoreCase = true
+                            ) -> Icons.Outlined.ShoppingBag
 
-                }, modifier = Modifier.size(24.dp)) {
-                    Icon(
-                        imageVector = Icons.Default.Call,
-                        contentDescription = "Contact",
-                        tint = Color.Black
+                            productoReciclable.categoria.contains(
+                                "Papel",
+                                ignoreCase = true
+                            ) -> Icons.Outlined.Description
+
+                            productoReciclable.categoria.contains(
+                                "Electrónicos",
+                                ignoreCase = true
+                            ) -> Icons.Outlined.PhoneAndroid
+
+                            productoReciclable.categoria.contains(
+                                "Mueble",
+                                ignoreCase = true
+                            ) -> Icons.Outlined.Weekend
+
+                            productoReciclable.categoria.contains(
+                                "Ropa",
+                                ignoreCase = true
+                            ) -> Icons.Outlined.Checkroom
+
+                            productoReciclable.categoria.contains(
+                                "Metal",
+                                ignoreCase = true
+                            ) -> Icons.Outlined.Construction
+
+                            else -> Icons.Outlined.Category
+                        },
+                        contentDescription = "Categoría",
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Text(
+                        text = productoReciclable.categoria.ifEmpty { "Reciclable" },
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
-                IconButton(onClick = { }, modifier = Modifier.size(24.dp)) {
-                    Icon(
-                        imageVector = Icons.Default.LocationOn,
-                        contentDescription = "Location",
-                        tint = Color.Black
+            }
+
+            Column {
+                // Imagen del producto
+                AsyncImage(
+                    model = productoReciclable.urlImagenProducto,
+                    contentDescription = "Producto reciclable",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(220.dp),
+                    contentScale = ContentScale.Crop,
+                    error = painterResource(R.drawable.icono_defecto)
+                )
+
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    // Título y tipo de material
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Recycling,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text(
+                            text = productoReciclable.nombreProducto,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    Text(
+                        text = "Vendo ${productoReciclable.nombreProducto} para reciclar",
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        // Cantidad y unidad de medida
+                        Text(
+                            text = "Cantidad: ${productoReciclable.cantidad} ${productoReciclable.unidadMedida}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+
+                        Text(
+                            text = "$precio ${productoReciclable.monedaDeCompra}",
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+
+                    // EcoPuntos
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Star,
+                            contentDescription = "EcoPuntos",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text(
+                            text = "+${productoReciclable.puntosPorCompra} EcoPuntos al comprar",
+                            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold),
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.surfaceVariant
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Información del vendedor con foto de perfil
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            // Foto de perfil redonda
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(vendedor.urlImagenPerfil.ifEmpty { R.drawable.perfil })
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = "Foto de perfil de ${vendedor.nombre}",
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop,
+                                error = painterResource(R.drawable.perfil),
+                                placeholder = painterResource(R.drawable.perfil)
+                            )
+                            Column(
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = vendedor.nombre,
+                                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = vendedor.apellido,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+
+                        // Iconos de acción
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = countLikes.toString(),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                                IconButton(
+                                    onClick = {
+                                        isLiked = !isLiked
+                                        vendedoresViewModel.updateLikedProducto(
+                                            productoReciclable,
+                                            isLiked
+                                        )
+                                        countLikes = if (isLiked) countLikes + 1 else countLikes - 1
+                                        Toast.makeText(context, "Te interesa este producto", Toast.LENGTH_SHORT).show()
+                                    },
+                                    modifier = Modifier.size(32.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                        contentDescription = "Me gusta",
+                                        tint = if (isLiked) Color.Red else MaterialTheme.colorScheme.onSurface,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            }
+
+                            // Contactar
+                            IconButton(
+                                onClick = {
+                                    mainNavController.navigate("VendedorPerfil/${if (productoReciclable.idVendedor.isEmpty()) null else productoReciclable.idVendedor}/${productoReciclable.idProducto}")
+                                },
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Chat,
+                                    contentDescription = "Contactar",
+                                    tint = MaterialTheme.colorScheme.onSurface,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+
+                            // Ubicación
+                            IconButton(
+                                onClick = { /* Acción para ver ubicación */ },
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.LocationOn,
+                                    contentDescription = "Ubicación",
+                                    tint = MaterialTheme.colorScheme.onSurface,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+
+                            // Compartir
+                            IconButton(
+                                onClick = { /* Acción para compartir */ },
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Share,
+                                    contentDescription = "Compartir",
+                                    tint = MaterialTheme.colorScheme.onSurface,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 }
-
