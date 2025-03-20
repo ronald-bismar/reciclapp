@@ -79,13 +79,13 @@ fun PantallaPrincipal(
         LaunchedEffect(locationPermissionState.status) {
             if (locationPermissionState.status.isGranted) {
                 ubicacionViewModel.fetchLocationsAndUsers()
-                ubicacionViewModel.getMyCurrentLocation(usuarioLogueado!!.idUsuario)
+                ubicacionViewModel.obtenerYGuardarMiUbicacion(usuarioLogueado!!.idUsuario)
             } else {
                 locationPermissionState.launchPermissionRequest()
             }
         }
 
-        // Data ContactListScreen.kt
+        // Data BuyersScreen.kt
         when (usuarioLogueado!!.tipoDeUsuario.uppercase()) {
             TipoDeUsuario.VENDEDOR -> userViewModel.fetchCompradores()
         }
@@ -98,7 +98,7 @@ fun PantallaPrincipal(
 
         /**Datos para pantallas como comprador**/
 
-        // RankingScreen.kt y ContactListScreen.kt como comprador
+        // RankingScreen.kt y BuyersScreen.kt como comprador
         when (usuarioLogueado.tipoDeUsuario.uppercase()) {
             TipoDeUsuario.COMPRADOR -> userViewModel.fetchVendedores()
         }

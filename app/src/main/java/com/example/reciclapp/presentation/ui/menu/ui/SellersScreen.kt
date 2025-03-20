@@ -1,6 +1,5 @@
 package com.example.reciclapp.presentation.ui.menu.ui
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,40 +9,31 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.initiateCall
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.openWhatsAppMessage
+import com.example.reciclapp.presentation.viewmodel.UbicacionViewModel
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 
 @Composable
-fun ContactListScreen(
+fun SellersScreen(
     navController: NavController,
-    user: Usuario,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    ubicacionViewModel: UbicacionViewModel
 ) {
 
     val context = LocalContext.current
-    val usuarios = if (user.tipoDeUsuario == "comprador") {
-        userViewModel.vendedores.collectAsState().value
-    } else {
-        userViewModel.compradores.collectAsState().value
-    }
-
-    Log.d("ContactListScreen", "Usuarios: $usuarios")
+    val sellers = userViewModel.vendedores.collectAsState().value
 
     Column(
         modifier = Modifier
@@ -52,21 +42,18 @@ fun ContactListScreen(
             .padding(16.dp)
     ) {
         Text(
-            text =
-            if (user.tipoDeUsuario == "comprador")
-                "Vendedores Cercanos"
-            else "Compradores Cercanos",
+            text = "Vendedores Cercanos",
             fontSize = 24.sp,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        if (usuarios.isEmpty()) {
+        if (sellers.isEmpty()) {
             Box(
                 modifier = Modifier
                     .fillMaxSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
-                CircularProgressIndicator()
+                MensajeListaVaciaVendedores()
             }
         } else {
             LazyColumn(
@@ -74,18 +61,11 @@ fun ContactListScreen(
                 contentPadding = PaddingValues(bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(usuarios) { usuario ->
+                items(sellers) { usuario ->
                     ContactCard(
                         usuario,
                         viewProfile = {
-                            val profileRoute = if (user.tipoDeUsuario == "comprador") {
-                                "VendedorPerfil/${usuario.idUsuario}/${" "}"
-                            } else {
-                                "compradorPerfil/${usuario.idUsuario}"
-                            }
-                            Log.d("ProfileRoute", "Comprador: $profileRoute")
-
-                            navController.navigate(profileRoute)
+                            navController.navigate("VendedorPerfil/${usuario.idUsuario}/${" "}")
                         },
                         sendMessage = {
                             openWhatsAppMessage(context, usuario.telefono.toString())
@@ -98,13 +78,13 @@ fun ContactListScreen(
             }
         }
     }
-
-    @Composable
-    fun mensajeListaVacia(textoUsuario: String){
-        Text(
-            text = "No se encontraron $textoUsuario cercanos",
-            fontSize = 24.sp,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-    }
 }
+@Composable
+fun MensajeListaVaciaVendedores(){
+    Text(
+        text = "No se encontraron vendedores cercanos",
+        fontSize = 24.sp,
+        modifier = Modifier.padding(bottom = 16.dp)
+    )
+}
+

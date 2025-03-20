@@ -7,9 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.reciclapp.domain.entities.Logro
 import com.example.reciclapp.domain.entities.ProductoReciclable
+import com.example.reciclapp.domain.entities.UbicacionGPS
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.usecases.comprador.GetCompradoresUseCase
 import com.example.reciclapp.domain.usecases.producto.ListarProductosDeVendedorUseCase
+import com.example.reciclapp.domain.usecases.ubicacionGPS.RegistrarUbicacionDeUsuarioUseCase
 import com.example.reciclapp.domain.usecases.user_preferences.DeleteSessionUserPreferencesUseCase
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.example.reciclapp.domain.usecases.usuario.ActualizarUsuarioUseCase
@@ -34,6 +36,7 @@ class UserViewModel @Inject constructor(
     private val getVendedoresUseCase: GetVendedoresUseCase,
     private val getCompradoresUseCase: GetCompradoresUseCase,
     private val listarProductosDeVendedorUseCase: ListarProductosDeVendedorUseCase,
+    private val registrarUbicacionDeUsuarioUseCase: RegistrarUbicacionDeUsuarioUseCase
 ) : ViewModel() {
 
     private val _user = MutableLiveData<Usuario>(Usuario())
@@ -83,7 +86,7 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun resetUpdateUserState(){
+    fun resetUpdateUserState() {
         _updateUserState.value = null
     }
 

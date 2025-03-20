@@ -10,9 +10,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.presentation.ui.menu.ui.ContactListScreen
-import com.example.reciclapp.util.ItemsMenu
+import com.example.reciclapp.presentation.ui.menu.ui.BuyersScreen
 import com.example.reciclapp.presentation.ui.menu.ui.RankingCompradoresScreen
+import com.example.reciclapp.presentation.ui.menu.ui.SellersScreen
 import com.example.reciclapp.presentation.ui.menu.ui.SocialMediaScreenVendedores
 import com.example.reciclapp.presentation.ui.menu.ui.content.newsandtips.GlobalWasteApi
 import com.example.reciclapp.presentation.ui.menu.ui.content.newsandtips.NewsTipsScreen
@@ -22,6 +22,7 @@ import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
 import com.example.reciclapp.presentation.viewmodel.UbicacionViewModel
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
+import com.example.reciclapp.util.ItemsMenu
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -49,7 +50,7 @@ fun BottomNavHost(
             MapsView(mainNavController, ubicacionViewModel)
         }
         composable(ItemsMenu.PantallaV4.ruta) {
-            ContactListScreen(mainNavController, userViewModel.user.value?: Usuario(), userViewModel)
+            BuyersScreen(mainNavController, userViewModel, ubicacionViewModel)
         }
         composable(ItemsMenu.PantallaV5.ruta) {
             SocialMediaScreenVendedores(vendedoresViewModel, mainNavController)
@@ -64,7 +65,7 @@ fun BottomNavHost(
             SocialMediaScreenVendedores(vendedoresViewModel, mainNavController)
         }
         composable(ItemsMenu.PantallaC4.ruta) {
-            ContactListScreen(mainNavController, userViewModel.user.value?: Usuario(), userViewModel)
+            SellersScreen(mainNavController, userViewModel, ubicacionViewModel)
         }
         composable(ItemsMenu.PantallaC5.ruta) {
             HistorialComprasScreen(compradoresViewModel)

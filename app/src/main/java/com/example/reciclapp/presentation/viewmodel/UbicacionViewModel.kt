@@ -3,6 +3,7 @@ package com.example.reciclapp.presentation.viewmodel
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.reciclapp.util.ImageRepository
@@ -32,7 +33,6 @@ import javax.inject.Inject
 class UbicacionViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val registrarUbicacionDeUsuarioUseCase: RegistrarUbicacionDeUsuarioUseCase,
-    private val getUbicacionDeUsuarioUseCase: GetUbicacionDeUsuarioUseCase,
     private val getLocationsAndCompradoresUseCase: GetLocationsAndCompradoresUseCase,
     private val imageRepository: ImageRepository
 ) : ViewModel() {
@@ -45,46 +45,11 @@ class UbicacionViewModel @Inject constructor(
     val ubicacionesConUsuarios: StateFlow<MutableList<HashMap<Usuario, UbicacionGPS>>> =
         _ubicacionesConUsuarios
 
-    private val _myLocation = MutableStateFlow<UbicacionGPS?>(null)
-    val myLocation: StateFlow<UbicacionGPS?> = _myLocation
-
     private val _myCurrentLocation = MutableStateFlow<UbicacionGPS?>(null)
     val myCurrentLocation: StateFlow<UbicacionGPS?> = _myCurrentLocation
 
     private val _markers = MutableStateFlow<List<MarkerData>>(emptyList())
     val markers: StateFlow<List<MarkerData>> = _markers
-
-    private val _mapCameraPosition = MutableStateFlow<CameraPosition?>(null)
-    val mapCameraPosition = _mapCameraPosition.asStateFlow()
-
-    private val _mapInitialized = MutableStateFlow(false)
-    val mapInitialized = _mapInitialized.asStateFlow()
-
-    fun saveMapState(map: GoogleMap) {
-        _mapCameraPosition.value = map.cameraPosition
-        _mapInitialized.value = true
-    }
-
-    @SuppressLint("MissingPermission")
-    fun getMyCurrentLocation(idUsuario: String){
-        viewModelScope.launch {
-            try {
-                val location = fusedLocationClient.lastLocation.await()
-                if (location != null) {
-                    _myCurrentLocation.value = UbicacionGPS(
-                        idUbicacionGPS = GenerateID(), // Genera un ID único para la ubicación
-                        latitude = location.latitude,
-                        longitude = location.longitude,
-                        precision = location.accuracy,
-                        fechaRegistro = Timestamp(java.util.Date()).toString(),
-                        idUsuario = idUsuario
-                    )
-                }
-            } catch (e: Exception) {
-                // Manejar errores
-            }
-        }
-    }
 
     @SuppressLint("MissingPermission")
     fun obtenerYGuardarMiUbicacion(idUsuario: String) {
@@ -100,10 +65,11 @@ class UbicacionViewModel @Inject constructor(
                         fechaRegistro = Timestamp(java.util.Date()).toString(),
                         idUsuario = idUsuario
                     )
+                    _myCurrentLocation.value = ubicacionGPS
                     registrarUbicacionDeUsuarioUseCase.execute(ubicacionGPS)
                 }
             } catch (e: Exception) {
-                // Manejar errores
+                Log.d("UbicacionViewModel", "Error al obtener la ubicación ${e.message}", )
             }
         }
     }
@@ -129,14 +95,7 @@ class UbicacionViewModel @Inject constructor(
                     newMarkers.add(MarkerData(usuario, ubicacion, bitmap))
                 }
             }
-
             _markers.value = newMarkers
-        }
-    }
-
-    fun fetchMyLocation(idUsuario: String) {
-        viewModelScope.launch {
-            _myLocation.value = getUbicacionDeUsuarioUseCase.execute(idUsuario)
         }
     }
 }
