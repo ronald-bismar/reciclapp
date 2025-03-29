@@ -73,8 +73,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
+import androidx.core.net.toUri
+import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.Comentario
@@ -82,16 +82,17 @@ import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.ui.registro.ui.showToast
 import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
-import androidx.core.net.toUri
+import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 
 private const val REQUEST_CALL_PERMISSION = 1
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Comprador(
-    mainNavController: NavController,
+    mainNavController: NavHostController,
     compradorId: String,
-    compradoresViewModel: CompradoresViewModel
+    compradoresViewModel: CompradoresViewModel,
+    transaccionViewModel: TransaccionViewModel
 ) {
     LaunchedEffect(compradorId) {
         compradoresViewModel.apply {
@@ -129,7 +130,7 @@ fun Comprador(
         ) {
             ProfileHeader(comprador.urlImagenPerfil)
             ProfileDetails3(comprador)
-            ActionButtons(comprador.telefono.toString())
+            ActionButtons(comprador.telefono.toString(),transaccionViewModel,selectedComprador, mainNavController)
             SectionTitle("Productos que compra:")
             MaterialList(materiales)
             SectionTitle("Comentarios:")
@@ -325,7 +326,7 @@ fun ProfileItem3(label: String, value: String) {
 }
 
 @Composable
-fun ActionButtons(phoneNumber: String) {
+fun ActionButtons(phoneNumber: String, transaccionViewModel: TransaccionViewModel,usuarioContactado: Usuario,mainNavController: NavHostController) {
     val context = LocalContext.current
     Row(
         modifier = Modifier
@@ -333,8 +334,16 @@ fun ActionButtons(phoneNumber: String) {
             .padding(vertical = 2.dp),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        ActionButton3("Mensaje", Icons.Default.Email) { openWhatsAppMessage(context, phoneNumber) }
-        ActionButton3("Llamar", Icons.Default.Call) { initiateCall(context, phoneNumber) }
+        ActionButton3("Mensaje", Icons.Default.Email) {
+            transaccionViewModel.setUserContacted(usuarioContactado)
+            mainNavController.navigate("ScreenProductsForSale")
+            //openWhatsAppMessage(context, phoneNumber)
+        }
+        ActionButton3("Llamar", Icons.Default.Call) {
+            transaccionViewModel.setUserContacted(usuarioContactado)
+            mainNavController.navigate("ScreenProductsForSale")
+//            initiateCall(context, phoneNumber)
+        }
     }
     Spacer(modifier = Modifier.height(10.dp))
     Divider()

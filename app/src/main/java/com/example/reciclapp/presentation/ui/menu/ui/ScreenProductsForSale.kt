@@ -1,6 +1,5 @@
 package com.example.reciclapp.presentation.ui.menu.ui
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -66,15 +65,13 @@ import coil.request.ImageRequest
 import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.presentation.ui.menu.ui.content.myproducts.ProductoEtiqueta
+import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
-import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 
 @Composable
-fun ScreenProductsForSale(userViewModel: UserViewModel, vendedoresViewModel: VendedoresViewModel, mainNavController: NavHostController) {
-    // Lista de productos seleccionados
+fun ScreenProductsForSale(userViewModel: UserViewModel, transaccionViewModel: TransaccionViewModel, mainNavController: NavHostController) {
+    val userContacted = transaccionViewModel.usuarioContactado.collectAsState().value
     val selectedProducts = remember { mutableStateListOf<ProductoReciclable>() }
-
-    Log.d("Logd", "ScreenProductsForSale: ${selectedProducts.size}")
 
     val hasSelectedProducts by remember {
         derivedStateOf { selectedProducts.isNotEmpty() }
@@ -114,8 +111,8 @@ fun ScreenProductsForSale(userViewModel: UserViewModel, vendedoresViewModel: Ven
         ) {
             Button(
                 onClick = {
-                    vendedoresViewModel.setProductsToSale(selectedProducts)
-                    mainNavController.navigate("")
+                    userContacted?.let { transaccionViewModel.prepareTransaction(it, selectedProducts) }
+                    mainNavController.navigate("QRGeneratorScreen")
                 },
                 shape = RoundedCornerShape(28.dp),
                 colors = ButtonDefaults.buttonColors(

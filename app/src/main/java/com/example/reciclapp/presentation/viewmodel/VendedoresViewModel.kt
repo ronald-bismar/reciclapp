@@ -79,6 +79,9 @@ class VendedoresViewModel @Inject constructor(
     private val _productToUpdate = MutableStateFlow<ProductoReciclable?>(null)
     val productToUpdate: StateFlow<ProductoReciclable?> = _productToUpdate
 
+    private val _productsToSale = MutableStateFlow<List<ProductoReciclable>>(emptyList())
+    val productsToSale: StateFlow<List<ProductoReciclable>> = _productsToSale
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
@@ -120,6 +123,10 @@ class VendedoresViewModel @Inject constructor(
         viewModelScope.launch {
             _productosPredeterminados.value = obtenerProductosPredeterminados.execute()
         }
+    }
+
+    fun setProductsToSale(products: List<ProductoReciclable>) {
+        _productsToSale.value = products
     }
 
 

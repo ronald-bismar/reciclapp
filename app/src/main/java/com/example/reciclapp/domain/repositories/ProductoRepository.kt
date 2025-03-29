@@ -19,6 +19,9 @@ interface ProductoRepository {
     suspend fun obtenerProductosPredeterminados(): MutableList<ProductoReciclable>
     suspend fun obtenerProductosPorIds(ids: List<String>): List<ProductoReciclable>
     suspend fun listarProductosPorUsuario(idUsuario: String): MutableList<ProductoReciclable>
-    suspend fun marcarProductoComoVendido(transaccionPendiente: TransaccionPendiente)
+    suspend fun marcarProductosComoVendido(transaccionPendiente: TransaccionPendiente): List<Void?>
     suspend fun obtenerProductoYVendedor(): List<Pair<ProductoReciclable, Usuario>>
+    fun sumarPuntosDeProductos(products: List<ProductoReciclable>): Int
+    suspend fun vendedorEnviaMensajeAComprador(productos: List<ProductoReciclable>,vendedor: Usuario, comprador: Usuario) //Este metodo nos sirve cuando el vendedor que quiere vender productos a un comprador especifico se contacta con el para ofrecerle sus productos y cuanto quiere por ellos
+    suspend fun compradorEnviaMensajeAVendedor(productos: List<ProductoReciclable>, comprador: Usuario,vendedor: Usuario)
 }

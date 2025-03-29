@@ -6,6 +6,6 @@ import javax.inject.Inject
 
 class MarcarProductoComoVendidoUseCase @Inject constructor(private val productoRepository: ProductoRepository) {
     suspend fun execute(transaccionPendiente: TransaccionPendiente) {
-        productoRepository.marcarProductoComoVendido(transaccionPendiente)
+        productoRepository.marcarProductosComoVendido(transaccionPendiente)
     }
 }

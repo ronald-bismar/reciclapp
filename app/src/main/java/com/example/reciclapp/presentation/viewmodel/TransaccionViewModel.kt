@@ -11,8 +11,8 @@ import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.repositories.CompradorRepository
 import com.example.reciclapp.domain.repositories.ProductoRepository
 import com.example.reciclapp.domain.usecases.producto.GetProductoUseCase
-import com.example.reciclapp.domain.usecases.producto.ListarProductosPorUsuarioUseCase
 import com.example.reciclapp.domain.usecases.producto.MarcarProductoComoVendidoUseCase
+import com.example.reciclapp.domain.usecases.producto.SumarPuntosDeProductosUseCase
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.example.reciclapp.domain.usecases.usuario.GetUsuarioUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,8 +30,8 @@ class TransaccionViewModel @Inject constructor(
     private val getUserPreferencesUseCase: GetUserPreferencesUseCase,
     private val getProductoUseCase: GetProductoUseCase,
     private val getUsuarioUseCase: GetUsuarioUseCase,
-    private val listarProductosPorUsuarioUseCase: ListarProductosPorUsuarioUseCase,
-    private val marcarProductoComoVendidoUseCase: MarcarProductoComoVendidoUseCase
+    private val marcarProductoComoVendidoUseCase: MarcarProductoComoVendidoUseCase,
+    private val sumarPuntosDeProductosUseCase: SumarPuntosDeProductosUseCase
 ) : ViewModel() {
 
     private val _transaccionesPendientes = MutableStateFlow<List<TransaccionPendiente>>(emptyList())
@@ -49,6 +49,18 @@ class TransaccionViewModel @Inject constructor(
     private val _usuarioContactado = MutableStateFlow<Usuario?>(null)
     val usuarioContactado: StateFlow<Usuario?> get() = _usuarioContactado
 
+    private val _productosSeleccionados = MutableStateFlow<List<ProductoReciclable>>(emptyList())
+    val productosSeleccionados: StateFlow<List<ProductoReciclable>> get() = _productosSeleccionados
+
+        private val _puntosParaComprador = MutableStateFlow<Int>(0)
+    val puntosParaComprador: StateFlow<Int> get() = _puntosParaComprador
+
+        private val _puntosParaAmbosUsuarios = MutableStateFlow<Int>(0)
+    val puntosParaAmbosUsuarios: StateFlow<Int> get() = _puntosParaAmbosUsuarios
+
+    private val _idsProductosSeleccionados = MutableStateFlow<String>("")
+    val idsProductosSeleccionados: StateFlow<String> get() = _idsProductosSeleccionados
+
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> get() = _isLoading
 
@@ -56,11 +68,35 @@ class TransaccionViewModel @Inject constructor(
         loadMyUserPreferences()
     }
 
+    fun sumarPuntosParaAmbosUsuarios(){
+        _puntosParaAmbosUsuarios.value = sumarPuntosDeProductosUseCase.execute(_productosSeleccionados.value)
+    }
+
+    fun sumarPuntosParaComprador(){
+        _puntosParaComprador.value = _productosSeleccionados.value.sumOf { it.puntosPorCompra }
+    }
+
+    fun setIdsDeProductosSeleccionados():String{
+        return _productosSeleccionados.value.joinToString(",") { it.idProducto }
+    }
+
     private fun loadMyUserPreferences() {
         viewModelScope.launch {
             val usuario = getUserPreferencesUseCase.execute()
             _myUser.postValue(usuario)
         }
+    }
+
+    fun prepareTransaction(usuarioContactado: Usuario, productosSeleccionados: List<ProductoReciclable>){
+        _usuarioContactado.value = usuarioContactado
+        _productosSeleccionados.value = productosSeleccionados
+        sumarPuntosParaComprador()
+        sumarPuntosParaAmbosUsuarios()
+        setIdsDeProductosSeleccionados()
+    }
+
+    fun setUserContacted(usuario: Usuario){
+        _usuarioContactado.value = usuario
     }
 
     fun getProductoById(productoId: String) {
@@ -92,7 +128,12 @@ class TransaccionViewModel @Inject constructor(
                     _myUser.value?.idUsuario
                 _transaccionesPendientes.value = repository.getTransaccionesPendientes(userId ?: "")
 
-                val productosIds = _transaccionesPendientes.value.map { it.idProducto }
+                val productosIds: MutableList<String> = mutableListOf()
+
+                _transaccionesPendientes.value.forEach {
+                    productosIds.addAll(it.idsProductos.split(",").map { it.trim() })
+                }
+
                 _productos.value = productoRepository.obtenerProductosPorIds(productosIds)
             } catch (e: Exception) {
                 Log.d(TAG, "Error al cargar las transacciones pendientes: ${e.message}")
@@ -112,35 +153,8 @@ class TransaccionViewModel @Inject constructor(
         }
     }
 
-    fun fetchProductosPorMiUsuarioUseCase(idUsuario: String = _myUser.value?.idUsuario ?: "") {
-        _isLoading.value = true
-        viewModelScope.launch {
-            try {
-                _productos.value = listarProductosPorUsuarioUseCase.execute(idUsuario)
-            } catch (e: Exception) {
-                Log.e(TAG, "Error al cargar los productos: ${e.message}")
-            } finally {
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun fetchProductosPorUsuario(idUsuario: String) {
-        _isLoading.value = true
-        viewModelScope.launch {
-            try {
-                _productos.value = listarProductosPorUsuarioUseCase.execute(idUsuario)
-            } catch (e: Exception) {
-                Log.e(TAG, "Error al cargar los productos: ${e.message}")
-            } finally {
-                _isLoading.value = false
-            }
-        }
-    }
-
-
     fun marcarProductoComoVendido(transaccion: TransaccionPendiente) {
-        Log.d(TAG, "marcarProductoComoVendido: Iniciando")
+        Log.d(TAG, "marcarProductosComoVendido: Iniciando")
         _isLoading.value = true
         try {
             viewModelScope.launch {

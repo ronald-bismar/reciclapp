@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.outlined.QrCode
 import androidx.compose.material.icons.outlined.QrCodeScanner
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -38,11 +40,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.reciclapp.domain.entities.EstadoTransaccion
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.TransaccionPendiente
@@ -56,6 +61,11 @@ fun TransaccionesPendientesScreen(
 ) {
     val transacciones by transaccionViewModel.transaccionesPendientes.collectAsState()
     val productos by transaccionViewModel.productos.collectAsState()
+
+    // Convertir la lista de productos a un mapa para acceso O(1)
+    val productosMap = remember(productos) {
+        productos.associateBy { it.idProducto }
+    }
 
     LaunchedEffect(Unit) {
         transaccionViewModel.cargarTransaccionesPendientes()
@@ -81,27 +91,33 @@ fun TransaccionesPendientesScreen(
                     .padding(paddingValues)
             ) {
                 items(transacciones) { transaccion ->
+                    // Obtener todos los productos de esta transacción
+                    val productosTransaccion = remember(transaccion.idsProductos) {
+                        transaccion.idsProductos.split(",")
+                            .map { it.trim() }
+                            .mapNotNull { productosMap[it] }
+                    }
+
                     TransaccionPendienteItem(
                         transaccion = transaccion,
-                        producto = productos.find { it.idProducto == transaccion.idProducto },
+                        productos = productosTransaccion, // Ahora pasamos la lista completa
                         onScanQR = {
                             navController.navigate("qr-scanner")
                         }
                     )
                 }
-            }
-        }
+            }        }
     }
 }
 
 @Composable
 fun TransaccionPendienteItem(
     transaccion: TransaccionPendiente,
-    producto: ProductoReciclable?,
+    productos: List<ProductoReciclable>,  // Ahora recibe lista de productos
     onScanQR: () -> Unit = {}
 ) {
     var showQRPreview by remember { mutableStateOf(false) }
-    
+
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -113,24 +129,29 @@ fun TransaccionPendienteItem(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
+            // Encabezado con estado y botón QR
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = producto?.nombreProducto ?: "Producto no disponible",
+                        text = "Transacción #${transaccion.idTransaccion.take(8)}",  // Muestra ID corto
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "Estado: ${transaccion.estado}",
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = when (transaccion.estado) {
+                            EstadoTransaccion.PENDIENTE -> MaterialTheme.colorScheme.primary
+                            EstadoTransaccion.COMPLETADA -> MaterialTheme.colorScheme.tertiary
+                            EstadoTransaccion.CANCELADA -> MaterialTheme.colorScheme.error
+                        }
                     )
                 }
-                
-                // Botón para mostrar QR
+
                 IconButton(onClick = { showQRPreview = true }) {
                     Icon(
                         imageVector = Icons.Outlined.QrCode,
@@ -140,7 +161,35 @@ fun TransaccionPendienteItem(
                 }
             }
 
-            // Fecha de la transacción
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Lista compacta de productos
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            ) {
+                Text(
+                    text = "Productos (${productos.size})",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                // Lista compacta de productos con scroll horizontal
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    items(productos) { producto ->
+                        ProductoChip(producto = producto)
+                    }
+                }
+            }
+
+            // Fecha y acciones
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -148,11 +197,13 @@ fun TransaccionPendienteItem(
                 Icon(
                     imageVector = Icons.Outlined.CalendarToday,
                     contentDescription = null,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(16.dp),
+                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
                 Text(
                     text = " ${transaccion.fechaCreacion}",
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
             }
 
@@ -160,21 +211,24 @@ fun TransaccionPendienteItem(
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = onScanQR,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    )
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.QrCodeScanner,
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Escanear QR")
+                    Text("Escanear QR para completar")
                 }
             }
         }
     }
 
-    // Dialog para mostrar el QR
+    // Dialog para mostrar el QR (se mantiene igual)
     if (showQRPreview) {
         AlertDialog(
             onDismissRequest = { showQRPreview = false },
@@ -202,7 +256,7 @@ fun TransaccionPendienteItem(
                             modifier = Modifier.fillMaxSize(),{}
                         )
                     }
-                    
+
                     Text(
                         text = "Muestra este código QR para validar la transacción",
                         style = MaterialTheme.typography.bodyMedium,
@@ -217,5 +271,45 @@ fun TransaccionPendienteItem(
                 }
             }
         )
+    }
+}
+
+@Composable
+fun ProductoChip(producto: ProductoReciclable) {
+    Card(
+        modifier = Modifier.width(120.dp),
+        shape = MaterialTheme.shapes.small,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
+        elevation = CardDefaults.cardElevation(1.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(8.dp)
+        ) {
+            AsyncImage(
+                model = producto.urlImagenProducto,
+                contentDescription = producto.nombreProducto,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(MaterialTheme.shapes.small)
+                    .align(Alignment.CenterHorizontally),
+                contentScale = ContentScale.Crop
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = producto.nombreProducto,
+                style = MaterialTheme.typography.labelSmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text(
+                text = "${producto.precio} ${producto.monedaDeCompra}",
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     }
 }

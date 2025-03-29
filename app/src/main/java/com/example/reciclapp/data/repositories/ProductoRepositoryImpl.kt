@@ -1,14 +1,15 @@
 package com.example.reciclapp.data.repositories
 
+import ListOfCategorias
 import android.util.Log
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.TransaccionPendiente
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.repositories.ProductoRepository
-import com.example.reciclapp.domain.usecases.vendedor.GetVendedoresUseCase
 import com.example.reciclapp.util.ProductosReciclables
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -165,19 +166,24 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
         return productos
     }
 
-    override suspend fun marcarProductoComoVendido(transaccionPendiente: TransaccionPendiente) {
+    override suspend fun marcarProductosComoVendido(transaccionPendiente: TransaccionPendiente) = coroutineScope {
         val productoUpdateData = mapOf(
             "fueVendida" to true,
             "idVendedor" to transaccionPendiente.idVendedor,
             "idComprador" to transaccionPendiente.idComprador
         )
 
-        service.collection("productoReciclable")
-            .document(transaccionPendiente.idProducto)
-            .update(productoUpdateData)
-            .await()
-    }
+        val idsProductos = transaccionPendiente.idsProductos.split(",").map { it.trim() }
 
+        idsProductos.map { idProducto ->
+            async {
+                service.collection("productoReciclable")
+                    .document(idProducto)
+                    .update(productoUpdateData)
+                    .await()
+            }
+        }.awaitAll()
+    }
     override suspend fun obtenerProductoYVendedor(): List<Pair<ProductoReciclable, Usuario>> =
         coroutineScope {
             val productosDeferred = async { obtenerProductosSinVender() }
@@ -199,6 +205,15 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
 
             return@coroutineScope productosConVendedores
         }
+
+    override fun sumarPuntosDeProductos(products: List<ProductoReciclable>): Int {
+        var totalPuntos = 0
+        for (product in products) {
+            totalPuntos += product.puntosPorCompra
+            totalPuntos += ListOfCategorias.categorias.find { it.idCategoria == product.idCategoria }?.puntosPorTransaccion?: 0
+        }
+        return totalPuntos
+    }
 
 
     suspend fun getVendedores(): MutableList<Usuario> {

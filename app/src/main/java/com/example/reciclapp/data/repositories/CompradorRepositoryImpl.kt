@@ -20,7 +20,7 @@ class CompradorRepositoryImpl @Inject constructor(
 ) : CompradorRepository {
 
     override suspend fun getComprador(idComprador: String): Usuario? {
-        Log.d("Usuarios","idComprador: $idComprador")
+        Log.d("Usuarios", "idComprador: $idComprador")
         val snapshot = service.collection("usuario")
             .document(idComprador)
             .get()
@@ -49,11 +49,11 @@ class CompradorRepositoryImpl @Inject constructor(
             .get()
             .await()
         for (document in querySnapshot.documents) {
-            Log.d("Usuarios","userComprador: ${document.id}")
+            Log.d("Usuarios", "userComprador: ${document.id}")
             val usuario = document.toObject(Usuario::class.java)
             usuario?.let { compradores.add(it) }
             if (usuario != null) {
-                Log.d("Usuarios","userComprador: ${usuario.nombre}")
+                Log.d("Usuarios", "userComprador: ${usuario.nombre}")
             }
         }
         return compradores
@@ -78,7 +78,8 @@ class CompradorRepositoryImpl @Inject constructor(
         val listaDeUsuariosYProductos = mutableListOf<HashMap<Usuario, ProductoReciclable>>()
 
         for (vendedor in vendedores) {
-            val productosDelVendedor = productoReciclables.filter { it.idVendedor == vendedor.idUsuario }
+            val productosDelVendedor =
+                productoReciclables.filter { it.idVendedor == vendedor.idUsuario }
             for (producto in productosDelVendedor) {
                 val map = hashMapOf(vendedor to producto)
                 listaDeUsuariosYProductos.add(map)
@@ -150,29 +151,43 @@ class CompradorRepositoryImpl @Inject constructor(
             // Actualizar el estado de la transacción a COMPLETADA
             service.collection("transaccionesPendientes")
                 .document(idTransaccion)
-                .update(mapOf(
-                    "estado" to EstadoTransaccion.COMPLETADA
-                ))
+                .update(
+                    mapOf(
+                        "estado" to EstadoTransaccion.COMPLETADA
+                    )
+                )
                 .await()
 
             // Obtener la transacción para actualizar el producto
-            val transaccionSnapshot = service.collection("transaccionesPendientes" +
-                    "")
+            val transaccionSnapshot = service.collection(
+                "transaccionesPendientes" +
+                        ""
+            )
                 .document(idTransaccion)
                 .get()
                 .await()
 
             val transaccion = transaccionSnapshot.toObject(TransaccionPendiente::class.java)
 
-            // Actualizar el estado del producto a vendido
             transaccion?.let {
-                service.collection("productoReciclable")
-                    .document(it.idProducto)
-                    .update(mapOf(
-                        "fueVendida" to true,
-                    ))
-                    .await()
+                transaccion.idsProductos.split(",").forEach {
+                    Log.d("CompradorRepositoryImpl", "idProducto: $it")
+                    service.collection("productoReciclable")
+                        .document(it.trim())
+                        .update(
+                            mapOf(
+                                "fueVendida" to true,
+                            )
+                        )
+                        .await()
+                }
             }
+
+            service.collection("transaccionesPendientes")
+                .document(idTransaccion)
+                .delete()
+                .await()
+
         } catch (e: Exception) {
             Log.e("CompradorRepositoryImpl", "Error al confirmar transacción", e)
             throw e

@@ -2,9 +2,18 @@ package com.example.reciclapp.di
 
 import com.example.reciclapp.data.repositories.ProductoRepositoryImpl
 import com.example.reciclapp.domain.repositories.ProductoRepository
+import com.example.reciclapp.domain.usecases.producto.ActualizarProductoUseCase
+import com.example.reciclapp.domain.usecases.producto.EliminarProductoUseCase
+import com.example.reciclapp.domain.usecases.producto.GetProductoUseCase
+import com.example.reciclapp.domain.usecases.producto.ListarProductosDeVendedorUseCase
 import com.example.reciclapp.domain.usecases.producto.ListarProductosPorCompradorUseCase
-import com.example.reciclapp.domain.usecases.producto.*
-import com.example.reciclapp.domain.usecases.vendedor.GetVendedoresUseCase
+import com.example.reciclapp.domain.usecases.producto.ListarProductosPorUsuarioUseCase
+import com.example.reciclapp.domain.usecases.producto.ListarTodosLosProductosUseCase
+import com.example.reciclapp.domain.usecases.producto.MarcarProductoComoVendidoUseCase
+import com.example.reciclapp.domain.usecases.producto.ObtenerProductoVendedorUseCase
+import com.example.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
+import com.example.reciclapp.domain.usecases.producto.SumarPuntosDeProductosUseCase
+import com.example.reciclapp.domain.usecases.producto.UpdateLikedProductoUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -77,4 +86,8 @@ object ProductoModule {
         return ObtenerProductoVendedorUseCase(repository)
     }
 
+    @Provides
+    fun provideSumarPuntosDeProductosUseCase(repository: ProductoRepository): SumarPuntosDeProductosUseCase {
+        return SumarPuntosDeProductosUseCase(repository)
+    }
 }

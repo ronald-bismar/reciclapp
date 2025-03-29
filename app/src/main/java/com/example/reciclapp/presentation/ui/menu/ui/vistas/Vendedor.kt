@@ -3,7 +3,6 @@ package com.example.reciclapp.presentation.ui.menu.ui.vistas
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -49,16 +48,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.presentation.ui.menu.ui.QRGeneratorDialog
-import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 
 private const val TAG = "Vendedor"
@@ -278,18 +273,18 @@ fun ActionButtons(
     }
 
     if (showQRDialog) {
-        val transaccionViewModel: TransaccionViewModel = hiltViewModel()
-        QRGeneratorDialog(
-            productoId = productoId,
-            usuarioContactadoId = vendedorId,
-            usuarioContactadoIsVendedor = true,
-            onDismiss = { showQRDialog = false },
-            onContinue = {
-                openWhatsAppMessage(
-                    context = context,
-                    phoneNumber = "${selectedVendedor.telefono}"
-                )
-            }, transaccionViewModel
-        )
+//        val transaccionViewModel: TransaccionViewModel = hiltViewModel()
+//        QRGeneratorDialog(
+//            productoId = productoId,
+//            usuarioContactadoId = vendedorId,
+//            usuarioContactadoIsVendedor = true,
+//            onDismiss = { showQRDialog = false },
+//            onContinue = {
+//                openWhatsAppMessage(
+//                    context = context,
+//                    phoneNumber = "${selectedVendedor.telefono}"
+//                )
+//            }, transaccionViewModel
+//        )
     }
 }
