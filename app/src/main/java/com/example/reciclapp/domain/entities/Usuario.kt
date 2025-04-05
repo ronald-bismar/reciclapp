@@ -14,4 +14,5 @@ data class Usuario(
     var nombreNivel: String = "",
     var nivel: String = "", // Nivel 1, Nivel 2,Nivel 3...
     var logrosPorId: String = "", // "1, 2, 3"
+    var tokenNotifications: String = ""
 )

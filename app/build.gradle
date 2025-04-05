@@ -102,6 +102,8 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:33.1.2')
     //Firebasestorage
     implementation 'com.google.firebase:firebase-storage-ktx:21.0.0'
+    //Cloud messaging
+    implementation("com.google.firebase:firebase-messaging:24.1.1")
 
     // When using the BoM, don't specify versions in Firebase dependencies
     implementation 'com.google.firebase:firebase-analytics-ktx:22.0.2'

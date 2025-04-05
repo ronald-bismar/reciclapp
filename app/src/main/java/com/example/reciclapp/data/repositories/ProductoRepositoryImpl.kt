@@ -2,10 +2,12 @@ package com.example.reciclapp.data.repositories
 
 import ListOfCategorias
 import android.util.Log
+import com.example.reciclapp.domain.entities.Mensaje
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.TransaccionPendiente
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.repositories.ProductoRepository
+import com.example.reciclapp.util.GenerateID
 import com.example.reciclapp.util.ProductosReciclables
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.async
@@ -215,6 +217,105 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
         return totalPuntos
     }
 
+    override suspend fun vendedorEnviaMensajeAComprador(
+        productos: List<ProductoReciclable>,
+        vendedor: Usuario,
+        comprador: Usuario
+    ) {
+        val mensaje = Mensaje().apply {
+            idMensaje = GenerateID()
+            idComprador = comprador.idUsuario
+            idVendedor = vendedor.idUsuario
+            contenido = "Un vendedor envió una oferta de productos"
+            idProductoConPrecio = productos.joinToString(separator = ",") { "${it.idProducto}:${it.precio}" }
+        }
+
+        // Guardar el mensaje en Firebase
+        guardarMensaje(mensaje)
+
+        // Enviar notificación push al comprador
+//        enviarNotificacion(
+//            userId = comprador.idUsuario,
+//            title = "Nueva oferta de productos",
+//            body = "El vendedor ${vendedor.nombre} te ha enviado una oferta",
+//            data = mapOf(
+//                "tipo" = "oferta_vendedor",
+//                "idMensaje" = mensaje.idMensaje
+//            )
+//        )
+    }
+
+    override suspend fun compradorEnviaMensajeAVendedor(
+        productos: List<ProductoReciclable>,
+        comprador: Usuario,
+        vendedor: Usuario
+    ) {
+        val mensaje = Mensaje().apply {
+            idMensaje = GenerateID()
+            idComprador = comprador.idUsuario
+            idVendedor = vendedor.idUsuario
+            contenido = "Un comprador desea comprar tus productos"
+            idProductoConPrecio = productos.joinToString(separator = ",") { "${it.idProducto}:${it.precio}" }
+        }
+
+        // Guardar el mensaje en Firebase
+        guardarMensaje(mensaje)
+
+        // Enviar notificación push al vendedor
+//        enviarNotificacion(
+//            userId = vendedor.idUsuario,
+//            title = "Nuevo interés de compra",
+//            body = "El comprador ${comprador.nombre} está interesado en tus productos",
+//            data = mapOf(
+//                "tipo" = "interes_comprador",
+//                "idMensaje" = mensaje.idMensaje
+//            )
+//        )
+    }
+
+    // Implementar la función para guardar mensajes
+    override suspend fun guardarMensaje(mensaje: Mensaje) {
+        service.collection("mensajes")
+            .document(mensaje.idMensaje)
+            .set(mensaje)
+            .await()
+    }
+
+    // Implementar la función para obtener mensajes
+    override suspend fun obtenerMensajesPorUsuario(idUsuario: String): List<Mensaje> {
+        val mensajes = mutableListOf<Mensaje>()
+
+        // Obtener mensajes donde el usuario es comprador o vendedor
+        val querySnapshot = service.collection("mensajes")
+            .whereEqualTo("idComprador", idUsuario)
+            .get()
+            .await()
+
+        val querySnapshot2 = service.collection("mensajes")
+            .whereEqualTo("idVendedor", idUsuario)
+            .get()
+            .await()
+
+        querySnapshot.documents.forEach { document ->
+            document.toObject(Mensaje::class.java)?.let { mensajes.add(it) }
+        }
+
+        querySnapshot2.documents.forEach { document ->
+            document.toObject(Mensaje::class.java)?.let { mensajes.add(it) }
+        }
+
+        return mensajes.distinctBy { it.idMensaje }
+    }
+
+    private suspend fun enviarNotificacion(
+        userId: String,
+        title: String,
+        body: String,
+        data: Map<String, String>
+    ) {
+        // Aquí implementarías la lógica para enviar la notificación
+        // Puedes usar Cloud Functions o tu propio backend
+    }
 
     suspend fun getVendedores(): MutableList<Usuario> {
         val vendedores = mutableListOf<Usuario>()

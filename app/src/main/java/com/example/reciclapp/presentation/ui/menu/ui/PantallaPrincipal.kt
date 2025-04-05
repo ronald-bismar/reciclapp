@@ -12,22 +12,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.reciclapp.util.TipoDeUsuario
-import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.navigation.AppTopBar
 import com.example.reciclapp.presentation.navigation.bottom.BottomNavHost
 import com.example.reciclapp.presentation.navigation.drawer.DrawerContent
@@ -36,9 +28,12 @@ import com.example.reciclapp.presentation.viewmodel.UbicacionViewModel
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 import com.example.reciclapp.util.ItemsMenu
+import com.example.reciclapp.util.TipoDeUsuario
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
 
 /**
@@ -58,6 +53,11 @@ fun PantallaPrincipal(
     ubicacionViewModel: UbicacionViewModel,
     navHostControllerMain: NavController,
 ) {
+
+    val context = LocalContext.current
+
+    if (userViewModel.user.value?.tokenNotifications?.isEmpty() == true)
+        getToken(userViewModel)
 
     userViewModel.loadUserPreferences()
 
@@ -175,4 +175,18 @@ fun PantallaPrincipal(
             }
         }
     }
+}
+
+@Composable
+private fun getToken(userViewModel: UserViewModel) {
+    FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+        if (!task.isSuccessful) {
+            Log.w("FirebaseMesagging", "Fetching FCM registration token failed", task.exception)
+            return@OnCompleteListener
+        }
+
+        // Get new FCM registration token
+        val token = task.result
+        userViewModel.updateToken(token)
+    })
 }

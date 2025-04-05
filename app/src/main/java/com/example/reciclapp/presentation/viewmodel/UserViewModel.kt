@@ -1,5 +1,7 @@
 package com.example.reciclapp.presentation.viewmodel
 
+import ListOfCategorias
+import RachaReciclaje
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.reciclapp.domain.entities.Logro
 import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.domain.entities.UbicacionGPS
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.usecases.comprador.GetCompradoresUseCase
 import com.example.reciclapp.domain.usecases.producto.ListarProductosDeVendedorUseCase
@@ -230,6 +231,11 @@ class UserViewModel @Inject constructor(
             _user.value?.logrosPorId?.split(",")?.contains(logro.idLogro) == true
         }
 
+        _user.value?.let { updateUser(it) }
+    }
+
+    fun updateToken(string: String) {
+        _user.value?.tokenNotifications = string
         _user.value?.let { updateUser(it) }
     }
 }
