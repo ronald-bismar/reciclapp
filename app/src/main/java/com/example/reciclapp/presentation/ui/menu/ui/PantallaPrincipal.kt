@@ -17,9 +17,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.navigation.AppTopBar
 import com.example.reciclapp.presentation.navigation.bottom.BottomNavHost
 import com.example.reciclapp.presentation.navigation.drawer.DrawerContent
@@ -54,11 +54,6 @@ fun PantallaPrincipal(
     navHostControllerMain: NavController,
 ) {
 
-    val context = LocalContext.current
-
-    if (userViewModel.user.value?.tokenNotifications?.isEmpty() == true)
-        getToken(userViewModel)
-
     userViewModel.loadUserPreferences()
 
     val usuarioLogueado = userViewModel.user.value
@@ -71,6 +66,8 @@ fun PantallaPrincipal(
             CircularProgressIndicator()
         }
     } else {
+
+        verifyUserWithTokenNotification(usuarioLogueado, userViewModel)
 
         // Data MapsView.kt
         val locationPermissionState =
@@ -178,15 +175,24 @@ fun PantallaPrincipal(
 }
 
 @Composable
-private fun getToken(userViewModel: UserViewModel) {
+private fun verifyUserWithTokenNotification(
+    usuarioLogueado: Usuario?,
+    userViewModel: UserViewModel
+) {
+    if (usuarioLogueado?.tokenNotifications?.isEmpty() == true)
+        generateToken(userViewModel)
+}
+
+@Composable
+private fun generateToken(userViewModel: UserViewModel) {
     FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
         if (!task.isSuccessful) {
             Log.w("FirebaseMesagging", "Fetching FCM registration token failed", task.exception)
             return@OnCompleteListener
         }
 
-        // Get new FCM registration token
         val token = task.result
+        Log.d("FirebaseMesagging", "Token: $token")
         userViewModel.updateToken(token)
     })
 }
