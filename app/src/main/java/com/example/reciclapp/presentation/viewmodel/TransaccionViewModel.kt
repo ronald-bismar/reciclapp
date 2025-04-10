@@ -10,11 +10,11 @@ import com.example.reciclapp.domain.entities.TransaccionPendiente
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.repositories.CompradorRepository
 import com.example.reciclapp.domain.repositories.ProductoRepository
-import com.example.reciclapp.domain.usecases.producto.GetProductoUseCase
+import com.example.reciclapp.domain.usecases.producto.CompradorEnviaMensajeAVendedorUseCase
 import com.example.reciclapp.domain.usecases.producto.MarcarProductoComoVendidoUseCase
 import com.example.reciclapp.domain.usecases.producto.SumarPuntosDeProductosUseCase
+import com.example.reciclapp.domain.usecases.producto.VendedorEnviaMensajeACompradorUseCase
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
-import com.example.reciclapp.domain.usecases.usuario.GetUsuarioUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,10 +28,10 @@ class TransaccionViewModel @Inject constructor(
     private val repository: CompradorRepository,
     private val productoRepository: ProductoRepository,
     private val getUserPreferencesUseCase: GetUserPreferencesUseCase,
-    private val getProductoUseCase: GetProductoUseCase,
-    private val getUsuarioUseCase: GetUsuarioUseCase,
     private val marcarProductoComoVendidoUseCase: MarcarProductoComoVendidoUseCase,
-    private val sumarPuntosDeProductosUseCase: SumarPuntosDeProductosUseCase
+    private val sumarPuntosDeProductosUseCase: SumarPuntosDeProductosUseCase,
+    private val vendedorEnviaMensajeACompradorUseCase: VendedorEnviaMensajeACompradorUseCase,
+    private val compradorEnviaMensajeAVendedorUseCase: CompradorEnviaMensajeAVendedorUseCase
 ) : ViewModel() {
 
     private val _transaccionesPendientes = MutableStateFlow<List<TransaccionPendiente>>(emptyList())
@@ -99,24 +99,13 @@ class TransaccionViewModel @Inject constructor(
         _usuarioContactado.value = usuario
     }
 
-    fun getProductoById(productoId: String) {
+    fun enviarOfertaAComprador(){
         viewModelScope.launch {
             try {
-                val producto = getProductoUseCase.execute(productoId)
-                _productoReciclable.value = producto
-            } catch (e: Exception) {
-                Log.e(TAG, "Error al cargar el producto: ${e.message}")
-            }
-        }
-    }
-
-    fun getUsuarioById(usuarioId: String) {
-        viewModelScope.launch {
-            try {
-                val usuario = getUsuarioUseCase.execute(usuarioId)
-                _usuarioContactado.value = usuario
-            } catch (e: Exception) {
-                Log.e(TAG, "Error al cargar el usuario: ${e.message}")
+                vendedorEnviaMensajeACompradorUseCase.execute(_productosSeleccionados.value, _myUser.value!!, _usuarioContactado.value!!)
+                Log.d(TAG, "mensaje enviado a comprador")
+            }catch (e:Exception){
+                Log.d(TAG, "enviarOfertaAComprador: ${e.message}")
             }
         }
     }

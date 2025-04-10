@@ -33,6 +33,7 @@ class UserPreferencesRepositoryImpl @Inject constructor(private val context: Con
     private val NOMBRE_NIVEL_KEY = stringPreferencesKey("nombre_nivel")
     private val NIVEL_KEY = stringPreferencesKey("nivel")
     private val LOGROS_POR_ID_KEY = stringPreferencesKey("logros_por_id")
+    private val TOKEN_NOTIFICACION_KEY = stringPreferencesKey("logros")
 
     override suspend fun getUser(): Usuario {
         return try {
@@ -50,6 +51,7 @@ class UserPreferencesRepositoryImpl @Inject constructor(private val context: Con
             val nombreNivel = preferences[NOMBRE_NIVEL_KEY] ?: ""
             val nivel = preferences[NIVEL_KEY] ?: ""
             val logrosPorId = preferences[LOGROS_POR_ID_KEY] ?: ""
+            val tokenNotificacion = preferences[TOKEN_NOTIFICACION_KEY] ?: ""
 
             Usuario(
                 id,
@@ -64,7 +66,8 @@ class UserPreferencesRepositoryImpl @Inject constructor(private val context: Con
                 puntaje,
                 nombreNivel,
                 nivel,
-                logrosPorId
+                logrosPorId,
+                tokenNotificacion
             )
         } catch (e: Exception) {
             Log.e("UserPreferencesRepository", "Error al obtener el usuario: ${e.message}")
@@ -89,6 +92,7 @@ class UserPreferencesRepositoryImpl @Inject constructor(private val context: Con
             preferences[NOMBRE_NIVEL_KEY] = usuario.nombreNivel
             preferences[NIVEL_KEY] = usuario.nivel
             preferences[LOGROS_POR_ID_KEY] = usuario.logrosPorId
+            preferences[TOKEN_NOTIFICACION_KEY] = usuario.tokenNotifications
         }
     }
 

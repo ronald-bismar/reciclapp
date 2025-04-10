@@ -23,6 +23,15 @@
         android:theme="@style/Theme.ReciclApp"
         tools:targetApi="31">
 
+        <!-- Registrar el servicio de Firebase Messaging -->
+        <service
+            android:name=".data.services.FirebaseMessagingHandler"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

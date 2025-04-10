@@ -2,6 +2,7 @@ package com.example.reciclapp.data.repositories
 
 import ListOfCategorias
 import android.util.Log
+import com.example.reciclapp.data.services.NotificationService
 import com.example.reciclapp.domain.entities.Mensaje
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.TransaccionPendiente
@@ -168,24 +169,26 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
         return productos
     }
 
-    override suspend fun marcarProductosComoVendido(transaccionPendiente: TransaccionPendiente) = coroutineScope {
-        val productoUpdateData = mapOf(
-            "fueVendida" to true,
-            "idVendedor" to transaccionPendiente.idVendedor,
-            "idComprador" to transaccionPendiente.idComprador
-        )
+    override suspend fun marcarProductosComoVendido(transaccionPendiente: TransaccionPendiente) =
+        coroutineScope {
+            val productoUpdateData = mapOf(
+                "fueVendida" to true,
+                "idVendedor" to transaccionPendiente.idVendedor,
+                "idComprador" to transaccionPendiente.idComprador
+            )
 
-        val idsProductos = transaccionPendiente.idsProductos.split(",").map { it.trim() }
+            val idsProductos = transaccionPendiente.idsProductos.split(",").map { it.trim() }
 
-        idsProductos.map { idProducto ->
-            async {
-                service.collection("productoReciclable")
-                    .document(idProducto)
-                    .update(productoUpdateData)
-                    .await()
-            }
-        }.awaitAll()
-    }
+            idsProductos.map { idProducto ->
+                async {
+                    service.collection("productoReciclable")
+                        .document(idProducto)
+                        .update(productoUpdateData)
+                        .await()
+                }
+            }.awaitAll()
+        }
+
     override suspend fun obtenerProductoYVendedor(): List<Pair<ProductoReciclable, Usuario>> =
         coroutineScope {
             val productosDeferred = async { obtenerProductosSinVender() }
@@ -212,7 +215,8 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
         var totalPuntos = 0
         for (product in products) {
             totalPuntos += product.puntosPorCompra
-            totalPuntos += ListOfCategorias.categorias.find { it.idCategoria == product.idCategoria }?.puntosPorTransaccion?: 0
+            totalPuntos += ListOfCategorias.categorias.find { it.idCategoria == product.idCategoria }?.puntosPorTransaccion
+                ?: 0
         }
         return totalPuntos
     }
@@ -227,22 +231,22 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
             idComprador = comprador.idUsuario
             idVendedor = vendedor.idUsuario
             contenido = "Un vendedor envió una oferta de productos"
-            idProductoConPrecio = productos.joinToString(separator = ",") { "${it.idProducto}:${it.precio}" }
+            idProductoConPrecio =
+                productos.joinToString(separator = ",") { "${it.idProducto}:${it.precio}" }
         }
 
         // Guardar el mensaje en Firebase
         guardarMensaje(mensaje)
 
-        // Enviar notificación push al comprador
-//        enviarNotificacion(
-//            userId = comprador.idUsuario,
-//            title = "Nueva oferta de productos",
-//            body = "El vendedor ${vendedor.nombre} te ha enviado una oferta",
-//            data = mapOf(
-//                "tipo" = "oferta_vendedor",
-//                "idMensaje" = mensaje.idMensaje
-//            )
-//        )
+        NotificationService().sendNotificationToUsers(
+            comprador.tokenNotifications,
+            "Oferta de productos",
+            "Esta es una oferta de productos",
+            mapOf(
+                "tipo" to "interes_comprador",
+                "idMensaje" to mensaje.idMensaje
+            )
+        )
     }
 
     override suspend fun compradorEnviaMensajeAVendedor(
@@ -255,22 +259,10 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
             idComprador = comprador.idUsuario
             idVendedor = vendedor.idUsuario
             contenido = "Un comprador desea comprar tus productos"
-            idProductoConPrecio = productos.joinToString(separator = ",") { "${it.idProducto}:${it.precio}" }
+            idProductoConPrecio =
+                productos.joinToString(separator = ",") { "${it.idProducto}:${it.precio}" }
         }
-
-        // Guardar el mensaje en Firebase
         guardarMensaje(mensaje)
-
-        // Enviar notificación push al vendedor
-//        enviarNotificacion(
-//            userId = vendedor.idUsuario,
-//            title = "Nuevo interés de compra",
-//            body = "El comprador ${comprador.nombre} está interesado en tus productos",
-//            data = mapOf(
-//                "tipo" = "interes_comprador",
-//                "idMensaje" = mensaje.idMensaje
-//            )
-//        )
     }
 
     // Implementar la función para guardar mensajes

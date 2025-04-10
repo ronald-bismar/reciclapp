@@ -238,4 +238,5 @@ class UserViewModel @Inject constructor(
         _user.value?.tokenNotifications = string
         _user.value?.let { updateUser(it) }
     }
+
 }

@@ -162,6 +162,8 @@ fun QRGeneratorScreen(
                     transaccionViewModel.crearTransaccionPendiente(transaccion)
                     showSuccessDialog = true
 
+                transaccionViewModel.enviarOfertaAComprador()
+
 
                 Log.d(TAG, "IsSuccessful: $showSuccessDialog")
             },
