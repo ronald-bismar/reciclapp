@@ -95,7 +95,6 @@ fun MapsView(
 
     // Update map markers when markers change
     LaunchedEffect(markers, googleMap) {
-        Log.d("Markers", "Markers: $markers")
         googleMap?.let { map ->
             updateMapMarkers(map, markers) { markerData ->
                 selectedMarker = markerData

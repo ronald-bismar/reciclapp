@@ -234,8 +234,8 @@ class UserViewModel @Inject constructor(
         _user.value?.let { updateUser(it) }
     }
 
-    fun updateToken(string: String) {
-        _user.value?.tokenNotifications = string
+    fun updateToken(newToken: String) {
+        _user.value?.tokenNotifications = newToken
         _user.value?.let { updateUser(it) }
     }
 

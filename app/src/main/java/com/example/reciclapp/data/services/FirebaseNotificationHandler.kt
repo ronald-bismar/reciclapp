@@ -3,6 +3,7 @@ package com.example.reciclapp.data.services
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
@@ -110,9 +111,22 @@ class FirebaseMessagingHandler : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        Log.d(TAG, "New token: $token")
-        // Aquí puedes enviar el token a tu servidor
-        sendTokenToServer(token)
+        Log.d(TAG, "New token generated: $token")
+
+        // Guardar el token localmente
+        val sharedPreferences = getSharedPreferences("FCM", Context.MODE_PRIVATE)
+        sharedPreferences.edit().putString("fcm_token", token).apply()
+
+        // Enviar el token al servidor
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // Aquí deberías implementar la lógica para actualizar el token en tu backend
+                // Por ejemplo:
+                // userViewModel.updateToken(token)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error updating token", e)
+            }
+        }
     }
 
     private fun sendTokenToServer(token: String) {

@@ -32,7 +32,6 @@ import com.example.reciclapp.util.TipoDeUsuario
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
 
@@ -185,14 +184,21 @@ private fun verifyUserWithTokenNotification(
 
 @Composable
 private fun generateToken(userViewModel: UserViewModel) {
-    FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-        if (!task.isSuccessful) {
-            Log.w("FirebaseMesagging", "Fetching FCM registration token failed", task.exception)
-            return@OnCompleteListener
-        }
+    LaunchedEffect(Unit) {
+        try {
+            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w("FirebaseMessaging", "Fetching FCM registration token failed", task.exception)
+                    return@addOnCompleteListener
+                }
 
-        val token = task.result
-        Log.d("FirebaseMesagging", "Token: $token")
-        userViewModel.updateToken(token)
-    })
+                val token = task.result
+                Log.d("FirebaseMessaging", "New Token Generated: $token")
+
+                userViewModel.updateToken(token)
+            }
+        } catch (e: Exception) {
+            Log.e("FirebaseMessaging", "Error generating token", e)
+        }
+    }
 }

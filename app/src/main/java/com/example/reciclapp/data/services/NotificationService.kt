@@ -1,6 +1,5 @@
 package com.example.reciclapp.data.services
 
-import android.R.attr.data
 import android.util.Log
 import com.example.reciclapp.core.ConfigFCM
 import com.google.auth.oauth2.GoogleCredentials
@@ -13,7 +12,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.ByteArrayInputStream
 
-class NotificationService {
+class NotificationService() {
     private val fcmUrl =
         "https://fcm.googleapis.com/v1/projects/${ConfigFCM.projectId}/messages:send"
     private val client = OkHttpClient()
@@ -44,7 +43,9 @@ class NotificationService {
 
                 // Forzar la actualización del token
                 credentials.refresh()
-                credentials.accessToken.tokenValue
+                val token = credentials.accessToken.tokenValue
+                Log.d("NotificationService", "Access token: $token")
+                token
 
             } catch (e: Exception) {
                 Log.e("NotificationService", "Error getting access token: ${e.message}")
@@ -60,18 +61,25 @@ class NotificationService {
         data: Map<String, String>? = null
     ) {
         if (tokenOfRecept.isEmpty()) {
-            Log.d("NotificationService", "No tokens provided for notifications")
+            Log.d("NotificationService", "No token provided for notification")
             return
         }
 
-        val token = getAccessToken()
-
-
         try {
+            val token = getAccessToken()
             sendNotification(tokenOfRecept, title, body, data, token)
         } catch (e: Exception) {
-            Log.e("NotificationService", "Error sending notification: ${e.message}")
-            throw e
+            when {
+                e.message?.contains("UNREGISTERED") == true -> {
+                    Log.e("NotificationService", "Token no válido, necesita actualización")
+                    // Aquí podrías implementar la lógica para solicitar un nuevo token
+                    //generateNewToken()
+                }
+                else -> {
+                    Log.e("NotificationService", "Error sending notification", e)
+                    throw e
+                }
+            }
         }
     }
 
@@ -82,35 +90,47 @@ class NotificationService {
         data: Map<String, String>?,
         accessToken: String
     ) = withContext(Dispatchers.IO) {
-        val message = JSONObject().apply {
-            put("message", JSONObject().apply {
-                put("token", userToken)
-                put("notification", JSONObject().apply {
-                    put("title", title)
-                    put("body", body)
+        try {
+            val message = JSONObject().apply {
+                put("message", JSONObject().apply {
+                    put("token", userToken)
+                    put("notification", JSONObject().apply {
+                        put("title", title)
+                        put("body", body)
+                    })
+                    if (data != null) {
+                        put("data", JSONObject(data))
+                    }
+                    // Agregar configuración de prioridad alta
+                    put("android", JSONObject().apply {
+                        put("priority", "high")
+                    })
                 })
-                if (data != null) {
-                    put("data", JSONObject(data))
-                }
-            })
-        }
-
-        val requestBody = message.toString()
-            .toRequestBody("application/json".toMediaType())
-
-        val request = Request.Builder()
-            .url(fcmUrl)
-            .addHeader("Authorization", "Bearer $accessToken")
-            .addHeader("Content-Type", "application/json")
-            .post(requestBody)
-            .build()
-
-        client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) {
-                val errorBody = response.body?.string()
-                Log.e("NotificationService", "Error sending notification: $errorBody")
-                throw Exception("Failed to send notification: ${response.code}")
             }
+
+            val requestBody = message.toString()
+                .toRequestBody("application/json".toMediaType())
+
+            val request = Request.Builder()
+                .url(fcmUrl)
+                .addHeader("Authorization", "Bearer $accessToken")
+                .addHeader("Content-Type", "application/json")
+                .post(requestBody)
+                .build()
+
+            Log.d("NotificationService", "Sending FCM request: ${message}")
+
+            client.newCall(request).execute().use { response ->
+                val responseBody = response.body?.string()
+                if (!response.isSuccessful) {
+                    Log.e("NotificationService", "Error sending notification: $responseBody")
+                    throw Exception("Failed to send notification: ${response.code} - $responseBody")
+                }
+                Log.d("NotificationService", "Notification sent successfully: $responseBody")
+            }
+        } catch (e: Exception) {
+            Log.e("NotificationService", "Error in sendNotification", e)
+            throw e
         }
     }
 }
