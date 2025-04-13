@@ -2,7 +2,6 @@ package com.example.reciclapp.data.repositories
 
 import ListOfCategorias
 import android.util.Log
-import com.example.reciclapp.data.services.NotificationService
 import com.example.reciclapp.domain.entities.Mensaje
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.TransaccionPendiente
@@ -238,15 +237,15 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
         // Guardar el mensaje en Firebase
         guardarMensaje(mensaje)
 
-        NotificationService().sendNotificationToUsers(
-            comprador.tokenNotifications,
-            "Oferta de productos",
-            "Esta es una oferta de productos",
-            mapOf(
-                "tipo" to "interes_comprador",
-                "idMensaje" to mensaje.idMensaje
-            )
-        )
+//        NotificationService().sendNotification(
+//            comprador.tokenNotifications,
+//            "Oferta de productos",
+//            "Esta es una oferta de productos",
+//            mapOf(
+//                "tipo" to "interes_comprador",
+//                "idMensaje" to mensaje.idMensaje
+//            )
+//        )
     }
 
     override suspend fun compradorEnviaMensajeAVendedor(

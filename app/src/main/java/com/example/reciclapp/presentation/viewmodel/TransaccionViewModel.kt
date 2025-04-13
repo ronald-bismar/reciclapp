@@ -5,7 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.reciclapp.data.services.NotificationService
 import com.example.reciclapp.domain.entities.ProductoReciclable
+import com.example.reciclapp.domain.entities.Result
 import com.example.reciclapp.domain.entities.TransaccionPendiente
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.repositories.CompradorRepository
@@ -19,6 +21,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 private const val TAG = "TransaccionViewModel"
@@ -31,7 +34,8 @@ class TransaccionViewModel @Inject constructor(
     private val marcarProductoComoVendidoUseCase: MarcarProductoComoVendidoUseCase,
     private val sumarPuntosDeProductosUseCase: SumarPuntosDeProductosUseCase,
     private val vendedorEnviaMensajeACompradorUseCase: VendedorEnviaMensajeACompradorUseCase,
-    private val compradorEnviaMensajeAVendedorUseCase: CompradorEnviaMensajeAVendedorUseCase
+    private val compradorEnviaMensajeAVendedorUseCase: CompradorEnviaMensajeAVendedorUseCase,
+    private val notificationApiService: NotificationService
 ) : ViewModel() {
 
     private val _transaccionesPendientes = MutableStateFlow<List<TransaccionPendiente>>(emptyList())
@@ -52,10 +56,10 @@ class TransaccionViewModel @Inject constructor(
     private val _productosSeleccionados = MutableStateFlow<List<ProductoReciclable>>(emptyList())
     val productosSeleccionados: StateFlow<List<ProductoReciclable>> get() = _productosSeleccionados
 
-        private val _puntosParaComprador = MutableStateFlow<Int>(0)
+    private val _puntosParaComprador = MutableStateFlow<Int>(0)
     val puntosParaComprador: StateFlow<Int> get() = _puntosParaComprador
 
-        private val _puntosParaAmbosUsuarios = MutableStateFlow<Int>(0)
+    private val _puntosParaAmbosUsuarios = MutableStateFlow<Int>(0)
     val puntosParaAmbosUsuarios: StateFlow<Int> get() = _puntosParaAmbosUsuarios
 
     private val _idsProductosSeleccionados = MutableStateFlow<String>("")
@@ -68,15 +72,16 @@ class TransaccionViewModel @Inject constructor(
         loadMyUserPreferences()
     }
 
-    fun sumarPuntosParaAmbosUsuarios(){
-        _puntosParaAmbosUsuarios.value = sumarPuntosDeProductosUseCase.execute(_productosSeleccionados.value)
+    fun sumarPuntosParaAmbosUsuarios() {
+        _puntosParaAmbosUsuarios.value =
+            sumarPuntosDeProductosUseCase.execute(_productosSeleccionados.value)
     }
 
-    fun sumarPuntosParaComprador(){
+    fun sumarPuntosParaComprador() {
         _puntosParaComprador.value = _productosSeleccionados.value.sumOf { it.puntosPorCompra }
     }
 
-    fun setIdsDeProductosSeleccionados():String{
+    fun setIdsDeProductosSeleccionados(): String {
         return _productosSeleccionados.value.joinToString(",") { it.idProducto }
     }
 
@@ -87,7 +92,10 @@ class TransaccionViewModel @Inject constructor(
         }
     }
 
-    fun prepareTransaction(usuarioContactado: Usuario, productosSeleccionados: List<ProductoReciclable>){
+    fun prepareTransaction(
+        usuarioContactado: Usuario,
+        productosSeleccionados: List<ProductoReciclable>
+    ) {
         _usuarioContactado.value = usuarioContactado
         _productosSeleccionados.value = productosSeleccionados
         sumarPuntosParaComprador()
@@ -95,16 +103,20 @@ class TransaccionViewModel @Inject constructor(
         setIdsDeProductosSeleccionados()
     }
 
-    fun setUserContacted(usuario: Usuario){
+    fun setUserContacted(usuario: Usuario) {
         _usuarioContactado.value = usuario
     }
 
-    fun enviarOfertaAComprador(){
+    fun enviarOfertaAComprador() {
         viewModelScope.launch {
             try {
-                vendedorEnviaMensajeACompradorUseCase.execute(_productosSeleccionados.value, _myUser.value!!, _usuarioContactado.value!!)
+                vendedorEnviaMensajeACompradorUseCase.execute(
+                    _productosSeleccionados.value,
+                    _myUser.value!!,
+                    _usuarioContactado.value!!
+                )
                 Log.d(TAG, "mensaje enviado a comprador")
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 Log.d(TAG, "enviarOfertaAComprador: ${e.message}")
             }
         }
@@ -154,6 +166,29 @@ class TransaccionViewModel @Inject constructor(
             Log.e(TAG, "Error al marcar el producto como vendido: ${e.message}")
         } finally {
             _isLoading.value = false
+        }
+    }
+
+    fun sendNotification(token: String) {
+        viewModelScope.launch {
+            try {
+                val result = notificationApiService.sendNotification(
+                    token = token,
+                    title = "Oferta de productos",
+                    body = "Esta es una oferta de productos",
+                    additionalData = mapOf(
+                        "tipo" to "interes_comprador",
+                        "idMensaje" to UUID.randomUUID().toString()
+                    )
+                )
+
+                when (result) {
+                    is Result.Success -> Log.d("ViewModel", "Notificación enviada")
+                    is Result.Failure -> Log.e("ViewModel", "Error", result.exception)
+                }
+            } catch (e: Exception) {
+                Log.e("ViewModel", "Error enviando notificación", e)
+            }
         }
     }
 }
