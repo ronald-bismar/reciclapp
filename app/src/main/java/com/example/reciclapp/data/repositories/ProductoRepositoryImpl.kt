@@ -2,12 +2,10 @@ package com.example.reciclapp.data.repositories
 
 import ListOfCategorias
 import android.util.Log
-import com.example.reciclapp.domain.entities.Mensaje
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.TransaccionPendiente
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.repositories.ProductoRepository
-import com.example.reciclapp.util.GenerateID
 import com.example.reciclapp.util.ProductosReciclables
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.async
@@ -71,7 +69,6 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
             val productoReciclable = document.toObject(ProductoReciclable::class.java)
             productoReciclable?.let { productosDeVendedor.add(it) }
         }
-        Log.d(TAG, "listarProductosPorVendedor ${productosDeVendedor.size}")
         return productosDeVendedor
     }
 
@@ -108,7 +105,7 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
                     .await()
             }
         } catch (e: Exception) {
-            // Manejar la excepción según sea necesario
+            Log.e(TAG, "Error al registrar productos: ${e.message}")
             throw e
         }
     }
@@ -143,10 +140,6 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
     }
 
     override suspend fun obtenerProductosPredeterminados(): MutableList<ProductoReciclable> {
-        Log.d(
-            TAG,
-            "obtenerProductosPredeterminados ${ProductosReciclables.productosPredeterminados.toMutableList().size}"
-        )
         return ProductosReciclables.productosPredeterminados.toMutableList()
     }
 
@@ -220,94 +213,6 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
         return totalPuntos
     }
 
-    override suspend fun vendedorEnviaMensajeAComprador(
-        productos: List<ProductoReciclable>,
-        vendedor: Usuario,
-        comprador: Usuario
-    ) {
-        val mensaje = Mensaje().apply {
-            idMensaje = GenerateID()
-            idComprador = comprador.idUsuario
-            idVendedor = vendedor.idUsuario
-            contenido = "Un vendedor envió una oferta de productos"
-            idProductoConPrecio =
-                productos.joinToString(separator = ",") { "${it.idProducto}:${it.precio}" }
-        }
-
-        // Guardar el mensaje en Firebase
-        guardarMensaje(mensaje)
-
-//        NotificationService().sendNotification(
-//            comprador.tokenNotifications,
-//            "Oferta de productos",
-//            "Esta es una oferta de productos",
-//            mapOf(
-//                "tipo" to "interes_comprador",
-//                "idMensaje" to mensaje.idMensaje
-//            )
-//        )
-    }
-
-    override suspend fun compradorEnviaMensajeAVendedor(
-        productos: List<ProductoReciclable>,
-        comprador: Usuario,
-        vendedor: Usuario
-    ) {
-        val mensaje = Mensaje().apply {
-            idMensaje = GenerateID()
-            idComprador = comprador.idUsuario
-            idVendedor = vendedor.idUsuario
-            contenido = "Un comprador desea comprar tus productos"
-            idProductoConPrecio =
-                productos.joinToString(separator = ",") { "${it.idProducto}:${it.precio}" }
-        }
-        guardarMensaje(mensaje)
-    }
-
-    // Implementar la función para guardar mensajes
-    override suspend fun guardarMensaje(mensaje: Mensaje) {
-        service.collection("mensajes")
-            .document(mensaje.idMensaje)
-            .set(mensaje)
-            .await()
-    }
-
-    // Implementar la función para obtener mensajes
-    override suspend fun obtenerMensajesPorUsuario(idUsuario: String): List<Mensaje> {
-        val mensajes = mutableListOf<Mensaje>()
-
-        // Obtener mensajes donde el usuario es comprador o vendedor
-        val querySnapshot = service.collection("mensajes")
-            .whereEqualTo("idComprador", idUsuario)
-            .get()
-            .await()
-
-        val querySnapshot2 = service.collection("mensajes")
-            .whereEqualTo("idVendedor", idUsuario)
-            .get()
-            .await()
-
-        querySnapshot.documents.forEach { document ->
-            document.toObject(Mensaje::class.java)?.let { mensajes.add(it) }
-        }
-
-        querySnapshot2.documents.forEach { document ->
-            document.toObject(Mensaje::class.java)?.let { mensajes.add(it) }
-        }
-
-        return mensajes.distinctBy { it.idMensaje }
-    }
-
-    private suspend fun enviarNotificacion(
-        userId: String,
-        title: String,
-        body: String,
-        data: Map<String, String>
-    ) {
-        // Aquí implementarías la lógica para enviar la notificación
-        // Puedes usar Cloud Functions o tu propio backend
-    }
-
     suspend fun getVendedores(): MutableList<Usuario> {
         val vendedores = mutableListOf<Usuario>()
         val querySnapshot = service.collection("usuario")
@@ -318,9 +223,6 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
             val usuario = document.toObject(Usuario::class.java)
             usuario?.let { vendedores.add(it) }
 
-            if (usuario != null) {
-                Log.d("Usuarios", "user: ${usuario.nombre}")
-            }
         }
         return vendedores
     }
@@ -328,7 +230,6 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
     suspend fun obtenerProductosSinVender(): MutableList<ProductoReciclable> {
         val productosDeVendedor = mutableListOf<ProductoReciclable>()
 
-        // Consulta Firestore con dos condiciones: idVendedor y fueVendida = false
         val querySnapshot = service.collection("productoReciclable")
             .whereEqualTo("fueVendida", false)
             .get()

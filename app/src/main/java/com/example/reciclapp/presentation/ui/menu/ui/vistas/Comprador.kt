@@ -36,8 +36,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Recycling
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Button
@@ -130,7 +129,7 @@ fun Comprador(
         ) {
             ProfileHeader(comprador.urlImagenPerfil)
             ProfileDetails3(comprador)
-            ActionButtons(comprador.telefono.toString(),transaccionViewModel,selectedComprador, mainNavController)
+            ActionButtons(transaccionViewModel,selectedComprador, mainNavController)
             SectionTitle("Productos que compra:")
             MaterialList(materiales)
             SectionTitle("Comentarios:")
@@ -326,23 +325,16 @@ fun ProfileItem3(label: String, value: String) {
 }
 
 @Composable
-fun ActionButtons(phoneNumber: String, transaccionViewModel: TransaccionViewModel,usuarioContactado: Usuario,mainNavController: NavHostController) {
-    val context = LocalContext.current
+fun ActionButtons(transaccionViewModel: TransaccionViewModel,usuarioContactado: Usuario,mainNavController: NavHostController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 2.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly
+        horizontalArrangement = Arrangement.Center
     ) {
-        ActionButton3("Mensaje", Icons.Default.Email) {
+        ActionButton3("Contactar para vender productos", Icons.Default.Recycling) {
             transaccionViewModel.setUserContacted(usuarioContactado)
             mainNavController.navigate("ScreenProductsForSale")
-            //openWhatsAppMessage(context, phoneNumber)
-        }
-        ActionButton3("Llamar", Icons.Default.Call) {
-            transaccionViewModel.setUserContacted(usuarioContactado)
-            mainNavController.navigate("ScreenProductsForSale")
-//            initiateCall(context, phoneNumber)
         }
     }
     Spacer(modifier = Modifier.height(10.dp))
@@ -407,7 +399,7 @@ fun ComentariosList(comentarios: List<Comentario>) {
 fun MaterialList(materiales: List<ProductoReciclable>) {
     if (materiales.isEmpty())
         Text(
-            "Aun no hay productos registrados que compra este usuario",
+            "El comprador aun no registro productos que compra",
             Modifier
                 .fillMaxWidth()
                 .padding(10.dp),

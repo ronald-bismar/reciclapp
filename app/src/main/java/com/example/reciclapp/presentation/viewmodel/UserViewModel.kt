@@ -91,7 +91,6 @@ class UserViewModel @Inject constructor(
         _updateUserState.value = null
     }
 
-
     fun updateUser(user: Usuario) {
         viewModelScope.launch {
             runCatching {

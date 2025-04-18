@@ -74,7 +74,7 @@ fun PantallaPrincipal(
         LaunchedEffect(locationPermissionState.status) {
             if (locationPermissionState.status.isGranted) {
                 ubicacionViewModel.fetchLocationsAndUsers()
-                ubicacionViewModel.obtenerYGuardarMiUbicacion(usuarioLogueado!!.idUsuario)
+                ubicacionViewModel.obtenerYGuardarMiUbicacion(usuarioLogueado!!)
             } else {
                 locationPermissionState.launchPermissionRequest()
             }

@@ -17,25 +17,16 @@ class NotificationService @Inject constructor(
 ) {
     private val baseUrl = "https://nextmacrosystem.net/api" // Tu dominio
 
-    suspend fun sendNotification(
-        token: String,
-        title: String,
-        body: String,
-        additionalData: Map<String, String>? = null
-    ): Result<String> = withContext(Dispatchers.IO) {
+    suspend fun sendNotification(bodyNotification: Map<String, Any>): Result<String> = withContext(Dispatchers.IO) {
+        Log.d("NotificationApiService", "Sending notification with body: $bodyNotification")
         try {
-            val json = JSONObject().apply {
-                put("token", token)
-                put("title", title)
-                put("body", body)
-                if (additionalData != null) {
-                    put("additionalData", JSONObject(additionalData))
-                }
-            }
+            // Convert Map to proper JSON string using a JSON library
+            val jsonBody = JSONObject(bodyNotification).toString()
 
             val request = Request.Builder()
                 .url("$baseUrl/send_notification.php")
-                .post(json.toString().toRequestBody("application/json".toMediaType()))
+                .header("Accept", "application/json") // Add proper headers
+                .post(jsonBody.toRequestBody("application/json".toMediaType()))
                 .build()
 
             client.newCall(request).execute().use { response ->
@@ -48,5 +39,4 @@ class NotificationService @Inject constructor(
             Log.e("NotificationApiService", "Error sending notification", e)
             return@withContext Result.Failure(e)
         }
-    }
-}
+    }}

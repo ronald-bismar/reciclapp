@@ -4,7 +4,6 @@ import com.example.reciclapp.domain.entities.UbicacionGPS
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.repositories.UbicacionGPSRepository
 import com.example.reciclapp.domain.usecases.comprador.GetCompradoresUseCase
-import com.example.reciclapp.domain.usecases.usuario.GetAllUsersUseCase
 import com.example.reciclapp.domain.usecases.vendedor.GetVendedoresUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -12,7 +11,6 @@ import javax.inject.Inject
 
 class UbicacionGPSRepositoryImpl @Inject constructor(
     private val service: FirebaseFirestore,
-    private val getAllUsersUseCase: GetAllUsersUseCase,
     private val getCompradoresUseCase: GetCompradoresUseCase,
     private val getVendedoresUseCase: GetVendedoresUseCase
 ) :
@@ -20,14 +18,14 @@ class UbicacionGPSRepositoryImpl @Inject constructor(
 
     override suspend fun actualizarUbicacionGPS(ubicacionGPS: UbicacionGPS) {
         service.collection("ubicacionGPS")
-            .document(ubicacionGPS.idUbicacionGPS.toString())
+            .document(ubicacionGPS.idUsuario.toString())
             .set(ubicacionGPS)
             .await()
     }
 
     override suspend fun registrarUbicacionDeUsuario(ubicacion: UbicacionGPS) {
         service.collection("ubicacionGPS")
-            .document(ubicacion.idUbicacionGPS.toString())
+            .document(ubicacion.idUsuario.toString())
             .set(ubicacion)
             .await()
     }

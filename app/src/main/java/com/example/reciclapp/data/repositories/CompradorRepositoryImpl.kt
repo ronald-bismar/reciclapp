@@ -49,12 +49,8 @@ class CompradorRepositoryImpl @Inject constructor(
             .get()
             .await()
         for (document in querySnapshot.documents) {
-            Log.d("Usuarios", "userComprador: ${document.id}")
             val usuario = document.toObject(Usuario::class.java)
             usuario?.let { compradores.add(it) }
-            if (usuario != null) {
-                Log.d("Usuarios", "userComprador: ${usuario.nombre}")
-            }
         }
         return compradores
     }

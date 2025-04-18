@@ -32,7 +32,6 @@ object UbicacionGPSModule {
     ): UbicacionGPSRepository {
         return UbicacionGPSRepositoryImpl(
             service,
-            getAllUsersUseCase,
             getCompradoresUseCase,
             getVendedoresUseCase
         )

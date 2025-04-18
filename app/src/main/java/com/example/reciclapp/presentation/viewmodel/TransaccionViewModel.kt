@@ -7,21 +7,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.reciclapp.data.services.NotificationService
 import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.domain.entities.Result
 import com.example.reciclapp.domain.entities.TransaccionPendiente
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.repositories.CompradorRepository
 import com.example.reciclapp.domain.repositories.ProductoRepository
-import com.example.reciclapp.domain.usecases.producto.CompradorEnviaMensajeAVendedorUseCase
+import com.example.reciclapp.domain.usecases.mensaje.CompradorEnviaMensajeAVendedorUseCase
 import com.example.reciclapp.domain.usecases.producto.MarcarProductoComoVendidoUseCase
 import com.example.reciclapp.domain.usecases.producto.SumarPuntosDeProductosUseCase
-import com.example.reciclapp.domain.usecases.producto.VendedorEnviaMensajeACompradorUseCase
+import com.example.reciclapp.domain.usecases.mensaje.VendedorEnviaMensajeACompradorUseCase
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.util.UUID
 import javax.inject.Inject
 
 private const val TAG = "TransaccionViewModel"
@@ -68,6 +66,8 @@ class TransaccionViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> get() = _isLoading
 
+    private lateinit var _newTransaccionPendiente: TransaccionPendiente
+
     init {
         loadMyUserPreferences()
     }
@@ -107,19 +107,8 @@ class TransaccionViewModel @Inject constructor(
         _usuarioContactado.value = usuario
     }
 
-    fun enviarOfertaAComprador() {
-        viewModelScope.launch {
-            try {
-                vendedorEnviaMensajeACompradorUseCase.execute(
-                    _productosSeleccionados.value,
-                    _myUser.value!!,
-                    _usuarioContactado.value!!
-                )
-                Log.d(TAG, "mensaje enviado a comprador")
-            } catch (e: Exception) {
-                Log.d(TAG, "enviarOfertaAComprador: ${e.message}")
-            }
-        }
+    fun setTransaccionPendiente(transaccion: TransaccionPendiente) {
+        _newTransaccionPendiente = transaccion
     }
 
     fun cargarTransaccionesPendientes() {
@@ -142,15 +131,27 @@ class TransaccionViewModel @Inject constructor(
         }
     }
 
-    fun crearTransaccionPendiente(transaccion: TransaccionPendiente) {
+    fun crearTransaccionPendiente() {
+        _isLoading.value = true
         viewModelScope.launch {
-            try {
-                repository.crearTransaccionPendiente(transaccion)
-                // La transacción ya incluye el código QR como string en el campo codigoQR
-                // Firebase lo almacenará automáticamente
-            } catch (e: Exception) {
-                Log.e(TAG, "Error al crear la transacción: ${e.message}")
+            runCatching {
+                guardarTransaccionPendiente()
+                sendNotificationToComprador()
+            }.onSuccess {
+                Log.d(TAG, "Transacción guardada correctamente")
+            }.onFailure { e ->
+                Log.e(TAG, "Error al guardar la transacción: ${e.message}")
+            }.also {
+                _isLoading.value = false
             }
+        }
+    }
+
+    suspend fun guardarTransaccionPendiente() {
+        try {
+            repository.crearTransaccionPendiente(_newTransaccionPendiente)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error al crear la transacción: ${e.message}")
         }
     }
 
@@ -169,26 +170,15 @@ class TransaccionViewModel @Inject constructor(
         }
     }
 
-    fun sendNotification(token: String) {
-        viewModelScope.launch {
-            try {
-                val result = notificationApiService.sendNotification(
-                    token = token,
-                    title = "Oferta de productos",
-                    body = "Esta es una oferta de productos",
-                    additionalData = mapOf(
-                        "tipo" to "interes_comprador",
-                        "idMensaje" to UUID.randomUUID().toString()
-                    )
-                )
-
-                when (result) {
-                    is Result.Success -> Log.d("ViewModel", "Notificación enviada")
-                    is Result.Failure -> Log.e("ViewModel", "Error", result.exception)
-                }
-            } catch (e: Exception) {
-                Log.e("ViewModel", "Error enviando notificación", e)
-            }
+    suspend fun sendNotificationToComprador() {
+        try {
+            vendedorEnviaMensajeACompradorUseCase(
+                productos = _productosSeleccionados.value,
+                vendedor = _myUser.value!!,
+                comprador = _usuarioContactado.value!!
+            )
+        } catch (e: Exception) {
+            Log.e("ViewModel", "Error enviando notificación", e)
         }
     }
 }

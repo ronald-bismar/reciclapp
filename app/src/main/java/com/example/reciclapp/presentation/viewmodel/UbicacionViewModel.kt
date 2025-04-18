@@ -6,24 +6,20 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.reciclapp.util.ImageRepository
 import com.example.reciclapp.domain.entities.UbicacionGPS
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.usecases.ubicacionGPS.GetLocationsAndCompradoresUseCase
-import com.example.reciclapp.domain.usecases.ubicacionGPS.GetUbicacionDeUsuarioUseCase
 import com.example.reciclapp.domain.usecases.ubicacionGPS.RegistrarUbicacionDeUsuarioUseCase
 import com.example.reciclapp.util.GenerateID
+import com.example.reciclapp.util.ImageRepository
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.model.CameraPosition
 import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -52,7 +48,7 @@ class UbicacionViewModel @Inject constructor(
     val markers: StateFlow<List<MarkerData>> = _markers
 
     @SuppressLint("MissingPermission")
-    fun obtenerYGuardarMiUbicacion(idUsuario: String) {
+    fun obtenerYGuardarMiUbicacion(myUser: Usuario) {
         viewModelScope.launch {
             try {
                 val location = fusedLocationClient.lastLocation.await()
@@ -63,13 +59,13 @@ class UbicacionViewModel @Inject constructor(
                         longitude = location.longitude,
                         precision = location.accuracy,
                         fechaRegistro = Timestamp(java.util.Date()).toString(),
-                        idUsuario = idUsuario
+                        idUsuario = myUser.idUsuario
                     )
                     _myCurrentLocation.value = ubicacionGPS
                     registrarUbicacionDeUsuarioUseCase.execute(ubicacionGPS)
                 }
             } catch (e: Exception) {
-                Log.d("UbicacionViewModel", "Error al obtener la ubicación ${e.message}", )
+                Log.d("UbicacionViewModel", "Error al obtener la ubicación ${e.message}")
             }
         }
     }

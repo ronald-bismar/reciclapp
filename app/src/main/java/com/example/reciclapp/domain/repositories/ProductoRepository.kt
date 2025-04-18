@@ -1,6 +1,5 @@
 package com.example.reciclapp.domain.repositories
 
-import com.example.reciclapp.domain.entities.Mensaje
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.TransaccionPendiente
 import com.example.reciclapp.domain.entities.Usuario
@@ -23,8 +22,4 @@ interface ProductoRepository {
     suspend fun marcarProductosComoVendido(transaccionPendiente: TransaccionPendiente): List<Void?>
     suspend fun obtenerProductoYVendedor(): List<Pair<ProductoReciclable, Usuario>>
     fun sumarPuntosDeProductos(products: List<ProductoReciclable>): Int
-    suspend fun vendedorEnviaMensajeAComprador(productos: List<ProductoReciclable>,vendedor: Usuario, comprador: Usuario) //Este metodo nos sirve cuando el vendedor que quiere vender productos a un comprador especifico se contacta con el para ofrecerle sus productos y cuanto quiere por ellos
-    suspend fun compradorEnviaMensajeAVendedor(productos: List<ProductoReciclable>, comprador: Usuario,vendedor: Usuario)
-    suspend fun guardarMensaje(mensaje: Mensaje)
-    suspend fun obtenerMensajesPorUsuario(idUsuario: String): List<Mensaje>
 }
