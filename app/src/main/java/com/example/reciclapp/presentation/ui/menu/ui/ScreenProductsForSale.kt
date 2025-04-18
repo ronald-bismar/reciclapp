@@ -200,10 +200,10 @@ fun CardProductoToSell(
         isSelectedLocal = isSelected
     }
 
-    // Define the background color with improved animation
+// Define the background color with improved animation
     val backgroundColor by animateColorAsState(
         targetValue = if (isSelectedLocal)
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+            Color(red = 0.8f, green = 0.93f, blue = 0.8f)
         else
             MaterialTheme.colorScheme.surface,
         animationSpec = tween(

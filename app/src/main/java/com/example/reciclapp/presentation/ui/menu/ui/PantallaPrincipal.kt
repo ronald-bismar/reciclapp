@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.navigation.AppTopBar
 import com.example.reciclapp.presentation.navigation.bottom.BottomNavHost
 import com.example.reciclapp.presentation.navigation.drawer.DrawerContent
@@ -66,7 +65,7 @@ fun PantallaPrincipal(
         }
     } else {
 
-        verifyUserWithTokenNotification(usuarioLogueado, userViewModel)
+        generateToken(userViewModel)
 
         // Data MapsView.kt
         val locationPermissionState =
@@ -173,14 +172,6 @@ fun PantallaPrincipal(
     }
 }
 
-@Composable
-private fun verifyUserWithTokenNotification(
-    usuarioLogueado: Usuario?,
-    userViewModel: UserViewModel
-) {
-    if (usuarioLogueado?.tokenNotifications?.isEmpty() == true)
-        generateToken(userViewModel)
-}
 
 @Composable
 private fun generateToken(userViewModel: UserViewModel) {
