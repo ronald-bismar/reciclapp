@@ -22,4 +22,15 @@ interface ProductoRepository {
     suspend fun marcarProductosComoVendido(transaccionPendiente: TransaccionPendiente): List<Void?>
     suspend fun obtenerProductoYVendedor(): List<Pair<ProductoReciclable, Usuario>>
     fun sumarPuntosDeProductos(products: List<ProductoReciclable>): Int
+    suspend fun compradorAceptaOfertaPorProductos(
+        idProductosConPrecioAceptados: String,
+        comprador: Usuario,
+        vendedor: Usuario
+    )
+
+    suspend fun vendedorAceptaOfertaPorProductos(
+        idProductosConPrecioAceptados: String,
+        comprador: Usuario,
+        vendedor: Usuario
+    )
 }

@@ -43,7 +43,7 @@
             android:value="AIzaSyDGNJsM6sTCItcwmOlbLRZFqruNGUhuQKE"/>
 
         <service
-            android:name=".data.services.FirebaseMessagingHandler"
+            android:name=".data.services.notification.FirebaseMessagingHandler"
             android:exported="false"
             android:directBootAware="true">
             <intent-filter>

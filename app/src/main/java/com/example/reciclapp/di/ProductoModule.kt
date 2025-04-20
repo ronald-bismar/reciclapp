@@ -3,6 +3,7 @@ package com.example.reciclapp.di
 import com.example.reciclapp.data.repositories.ProductoRepositoryImpl
 import com.example.reciclapp.domain.repositories.ProductoRepository
 import com.example.reciclapp.domain.usecases.producto.ActualizarProductoUseCase
+import com.example.reciclapp.domain.usecases.producto.CompradorAceptaOfertaUseCase
 import com.example.reciclapp.domain.usecases.producto.EliminarProductoUseCase
 import com.example.reciclapp.domain.usecases.producto.GetProductoUseCase
 import com.example.reciclapp.domain.usecases.producto.ListarProductosDeVendedorUseCase
@@ -14,6 +15,7 @@ import com.example.reciclapp.domain.usecases.producto.ObtenerProductoVendedorUse
 import com.example.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
 import com.example.reciclapp.domain.usecases.producto.SumarPuntosDeProductosUseCase
 import com.example.reciclapp.domain.usecases.producto.UpdateLikedProductoUseCase
+import com.example.reciclapp.domain.usecases.producto.VendedorAceptaOfertaUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -90,4 +92,15 @@ object ProductoModule {
     fun provideSumarPuntosDeProductosUseCase(repository: ProductoRepository): SumarPuntosDeProductosUseCase {
         return SumarPuntosDeProductosUseCase(repository)
     }
+
+    @Provides
+    fun provideVendedorAceptaOfertaUseCase(productoRepository: ProductoRepository): VendedorAceptaOfertaUseCase {
+        return VendedorAceptaOfertaUseCase(productoRepository)
+    }
+
+    @Provides
+    fun provideCompradorAceptaOfertaUseCase(productoRepository: ProductoRepository): CompradorAceptaOfertaUseCase {
+        return CompradorAceptaOfertaUseCase(productoRepository)
+    }
+
 }

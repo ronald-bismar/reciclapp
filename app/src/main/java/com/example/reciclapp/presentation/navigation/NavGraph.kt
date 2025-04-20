@@ -27,6 +27,7 @@ import com.example.reciclapp.presentation.ui.drawer.ui.MisionVisionScreen
 import com.example.reciclapp.presentation.ui.drawer.ui.SimpleAyudaScreen
 import com.example.reciclapp.presentation.ui.login.ui.LoginScreen
 import com.example.reciclapp.presentation.ui.login.ui.LoginViewModel
+import com.example.reciclapp.presentation.ui.menu.ui.CompradorOfertaScreen
 import com.example.reciclapp.presentation.ui.menu.ui.IntroductionScreen
 import com.example.reciclapp.presentation.ui.menu.ui.PantallaPresentacion
 import com.example.reciclapp.presentation.ui.menu.ui.PantallaPrincipal
@@ -189,6 +190,18 @@ fun NavGraph(
 
         composable("SendingProductsScreen") {
             SendingProductsScreen(navHostController = mainNavHostController,transaccionViewModel = transaccionViewModel)
+        }
+
+        composable(route = "CompradorOfertaScreen/{idProductosWithPrecio}/{idVendedor}/{idComprador}",
+            arguments = listOf(
+                navArgument("idProductosWithPrecio") { type = NavType.StringType },
+                navArgument("idVendedor") { type = NavType.StringType },
+                navArgument("idComprador") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val idProductosWithPrecio = backStackEntry.arguments?.getString("idProductosWithPrecio") ?: ""
+            val idVendedor = backStackEntry.arguments?.getString("idVendedor") ?: ""
+            val idComprador = backStackEntry.arguments?.getString("idComprador") ?: ""
+            CompradorOfertaScreen (idProductosWithPrecio, idVendedor, idComprador, transaccionViewModel)
         }
     }
 }

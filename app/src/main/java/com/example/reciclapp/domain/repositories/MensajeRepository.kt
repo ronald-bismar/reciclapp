@@ -9,16 +9,30 @@ interface MensajeRepository {
     suspend fun saveMensaje(mensaje: Mensaje)
     suspend fun updateMensaje(mensaje: Mensaje)
     suspend fun deleteMensaje(idMensaje: String)
-    suspend fun vendedorEnviaMensajeAComprador(
+    suspend fun vendedorEnviaOfertaAComprador(
         productos: List<ProductoReciclable>,
         vendedor: Usuario,
         comprador: Usuario
     )
-    suspend fun compradorEnviaMensajeAVendedor(
+
+    suspend fun compradorEnviaOfertaAVendedor(
         productos: List<ProductoReciclable>,
         comprador: Usuario,
         vendedor: Usuario
     )
+
+    suspend fun vendedorEnviaContraOfertaAComprador(
+        contrapreciosMap: Map<String, Double>,
+        idVendedor: String,
+        comprador: Usuario
+    )
+
+    suspend fun compradorEnviaContraOfertaAVendedor(
+        contrapreciosMap: Map<String, Double>,
+        idComprador: String,
+        vendedor: Usuario
+    )
+
     suspend fun obtenerMensajesPorUsuario(idUsuario: String, onlyNews: Boolean): List<Mensaje>
 
 }

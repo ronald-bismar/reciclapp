@@ -1,10 +1,12 @@
 package com.example.reciclapp.di
 
 import com.example.reciclapp.data.repositories.MensajeRepositoryImpl
-import com.example.reciclapp.data.services.NotificationService
+import com.example.reciclapp.data.services.notification.NotificationService
 import com.example.reciclapp.domain.repositories.MensajeRepository
+import com.example.reciclapp.domain.usecases.mensaje.CompradorEnviaContraOfertaAVendedorUseCase
 import com.example.reciclapp.domain.usecases.mensaje.CompradorEnviaMensajeAVendedorUseCase
 import com.example.reciclapp.domain.usecases.mensaje.ObtenerMensajePorUsuarioUseCase
+import com.example.reciclapp.domain.usecases.mensaje.VendedorEnviaContraOfertaACompradorUseCase
 import com.example.reciclapp.domain.usecases.mensaje.VendedorEnviaMensajeACompradorUseCase
 import com.example.reciclapp.domain.usecases.mensajes.DeleteMensajeUseCase
 import com.example.reciclapp.domain.usecases.mensajes.GetMensajeUseCase
@@ -13,13 +15,21 @@ import com.example.reciclapp.domain.usecases.mensajes.UpdateMensajeUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+interface MessagingServiceEntryPoint {
+    fun getMensajeUseCase(): GetMensajeUseCase
+}
+
 @Module
 @InstallIn(SingletonComponent::class)
 object MensajeModule {
+
 
     @Provides
     @Singleton
@@ -67,5 +77,18 @@ object MensajeModule {
     @Singleton
     fun provideObtenerMensajesPorUsuarioUseCase(repository: MensajeRepository): ObtenerMensajePorUsuarioUseCase {
         return ObtenerMensajePorUsuarioUseCase(repository)
+    }
+
+    //VendedorEnviaContraOfertaACompradorUseCase
+    @Provides
+    @Singleton
+    fun provideCompradorEnviaContraOfertaAVendedorUseCase(repository: MensajeRepository): CompradorEnviaContraOfertaAVendedorUseCase {
+        return CompradorEnviaContraOfertaAVendedorUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideVendedorEnviaContraOfertaACompradorUseCase(repository: MensajeRepository): VendedorEnviaContraOfertaACompradorUseCase {
+        return VendedorEnviaContraOfertaACompradorUseCase(repository)
     }
 }

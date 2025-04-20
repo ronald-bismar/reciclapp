@@ -6,7 +6,7 @@ import com.example.reciclapp.domain.repositories.MensajeRepository
 import javax.inject.Inject
 
 class CompradorEnviaMensajeAVendedorUseCase @Inject constructor(private val mensajeRepository: MensajeRepository) {
-    suspend fun invoke(productos: List<ProductoReciclable>, comprador: Usuario, vendedor: Usuario){
-        mensajeRepository.compradorEnviaMensajeAVendedor(productos, comprador, vendedor)
+    suspend operator fun invoke(productos: List<ProductoReciclable>, comprador: Usuario, vendedor: Usuario){
+        mensajeRepository.compradorEnviaOfertaAVendedor(productos, comprador, vendedor)
     }
 }

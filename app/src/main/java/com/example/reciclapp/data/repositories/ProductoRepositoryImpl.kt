@@ -213,6 +213,22 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
         return totalPuntos
     }
 
+    override suspend fun compradorAceptaOfertaPorProductos(
+        idProductosConPrecioAceptados: String,
+        comprador: Usuario,
+        vendedor: Usuario
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun vendedorAceptaOfertaPorProductos(
+        idProductosConPrecioAceptados: String,
+        comprador: Usuario,
+        vendedor: Usuario
+    ) {
+        TODO("Not yet implemented")
+    }
+
     suspend fun getVendedores(): MutableList<Usuario> {
         val vendedores = mutableListOf<Usuario>()
         val querySnapshot = service.collection("usuario")

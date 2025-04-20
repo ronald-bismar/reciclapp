@@ -88,7 +88,7 @@ fun SendingProductsScreen(
     )
 
     LaunchedEffect(Unit) {
-        transaccionViewModel.crearTransaccionPendiente()
+        transaccionViewModel.enviarOfertaAComprador()
     }
 
     LaunchedEffect(transaccionViewModel.isLoading) {
@@ -250,8 +250,8 @@ fun PerfilUsuario(
                     .clip(CircleShape)
                     .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
                     .size(70.dp),
-                placeholder = painterResource(R.drawable.icono_defecto),
-                error = painterResource(R.drawable.icono_defecto)
+                placeholder = painterResource(R.drawable.perfil),
+                error = painterResource(R.drawable.perfil)
             )
         }
     }
@@ -314,7 +314,7 @@ fun ProductoEnvioItem(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(60.dp)
-                    .clip(RoundedCornerShape(6.dp)),
+                    .clip(CircleShape),
                 placeholder = painterResource(R.drawable.icono_defecto),
                 error = painterResource(R.drawable.icono_defecto)
             )

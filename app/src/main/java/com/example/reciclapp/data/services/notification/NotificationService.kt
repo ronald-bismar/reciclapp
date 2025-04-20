@@ -1,4 +1,4 @@
-package com.example.reciclapp.data.services
+package com.example.reciclapp.data.services.notification
 
 import android.util.Log
 import com.example.reciclapp.domain.entities.Result
@@ -20,7 +20,6 @@ class NotificationService @Inject constructor(
     suspend fun sendNotification(bodyNotification: Map<String, Any>): Result<String> = withContext(Dispatchers.IO) {
         Log.d("NotificationApiService", "Sending notification with body: $bodyNotification")
         try {
-            // Convert Map to proper JSON string using a JSON library
             val jsonBody = JSONObject(bodyNotification).toString()
 
             val request = Request.Builder()
