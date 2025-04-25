@@ -69,12 +69,12 @@ class FirebaseMessagingHandler: FirebaseMessagingService() {
         val notification = remoteMessage.notification
         val data = remoteMessage.data
 
-        val idMensaje = data["clave1"] ?: ""
-        val idComprador = data["clave2"] ?: ""
+        val idMensaje = data["idMensaje"] ?: ""
 
 
         if (notification != null) {
             CoroutineScope(Dispatchers.IO).launch {
+
                 try {
                     val mensaje = getMensajeUseCase(idMensaje)
 

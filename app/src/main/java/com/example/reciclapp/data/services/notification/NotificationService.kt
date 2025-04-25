@@ -15,7 +15,7 @@ import javax.inject.Inject
 class NotificationService @Inject constructor(
     private val client: OkHttpClient
 ) {
-    private val baseUrl = "https://nextmacrosystem.net/api" // Tu dominio
+    private val baseUrl = "https://nextmacrosystem.net/api"
 
     suspend fun sendNotification(bodyNotification: Map<String, Any>): Result<String> = withContext(Dispatchers.IO) {
         Log.d("NotificationApiService", "Sending notification with body: $bodyNotification")

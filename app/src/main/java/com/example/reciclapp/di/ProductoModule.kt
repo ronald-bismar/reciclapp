@@ -2,6 +2,7 @@ package com.example.reciclapp.di
 
 import com.example.reciclapp.data.repositories.ProductoRepositoryImpl
 import com.example.reciclapp.domain.repositories.ProductoRepository
+import com.example.reciclapp.domain.usecases.mensajes.SendMessageUseCase
 import com.example.reciclapp.domain.usecases.producto.ActualizarProductoUseCase
 import com.example.reciclapp.domain.usecases.producto.CompradorAceptaOfertaUseCase
 import com.example.reciclapp.domain.usecases.producto.EliminarProductoUseCase
@@ -29,8 +30,8 @@ object ProductoModule {
 
     @Provides
     @Singleton
-    fun provideProductoRepository(service: FirebaseFirestore): ProductoRepository {
-        return ProductoRepositoryImpl(service)
+    fun provideProductoRepository(service: FirebaseFirestore, sendMessageUseCase: SendMessageUseCase): ProductoRepository {
+        return ProductoRepositoryImpl(service, sendMessageUseCase)
     }
 
     @Provides

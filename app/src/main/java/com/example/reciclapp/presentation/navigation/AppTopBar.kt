@@ -1,7 +1,6 @@
 package com.example.reciclapp.presentation.navigation
 
 import android.app.Activity
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,7 +18,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Scanner
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerState
@@ -44,13 +42,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.reciclapp.R
 import com.example.reciclapp.presentation.ui.registro.ui.showToast
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
+import com.example.reciclapp.util.NameRoutes.QRSCANNER
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -101,7 +99,7 @@ fun AppTopBar(
         },
         actions = {
             IconButton(onClick = {
-                navControllerMain.navigate("QRScanner") {
+                navControllerMain.navigate(QRSCANNER) {
                     popUpTo(navController.graph.startDestinationId) {
                         saveState = true
                     }

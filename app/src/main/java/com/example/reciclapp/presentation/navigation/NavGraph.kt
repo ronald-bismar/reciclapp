@@ -50,6 +50,8 @@ import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.example.reciclapp.presentation.viewmodel.UbicacionViewModel
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
+import com.example.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
+import com.example.reciclapp.util.NameRoutes.QRSCANNER
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -93,7 +95,7 @@ fun NavGraph(
         composable("registro") {
             RegistroScreen(registroViewModel, mainNavHostController)
         }
-        composable("menu") {
+        composable(PANTALLAPRINCIPAL) {
             PantallaPrincipal(
                 userViewModel,
                 vendedoresViewModel,
@@ -180,7 +182,7 @@ fun NavGraph(
             TransaccionesPendientesScreen(transaccionViewModel, mainNavHostController)
         }
 
-        composable("QRScanner") {
+        composable(QRSCANNER) {
             QRScannerScreen(transaccionViewModel)
         }
 
@@ -192,23 +194,20 @@ fun NavGraph(
             SendingProductsScreen(navHostController = mainNavHostController,transaccionViewModel = transaccionViewModel)
         }
 
-        composable(route = "CompradorOfertaScreen/{idProductosWithPrecio}/{idVendedor}/{idComprador}",
+        composable(route = "CompradorOfertaScreen/{idMensaje}",
             arguments = listOf(
-                navArgument("idProductosWithPrecio") { type = NavType.StringType },
-                navArgument("idVendedor") { type = NavType.StringType },
-                navArgument("idComprador") { type = NavType.StringType })
+                navArgument("idMensaje") { type = NavType.StringType })
         ) { backStackEntry ->
-            val idProductosWithPrecio = backStackEntry.arguments?.getString("idProductosWithPrecio") ?: ""
-            val idVendedor = backStackEntry.arguments?.getString("idVendedor") ?: ""
-            val idComprador = backStackEntry.arguments?.getString("idComprador") ?: ""
-            CompradorOfertaScreen (idProductosWithPrecio, idVendedor, idComprador, transaccionViewModel)
+            val idMensaje = backStackEntry.arguments?.getString("idMensaje") ?: ""
+
+            CompradorOfertaScreen (idMensaje, transaccionViewModel, mainNavHostController)
         }
     }
 }
 
 suspend fun getNextScreenAndKindUser(getUserPreferencesUseCase: GetUserPreferencesUseCase): Pair<String, Usuario> {
     val userPreferences = withContext(Dispatchers.IO) { getUserPreferencesUseCase.execute() }
-    val nextScreen = if (userPreferences.nombre != "") "menu" else "login"
+    val nextScreen = if (userPreferences.nombre != "") PANTALLAPRINCIPAL else "login"
     val usuario = userPreferences
 
     return nextScreen to usuario

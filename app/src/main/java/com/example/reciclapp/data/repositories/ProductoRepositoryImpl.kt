@@ -2,10 +2,12 @@ package com.example.reciclapp.data.repositories
 
 import ListOfCategorias
 import android.util.Log
+import com.example.reciclapp.domain.entities.Mensaje
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.TransaccionPendiente
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.repositories.ProductoRepository
+import com.example.reciclapp.domain.usecases.mensajes.SendMessageUseCase
 import com.example.reciclapp.util.ProductosReciclables
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.async
@@ -16,7 +18,7 @@ import javax.inject.Inject
 
 private const val TAG = "ProductoRepositoryImpl"
 
-class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFirestore) :
+class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFirestore, private val sendMessageUseCase: SendMessageUseCase) :
     ProductoRepository {
     override suspend fun getProducto(idProducto: String): ProductoReciclable? {
         val snapshot = service.collection("productoReciclable")
@@ -214,19 +216,19 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
     }
 
     override suspend fun compradorAceptaOfertaPorProductos(
-        idProductosConPrecioAceptados: String,
-        comprador: Usuario,
-        vendedor: Usuario
+        mensaje: Mensaje,
+        tokenVendedor: String,
     ) {
-        TODO("Not yet implemented")
+        mensaje.apply { titleMessage = "Oferta aceptada" }
+        sendMessageUseCase(mensaje, tokenVendedor)
     }
 
     override suspend fun vendedorAceptaOfertaPorProductos(
-        idProductosConPrecioAceptados: String,
-        comprador: Usuario,
-        vendedor: Usuario
+        mensaje: Mensaje,
+        tokenComprador: String,
     ) {
-        TODO("Not yet implemented")
+        mensaje.apply { titleMessage = "Oferta aceptada" }
+        sendMessageUseCase(mensaje, tokenComprador)
     }
 
     suspend fun getVendedores(): MutableList<Usuario> {

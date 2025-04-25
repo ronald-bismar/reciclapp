@@ -1,5 +1,6 @@
 package com.example.reciclapp.domain.repositories
 
+import com.example.reciclapp.domain.entities.Mensaje
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.TransaccionPendiente
 import com.example.reciclapp.domain.entities.Usuario
@@ -15,22 +16,13 @@ interface ProductoRepository {
     suspend fun listarProductosPorComprador(idComprador: String): MutableList<ProductoReciclable>
     suspend fun registrarProductos(materiales: List<ProductoReciclable>)
     suspend fun obtenerProductosActivos(idVendedor: String): MutableList<ProductoReciclable>
-    fun calcularCO2AhorradoEnKilos(productosReciclables: List<ProductoReciclable>): Double
     suspend fun obtenerProductosPredeterminados(): MutableList<ProductoReciclable>
     suspend fun obtenerProductosPorIds(ids: List<String>): List<ProductoReciclable>
     suspend fun listarProductosPorUsuario(idUsuario: String): MutableList<ProductoReciclable>
     suspend fun marcarProductosComoVendido(transaccionPendiente: TransaccionPendiente): List<Void?>
     suspend fun obtenerProductoYVendedor(): List<Pair<ProductoReciclable, Usuario>>
+    suspend fun compradorAceptaOfertaPorProductos(mensaje: Mensaje, tokenVendedor: String)
+    suspend fun vendedorAceptaOfertaPorProductos(mensaje: Mensaje, tokenComprador: String)
     fun sumarPuntosDeProductos(products: List<ProductoReciclable>): Int
-    suspend fun compradorAceptaOfertaPorProductos(
-        idProductosConPrecioAceptados: String,
-        comprador: Usuario,
-        vendedor: Usuario
-    )
-
-    suspend fun vendedorAceptaOfertaPorProductos(
-        idProductosConPrecioAceptados: String,
-        comprador: Usuario,
-        vendedor: Usuario
-    )
+    fun calcularCO2AhorradoEnKilos(productosReciclables: List<ProductoReciclable>): Double
 }

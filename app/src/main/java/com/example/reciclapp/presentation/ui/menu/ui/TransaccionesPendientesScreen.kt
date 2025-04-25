@@ -52,6 +52,7 @@ import com.example.reciclapp.domain.entities.EstadoTransaccion
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.TransaccionPendiente
 import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
+import com.example.reciclapp.util.NameRoutes.QRSCANNER
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -102,7 +103,7 @@ fun TransaccionesPendientesScreen(
                         transaccion = transaccion,
                         productos = productosTransaccion, // Ahora pasamos la lista completa
                         onScanQR = {
-                            navController.navigate("qr-scanner")
+                            navController.navigate(QRSCANNER)
                         }
                     )
                 }

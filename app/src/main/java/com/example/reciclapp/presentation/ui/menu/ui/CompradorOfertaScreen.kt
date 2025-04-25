@@ -1,9 +1,11 @@
 package com.example.reciclapp.presentation.ui.menu.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -18,6 +20,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,9 +29,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -38,6 +44,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -46,6 +53,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -63,37 +71,51 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
+import kotlin.math.min
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompradorOfertaScreen(
-    idProductosWithPrecio: String,
-    idVendedor: String,
-    idComprador: String,
+    idMensaje: String,
     transaccionViewModel: TransaccionViewModel,
+    navHostController: NavHostController
 ) {
     var contraofertaMode by remember { mutableStateOf(false) }
     var contrapreciosMap by remember { mutableStateOf(mapOf<String, Double>()) }
     var showSuccessMessage by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        transaccionViewModel.getUserAndProductsForTransaction(idProductosWithPrecio, idVendedor)
-    }
-
     val isLoading by transaccionViewModel.isLoading.collectAsState()
     val productos by transaccionViewModel.productos.collectAsState()
-    val usuarioContactado by transaccionViewModel.usuarioContactado.collectAsState()
+    val usuarioQueSeContacto by transaccionViewModel.usuarioContactado.collectAsState()
+    val message by transaccionViewModel.message.collectAsState()
 
-    // Inicializar contraofertas con los precios originales
+    var showAceptacionModal by remember { mutableStateOf(false) }
+    var showContraofertaModal by remember { mutableStateOf(false) }
+
+
+    // Estado de los bottom sheets
+    val aceptacionSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val contraofertaSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+
+    var mensaje by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        transaccionViewModel.getMessage(idMensaje)
+    }
+
     val inicializarContraprecios = {
         contrapreciosMap = productos.associate { it.idProducto to it.precio }
     }
@@ -101,6 +123,39 @@ fun CompradorOfertaScreen(
     // Llamar a inicializar al principio si el mapa está vacío
     if (contrapreciosMap.isEmpty() && productos.isNotEmpty()) {
         inicializarContraprecios()
+    }
+
+    if (showAceptacionModal) {
+        ModalBottomSheet(
+            onDismissRequest = { showAceptacionModal = false },
+            sheetState = aceptacionSheetState,
+            containerColor = MaterialTheme.colorScheme.surface,
+            dragHandle = { BottomSheetDefaults.DragHandle() }
+        ) {
+            AceptacionOfertaModalContent(
+                onNavigateClick = {
+                    showAceptacionModal = false
+                    navHostController.navigate("menu")
+                }
+            )
+        }
+    }
+
+    // Modal de Contraoferta Enviada
+    if (showContraofertaModal) {
+        ModalBottomSheet(
+            onDismissRequest = { showContraofertaModal = false },
+            sheetState = contraofertaSheetState,
+            containerColor = MaterialTheme.colorScheme.surface,
+            dragHandle = { BottomSheetDefaults.DragHandle() }
+        ) {
+            ContraofertaEnviadaModalContent(
+                onNavigateClick = {
+                    showContraofertaModal = false
+                    navHostController.navigate("menu")
+                }
+            )
+        }
     }
 
     Scaffold(
@@ -113,7 +168,7 @@ fun CompradorOfertaScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = {  }) {
+                    IconButton(onClick = { }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Volver atrás"
@@ -128,25 +183,50 @@ fun CompradorOfertaScreen(
             )
         },
         floatingActionButton = {
-            if (contraofertaMode) {
-                FloatingActionButton(
-                    onClick = {
-                        // Enviar contraoferta
-                        transaccionViewModel.enviarContraofertaAVendedor(
-                            contrapreciosMap,
-                            idComprador,
-                            usuarioContactado,
-                        )
-                        showSuccessMessage = true
-                        contraofertaMode = false
-                    },
-                    containerColor = MaterialTheme.colorScheme.tertiary
+            if (contraofertaMode && !showSuccessMessage) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Send,
-                        contentDescription = "Enviar contraoferta",
-                        tint = Color.White
+                    // TextField
+                    OutlinedTextField(
+                        value = mensaje,
+                        onValueChange = { mensaje = it },
+                        placeholder = { Text("Escribe tu mensaje...") },
+                        modifier = Modifier
+                            .weight(1f)
+                            .heightIn(min = 56.dp),
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Send
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                        // Mantenemos los colores por defecto para tener los bordes negros con fondo blanco
                     )
+                    // FloatingActionButton
+                    FloatingActionButton(
+                        onClick = {
+                            // Enviar contraoferta
+                            transaccionViewModel.enviarContraofertaAVendedor(
+                                contrapreciosMap,
+                                message,
+                                usuarioQueSeContacto?.tokenNotifications ?: "",
+                            )
+                            showSuccessMessage = true
+                            contraofertaMode = false
+                            showContraofertaModal = true
+                        },
+                        containerColor = MaterialTheme.colorScheme.secondary
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Send,
+                            contentDescription = "Enviar contraoferta",
+                            tint = Color.White
+                        )
+                    }
                 }
             }
         }
@@ -157,7 +237,6 @@ fun CompradorOfertaScreen(
                 .padding(paddingValues)
         ) {
             if (isLoading) {
-                // Mostrar cargando
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -174,7 +253,6 @@ fun CompradorOfertaScreen(
                     }
                 }
             } else if (productos.isEmpty()) {
-                // No hay productos para mostrar
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -204,7 +282,9 @@ fun CompradorOfertaScreen(
                             modifier = Modifier.padding(16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            VendedorHeader(usuarioContactado?: Usuario())
+                            VendedorHeader(usuarioQueSeContacto ?: Usuario())
+
+                            MessageVendedor(message.contenido)
 
                             AnimatedVisibility(
                                 visible = contraofertaMode,
@@ -245,9 +325,11 @@ fun CompradorOfertaScreen(
                             if (contraofertaMode) {
                                 ProductoContraofertaItem(
                                     producto = productos[index],
-                                    contraprecio = contrapreciosMap[productos[index].idProducto] ?: productos[index].precio,
+                                    contraprecio = contrapreciosMap[productos[index].idProducto]
+                                        ?: productos[index].precio,
                                     onPrecioChange = { nuevoPrecio ->
-                                        contrapreciosMap = contrapreciosMap + (productos[index].idProducto to nuevoPrecio)
+                                        contrapreciosMap =
+                                            contrapreciosMap + (productos[index].idProducto to nuevoPrecio)
                                     }
                                 )
                             } else {
@@ -262,20 +344,35 @@ fun CompradorOfertaScreen(
 
                     // Botones de acción (solo visibles cuando no estamos en modo contraoferta)
                     AnimatedVisibility(
-                        visible = !contraofertaMode,
+                        visible = !contraofertaMode && !showSuccessMessage,
                         enter = fadeIn(),
                         exit = fadeOut()
                     ) {
                         Column(
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
+
+                            OutlinedTextField(
+                                value = mensaje,
+                                onValueChange = { mensaje = it },
+                                placeholder = { Text("Escribe tu mensaje...") },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(min = 64.dp),
+                                singleLine = false,
+                                keyboardOptions = KeyboardOptions.Default.copy(
+                                    imeAction = ImeAction.Done
+                                ),
+                                shape = RoundedCornerShape(12.dp),
+                            )
                             Button(
                                 onClick = {
+                                    showSuccessMessage = true
+                                    message.contenido = mensaje
                                     transaccionViewModel.compradorAceptaOferta(
-                                        idProductosWithPrecio,
-                                        usuarioContactado,
-                                        idComprador
+                                        message, usuarioQueSeContacto?.tokenNotifications ?: ""
                                     )
+                                    showAceptacionModal = true
                                 },
                                 modifier = Modifier.fillMaxWidth(),
                                 colors = ButtonDefaults.buttonColors(
@@ -291,7 +388,7 @@ fun CompradorOfertaScreen(
                                     tint = Color.Black
                                 )
                                 Text(
-                                    text = "Aceptar oferta",
+                                    text = "Aceptar",
                                     style = MaterialTheme.typography.bodyLarge,
                                     modifier = Modifier.padding(vertical = 8.dp),
                                     color = Color.Black
@@ -321,35 +418,37 @@ fun CompradorOfertaScreen(
                         enter = fadeIn() + scaleIn(),
                         exit = fadeOut() + scaleOut()
                     ) {
-                        Card(
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color(0xFFDFF7DF)
+                        Button(
+                            onClick = {
+                                navHostController.navigate("menu")
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary, // Usa primary como pediste
+                                contentColor = Color.White
                             ),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp)
+                            shape = RoundedCornerShape(4.dp) // Menos redondeado
                         ) {
-                            Row(
-                                modifier = Modifier.padding(16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                Icon(
-                                    Icons.Rounded.Check,
-                                    contentDescription = null,
-                                    tint = Color(0xFF1B5E20)
-                                )
-                                Text(
-                                    text = "Contraoferta enviada con éxito",
-                                    color = Color(0xFF1B5E20)
-                                )
-                            }
-                        }
-                    }
+                            Text(
+                                text = "Volver a la pantalla principal",
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                color = Color.Black
+                            )
+                        }                    }
                 }
             }
         }
     }
+}
+
+@Composable
+fun MessageVendedor(messageContent: String) {
+    Text(
+        text = messageContent,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+    )
 }
 
 @Composable
@@ -509,7 +608,9 @@ fun ProductoOfertaItem(producto: ProductoReciclable) {
                     )
 
                     // Mostrar unidad de medida
-                    if (producto.cantidad.toString().isNotBlank() && producto.unidadMedida.isNotBlank()) {
+                    if (producto.cantidad.toString()
+                            .isNotBlank() && producto.unidadMedida.isNotBlank()
+                    ) {
                         Text(
                             text = "• ${producto.cantidad} ${producto.unidadMedida}",
                             style = MaterialTheme.typography.bodySmall,
@@ -695,5 +796,180 @@ fun ProductoContraofertaItem(
                 }
             }
         }
+    }
+}
+// Modal para Aceptación de Oferta
+@Composable
+fun AceptacionOfertaModalContent(onNavigateClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
+        // Animación de check elegante
+        val rotationState by animateFloatAsState(
+            targetValue = 1f,
+            animationSpec = tween(
+                durationMillis = 800,
+                easing = LinearOutSlowInEasing
+            ),
+            label = "checkRotation"
+        )
+
+        Box(
+            modifier = Modifier
+                .size(120.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.CheckCircle,
+                contentDescription = "Oferta aceptada",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .size(80.dp)
+                    .graphicsLayer {
+                        rotationZ = 360f * rotationState
+                        scaleX = min(1f, rotationState * 1.2f)
+                        scaleY = min(1f, rotationState * 1.2f)
+                    }
+            )
+        }
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = "¡Oferta Aceptada!",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
+            Text(
+                text = "Tu aceptación de la oferta ha sido registrada con éxito. Pronto te contactaremos para coordinar los detalles.",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 3
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = onNavigateClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = Color.White
+            ),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text(
+                text = "Volver a la pantalla principal",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+    }
+}
+
+// Modal para Contraoferta Enviada
+@Composable
+fun ContraofertaEnviadaModalContent(onNavigateClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
+        // Animación para el icono de contraoferta
+        val rotationState by animateFloatAsState(
+            targetValue = 1f,
+            animationSpec = tween(
+                durationMillis = 1000,
+                easing = LinearOutSlowInEasing
+            ),
+            label = "swapIconRotation"
+        )
+
+        Box(
+            modifier = Modifier
+                .size(120.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.SwapHoriz,
+                contentDescription = "Contraoferta enviada",
+                tint = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier
+                    .size(80.dp)
+                    .graphicsLayer {
+                        rotationY = 360f * rotationState
+                        scaleX = min(1f, rotationState * 1.2f)
+                        scaleY = min(1f, rotationState * 1.2f)
+                    }
+            )
+        }
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = "¡Contraoferta Enviada!",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
+            Text(
+                text = "Tu contraoferta ha sido enviada al vendedor. Te notificaremos cuando recibamos una respuesta.",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 3
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = onNavigateClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.secondary,
+                contentColor = Color.White
+            ),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text(
+                text = "Volver a la pantalla principal",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }

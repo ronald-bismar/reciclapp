@@ -1,19 +1,18 @@
 package com.example.reciclapp.domain.usecases.mensaje
 
-import com.example.reciclapp.domain.entities.Usuario
+import com.example.reciclapp.domain.entities.Mensaje
 import com.example.reciclapp.domain.repositories.MensajeRepository
 import javax.inject.Inject
 
 class CompradorEnviaContraOfertaAVendedorUseCase @Inject constructor(private val mensajeRepository: MensajeRepository) {
     suspend operator fun invoke(
         contrapreciosMap: Map<String, Double>,
-        idComprador: String,
-        vendedor: Usuario,
+        mensaje: Mensaje,
+        tokenVendedor: String,
     ) {
         mensajeRepository.compradorEnviaContraOfertaAVendedor(
             contrapreciosMap,
-            idComprador,
-            vendedor,
+            mensaje, tokenVendedor,
         )
     }
 }

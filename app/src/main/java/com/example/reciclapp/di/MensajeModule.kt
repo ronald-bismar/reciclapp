@@ -11,6 +11,7 @@ import com.example.reciclapp.domain.usecases.mensaje.VendedorEnviaMensajeACompra
 import com.example.reciclapp.domain.usecases.mensajes.DeleteMensajeUseCase
 import com.example.reciclapp.domain.usecases.mensajes.GetMensajeUseCase
 import com.example.reciclapp.domain.usecases.mensajes.SaveMensajeUseCase
+import com.example.reciclapp.domain.usecases.mensajes.SendMessageUseCase
 import com.example.reciclapp.domain.usecases.mensajes.UpdateMensajeUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -90,5 +91,11 @@ object MensajeModule {
     @Singleton
     fun provideVendedorEnviaContraOfertaACompradorUseCase(repository: MensajeRepository): VendedorEnviaContraOfertaACompradorUseCase {
         return VendedorEnviaContraOfertaACompradorUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSenMessageUseCase(repository: MensajeRepository): SendMessageUseCase {
+        return SendMessageUseCase(repository)
     }
 }

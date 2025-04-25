@@ -1,6 +1,7 @@
 package com.example.reciclapp.presentation.ui.menu.ui.vistas
 
-import android.util.Log
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -35,9 +36,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -62,13 +67,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
+import com.example.reciclapp.presentation.SendingProductsState
 import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
+import com.example.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
 
 @Composable
 fun SendingProductsScreen(
@@ -78,98 +86,172 @@ fun SendingProductsScreen(
 
     val myUser = transaccionViewModel.myUser.value
     val vendedor = transaccionViewModel.usuarioContactado.collectAsState().value
-    val isLoading = transaccionViewModel.isLoading.collectAsState().value
     val productosSeleccionados = transaccionViewModel.productosSeleccionados.collectAsState().value
+    var mensaje by remember { mutableStateOf("") }
+    var showCompletedModal by remember { mutableStateOf(false) }
+    val state = transaccionViewModel.sendingProductsState.collectAsState()
+    val context = LocalContext.current
+
+    var messageButtonSend by remember { mutableStateOf("Enviar Mensaje") }
+
 
     val animatedContentAlpha by animateFloatAsState(
-        targetValue = if (isLoading) 0.6f else 1f,
+        targetValue = if (state.value == SendingProductsState.Loading) 0.6f else 1f,
         animationSpec = tween(durationMillis = 500),
         label = "contentAlpha"
     )
 
-    LaunchedEffect(Unit) {
-        transaccionViewModel.enviarOfertaAComprador()
-    }
-
-    LaunchedEffect(transaccionViewModel.isLoading) {
-        if (transaccionViewModel.isLoading.value) {
-            Log.d("SendingProductsScreen", "isLoading: ${transaccionViewModel.isLoading.value}")
-        }else{
-            Log.d("SendingProductsScreen", "isLoading: ${transaccionViewModel.isLoading.value}")
+    LaunchedEffect(state.value) {
+        when (val currentState = state.value) {
+            is SendingProductsState.Error -> { Toast.makeText(
+                context,
+                currentState.error,
+                Toast.LENGTH_SHORT
+            ).show() }
+            SendingProductsState.Success -> showCompletedModal = true
+            SendingProductsState.Loading -> messageButtonSend = "Enviando Mensaje..."
+            else -> {}
         }
     }
 
+    DisposableEffect(key1 = Unit) {
+        onDispose {
+            transaccionViewModel.resetSendingProductsState()
+        }
+    }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(16.dp)
-            .alpha(animatedContentAlpha),
-        verticalArrangement = Arrangement.Center,
-    ) {
-        // Header con título
-        Text(
-            text = "Enviando productos a comprador",
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(bottom = 24.dp),
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-
-        PerfilesConexion(
-            usuarioActual = myUser?: Usuario(),
-            vendedor = vendedor?: Usuario(),
-            isLoading = isLoading
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-
-        AnimatedVisibility(
-            visible = true,
-            enter = fadeIn(animationSpec = tween(500)) +
-                    expandVertically(animationSpec = tween(500)),
-            exit = fadeOut(animationSpec = tween(300))
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp)
+                .alpha(animatedContentAlpha),
+            verticalArrangement = Arrangement.Center,
         ) {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+            Column(
                 modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(16.dp)
+                    .alpha(animatedContentAlpha),
+                verticalArrangement = Arrangement.Center,
             ) {
-                items(productosSeleccionados.size) { index ->
-                    ProductoEnvioItem(
-                        producto = productosSeleccionados[index],
-                        onClick = {  }
+                // Header con título
+                Text(
+                    text = "Enviando productos a comprador",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.padding(bottom = 24.dp),
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+
+                PerfilesConexion(
+                    usuarioActual = myUser ?: Usuario(),
+                    vendedor = vendedor ?: Usuario(),
+                    isLoading = state.value == SendingProductsState.Loading
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                CampoDeMensajeOpcional(mensaje, onMensajeChange = { mensaje = it })
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                AnimatedVisibility(
+                    visible = true,
+                    enter = fadeIn(animationSpec = tween(500)) +
+                            expandVertically(animationSpec = tween(500)),
+                    exit = fadeOut(animationSpec = tween(300))
+                ) {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                    ) {
+                        items(productosSeleccionados.size) { index ->
+                            ProductoEnvioItem(
+                                producto = productosSeleccionados[index],
+                                onClick = { }
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Button(
+                    onClick = {
+                        transaccionViewModel.enviarOfertaAComprador(mensaje)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = messageButtonSend,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
+
         }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Button(
-            onClick = {  },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary
-            ),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text(
-                text = "Enviando Mensaje",
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold
+        if (showCompletedModal) {
+            CompletedTransactionModal(
+                onNavigate = {
+                    showCompletedModal = false
+                    navHostController.navigate(PANTALLAPRINCIPAL) {
+                        popUpTo(PANTALLAPRINCIPAL) { inclusive = true }
+                    }
+                }
             )
         }
     }
+}
+
+@Composable
+fun CampoDeMensajeOpcional(mensaje: String, onMensajeChange: (String) -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            text = "Mensaje",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Medium
+        )
+        OutlinedTextField(
+            value = mensaje,
+            onValueChange = onMensajeChange,
+            placeholder = { Text("Mensaje opcional...") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp),
+            minLines = 2,
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = Color.Transparent, // Borde no enfocado transparente
+                focusedBorderColor = Color.Transparent,   // Borde enfocado transparente
+                disabledBorderColor = Color.Transparent,  // Borde deshabilitado transparente
+                errorBorderColor = Color.Transparent      // Borde de error transparente
+            ),
+            shape = RoundedCornerShape(8.dp),
+            textStyle = LocalTextStyle.current.copy(
+                fontSize = 18.sp // Tamaño del texto ingresado
+            )
+        )
+    }
+
+
 }
 
 @Composable
@@ -389,4 +471,107 @@ fun ShimmerEffect(
         modifier = modifier
             .background(brush)
     )
+}
+
+@Composable
+fun CompletedTransactionModal(
+    onNavigate: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f)),
+        contentAlignment = Alignment.Center
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(0.85f)
+                .pointerInput(Unit) {
+                    detectTapGestures { }  // Evitar que los clics en la tarjeta cierren el modal
+                },
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            ),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 6.dp
+            ),
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // Círculo de éxito con animación
+                Box(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .background(
+                            color = Color(0xFF4CAF50).copy(alpha = 0.1f),
+                            shape = CircleShape
+                        )
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    // Puedes usar un ícono de checkmark o dibujar uno con Canvas
+                    Canvas(modifier = Modifier.size(40.dp)) {
+                        drawLine(
+                            color = Color(0xFF4CAF50),
+                            start = Offset(size.width * 0.2f, size.height * 0.5f),
+                            end = Offset(size.width * 0.45f, size.height * 0.7f),
+                            strokeWidth = 8f,
+                            cap = StrokeCap.Round
+                        )
+                        drawLine(
+                            color = Color(0xFF4CAF50),
+                            start = Offset(size.width * 0.45f, size.height * 0.7f),
+                            end = Offset(size.width * 0.8f, size.height * 0.3f),
+                            strokeWidth = 8f,
+                            cap = StrokeCap.Round
+                        )
+                    }
+                }
+
+                // Título y mensaje
+                Text(
+                    text = "¡Transacción Completada!",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+
+                Text(
+                    text = "Tu oferta ha sido enviada exitosamente al comprador",
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Botón para continuar
+                Button(
+                    onClick = onNavigate,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "Continuar",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+    }
+}
+
+fun errorState(context: Context) {
+    Toast.makeText(context, "Error al enviar el mensaje", Toast.LENGTH_SHORT).show()
 }

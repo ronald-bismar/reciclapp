@@ -15,8 +15,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.example.reciclapp.presentation.navigation.NavGraph
-import com.example.reciclapp.presentation.ui.common.InAppNotification
+import com.example.reciclapp.presentation.ui.menu.ui.vistas.components.InAppNotification
 import com.example.reciclapp.theme.ReciclAppTheme
+import com.example.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -26,6 +27,7 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var getUserPreferencesUseCase: GetUserPreferencesUseCase
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,21 +47,28 @@ class MainActivity : ComponentActivity() {
                         )
                     }
 
-                    // Añadir InAppNotification en la parte superior de la jerarquía
-                    InAppNotification { mensaje ->
-                        Log.d("NotificationEntry", "Message received: $mensaje")
-                        val idProductosConPrecio: String = mensaje.idProductoConPrecio
-                        val idVendedor: String = mensaje.idVendedor
-                        val idComprador: String = mensaje.idComprador
-
-                        Log.d("NotificationEntry", "idProductosConPrecio: $idProductosConPrecio")
-                        Log.d("NotificationEntry", "idVendedor: $idVendedor")
-                        Log.d("NotificationEntry", "idComprador: $idComprador")
-
-                        navController?.let {
-                            navController!!.navigate("CompradorOfertaScreen/$idProductosConPrecio/$idVendedor/$idComprador")
+                    InAppNotification(
+                        // Para notificaciones regulares
+                        onNotificationClick = { mensaje ->
+                            Log.d(
+                                "NotificationEntry",
+                                "Regular message clicked: ${mensaje.titleMessage}"
+                            )
+                            navController?.let {
+                                navController!!.navigate("CompradorOfertaScreen/${mensaje.idMensaje}")
+                            }
+                        },
+                        // Para notificaciones de oferta aceptada (botón de ubicación)
+                        onNotificationAccepted = { mensaje ->
+                            Log.d(
+                                "NotificationEntry",
+                                "Offer accepted - showing location: ${mensaje.titleMessage}"
+                            )
+                            navController?.let {
+                                navController!!.navigate(PANTALLAPRINCIPAL)
+                            }
                         }
-                    }
+                    )
                 }
             }
         }
