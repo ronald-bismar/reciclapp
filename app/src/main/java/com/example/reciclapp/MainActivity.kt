@@ -67,6 +67,12 @@ class MainActivity : ComponentActivity() {
                             navController?.let {
                                 navController!!.navigate(PANTALLAPRINCIPAL)
                             }
+                        }, onSendNewMessage = { mensaje ->
+                            Log.d(
+                                "NotificationEntry",
+                                "New message - showing location: ${mensaje.idTransaccion}"
+                            )
+                            navController?.navigate("chatScreen/${mensaje.idTransaccion}")
                         }
                     )
                 }

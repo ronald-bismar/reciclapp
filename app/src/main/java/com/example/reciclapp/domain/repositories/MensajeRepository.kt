@@ -2,7 +2,7 @@ package com.example.reciclapp.domain.repositories
 
 import com.example.reciclapp.domain.entities.Mensaje
 import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.domain.entities.Usuario
+import kotlinx.coroutines.flow.Flow
 
 interface MensajeRepository {
     suspend fun getMensajeById(idMensaje: String): Mensaje?
@@ -12,15 +12,14 @@ interface MensajeRepository {
     suspend fun sendMessage(message: Mensaje, receiverToken: String)
     suspend fun vendedorEnviaOfertaAComprador(
         productos: List<ProductoReciclable>,
-        vendedor: Usuario,
-        comprador: Usuario,
-        message: String
+        message: Mensaje,
+        tokenComprador: String
     )
 
     suspend fun compradorEnviaOfertaAVendedor(
         productos: List<ProductoReciclable>,
-        comprador: Usuario,
-        vendedor: Usuario
+        message: Mensaje,
+        tokenVendedor: String
     )
 
     suspend fun vendedorEnviaContraOfertaAComprador(
@@ -37,4 +36,7 @@ interface MensajeRepository {
 
     suspend fun obtenerMensajesPorUsuario(idUsuario: String, onlyNews: Boolean): List<Mensaje>
 
+    suspend fun getMessagesByChat(idTransaccion: String): List<Mensaje>
+
+    suspend fun escucharNuevosMensajes(idTransaccion: String, idReceptor: String): Flow<Mensaje>
 }

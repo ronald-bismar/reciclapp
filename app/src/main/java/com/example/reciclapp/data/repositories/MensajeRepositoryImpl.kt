@@ -1,14 +1,19 @@
 package com.example.reciclapp.data.repositories
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.example.reciclapp.data.services.notification.NotificationService
 import com.example.reciclapp.domain.entities.Mensaje
 import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.repositories.MensajeRepository
 import com.example.reciclapp.util.GenerateID
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 private const val TAG = "MensajeRepositoryImpl"
@@ -52,6 +57,7 @@ class MensajeRepositoryImpl @Inject constructor(
             .await()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun sendMessage(message: Mensaje, receiverToken: String) {
         val idMensaje = GenerateID()
 
@@ -64,51 +70,49 @@ class MensajeRepositoryImpl @Inject constructor(
             )
         )
 
-        message.apply { this.idMensaje = idMensaje }
+        message.apply {
+            this.idMensaje = idMensaje
+            this.fecha = LocalDateTime.now().toString()
+        }
 
         val result = notificationService.sendNotification(bodyNotification)
         Log.d(TAG, "estado envio: $result")
         saveMensaje(message)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun vendedorEnviaOfertaAComprador(
         productos: List<ProductoReciclable>,
-        vendedor: Usuario,
-        comprador: Usuario,
-        message: String
+        message: Mensaje,
+        tokenComprador: String
     ) {
 
-        val mensaje = Mensaje().apply {
-            this.idMensaje = idMensaje
-            this.idComprador = comprador.idUsuario
-            this.idVendedor = vendedor.idUsuario
+        message.apply {
             this.contenido =
-                if (message.isNotEmpty()) message else "Hola, deseo vender este reciclaje"
+                if (this.contenido.isNotEmpty()) this.contenido else "Hola, deseo vender este reciclaje"
             this.idProductoConPrecio =
                 productos.joinToString(separator = ",") { "${it.idProducto}:${it.precio}" }
         }
 
-        sendMessage(mensaje, comprador.tokenNotifications)
-        saveMensaje(mensaje)
+        sendMessage(message, tokenComprador)
+        saveMensaje(message)
     }
 
     override suspend fun compradorEnviaOfertaAVendedor(
         productos: List<ProductoReciclable>,
-        comprador: Usuario,
-        vendedor: Usuario
+        message: Mensaje,
+        tokenVendedor: String
     ) {
 
-        val mensaje = Mensaje().apply {
-            this.idMensaje = idMensaje
-            this.idComprador = comprador.idUsuario
-            this.idVendedor = vendedor.idUsuario
-            this.contenido = "Un comprador envio una oferta por tus productos"
+        message.apply {
+            this.contenido =
+                if (this.contenido.isNotEmpty()) this.contenido else "Un comprador envio una oferta por tus productos"
             this.idProductoConPrecio =
                 productos.joinToString(separator = ",") { "${it.idProducto}:${it.precio}" }
         }
 
-        sendMessage(mensaje, vendedor.tokenNotifications)
-        saveMensaje(mensaje)
+        sendMessage(message, tokenVendedor)
+        saveMensaje(message)
     }
 
     override suspend fun vendedorEnviaContraOfertaAComprador(
@@ -132,18 +136,28 @@ class MensajeRepositoryImpl @Inject constructor(
         mensaje: Mensaje,
         tokenVendedor: String
     ) {
+        // Convertir el mapa de contraprecios a formato "idProducto:precio,idProducto:precio,..."
+        val productosConNuevosPrecios = contrapreciosMap.entries
+            .joinToString(",") { (idProducto, precioOfrecido) ->
+                "$idProducto:$precioOfrecido"
+            }
 
-        val productosConNuevosPrecios = contrapreciosMap.entries.joinToString(",") { (id, precio) ->
-            "$id:$precio"
-        } // "idProducto:precio,idProducto:precio,idProducto:precio,idProducto:precio"
+        // Guardar IDs originales antes de intercambiarlos
+        val idComprador = mensaje.idEmisor
+        val idVendedor = mensaje.idReceptor
 
+        // Actualizar el mensaje con los nuevos precios e invertir emisor/receptor
+        mensaje.apply {
+            this.idProductoConPrecio = productosConNuevosPrecios
+            // Intercambiar emisor y receptor para la respuesta
+            this.idEmisor = idComprador
+            this.idReceptor = idVendedor
+        }
 
-        mensaje.apply { this.idProductoConPrecio = productosConNuevosPrecios }
-
+        // Enviar notificación al vendedor y guardar el mensaje en la base de datos
         sendMessage(mensaje, tokenVendedor)
         saveMensaje(mensaje)
     }
-
     override suspend fun obtenerMensajesPorUsuario(
         idUsuario: String,
         onlyNewsMessagge: Boolean
@@ -173,5 +187,47 @@ class MensajeRepositoryImpl @Inject constructor(
         }
 
         return mensajes.distinctBy { it.idMensaje }
+    }
+
+    override suspend fun getMessagesByChat(
+        idTransaccion: String
+    ): List<Mensaje> {
+        val mensajes = mutableListOf<Mensaje>()
+
+        var query = service.collection("mensajes")
+            .whereEqualTo("idTransaccion", idTransaccion).get().await()
+
+        Log.d(TAG, "getMessagesByChat: $query")
+
+        query.documents.forEach { document ->
+            Log.d(TAG, "getMessagesByChat: $document")
+            document.toObject(Mensaje::class.java)?.let { mensajes.add(it) }
+        }
+
+        return mensajes.distinctBy { it.idMensaje }.sortedBy { it.fecha }
+    }
+
+    override suspend fun escucharNuevosMensajes(
+        idTransaccion: String,
+        idReceptor: String
+    ): Flow<Mensaje> =
+    callbackFlow {
+        val event = service.collection("mensajes").whereEqualTo("idTransaccion", idTransaccion).whereEqualTo("idReceptor", idTransaccion)
+        val subscription = event.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                this.trySend(Mensaje()).isSuccess
+                Log.e(TAG, "Error al escuchar mensajes: ${error.message}")
+                return@addSnapshotListener
+            }
+            if (snapshot != null) {
+                for (document in snapshot.documentChanges) {
+                    val mensaje = document.document.toObject(Mensaje::class.java)
+                    if (mensaje.idReceptor == idReceptor) {
+                        this.trySend(mensaje).isSuccess
+                    }
+                }
+            }
+        }
+        awaitClose { subscription.remove() }
     }
 }

@@ -83,6 +83,7 @@ import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
+import com.example.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
 import kotlin.math.min
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -135,7 +136,7 @@ fun CompradorOfertaScreen(
             AceptacionOfertaModalContent(
                 onNavigateClick = {
                     showAceptacionModal = false
-                    navHostController.navigate("menu")
+                    navHostController.navigate(PANTALLAPRINCIPAL)
                 }
             )
         }
@@ -152,7 +153,7 @@ fun CompradorOfertaScreen(
             ContraofertaEnviadaModalContent(
                 onNavigateClick = {
                     showContraofertaModal = false
-                    navHostController.navigate("menu")
+                    navHostController.navigate(PANTALLAPRINCIPAL)
                 }
             )
         }
@@ -420,7 +421,7 @@ fun CompradorOfertaScreen(
                     ) {
                         Button(
                             onClick = {
-                                navHostController.navigate("menu")
+                                navHostController.navigate(PANTALLAPRINCIPAL)
                             },
                             modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(

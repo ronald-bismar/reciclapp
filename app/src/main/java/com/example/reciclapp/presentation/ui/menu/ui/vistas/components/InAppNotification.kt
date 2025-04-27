@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
@@ -49,7 +50,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InAppNotification(onNotificationClick: (Mensaje) -> Unit = {}, onNotificationAccepted : (Mensaje) -> Unit = {}) {
+fun InAppNotification(onNotificationClick: (Mensaje) -> Unit = {}, onNotificationAccepted : (Mensaje) -> Unit = {}, onSendNewMessage: (Mensaje) -> Unit = {}) {
     val scope = rememberCoroutineScope()
     var currentNotification by remember { mutableStateOf<Mensaje?>(null) }
     var isVisible by remember { mutableStateOf(false) }
@@ -85,6 +86,13 @@ fun InAppNotification(onNotificationClick: (Mensaje) -> Unit = {}, onNotificatio
                     mensaje = mensaje,
                     onVerUbicacionClick = {
                         onNotificationAccepted(mensaje)
+                        scope.launch {
+                            bottomSheetState.hide()
+                            showBottomSheet = false
+                        }
+                    },
+                    onSendNewMessage = {
+                        onSendNewMessage(mensaje)
                         scope.launch {
                             bottomSheetState.hide()
                             showBottomSheet = false
@@ -165,6 +173,7 @@ fun InAppNotification(onNotificationClick: (Mensaje) -> Unit = {}, onNotificatio
 fun OfertaAceptadaBottomSheet(
     mensaje: Mensaje,
     onVerUbicacionClick: () -> Unit,
+    onSendNewMessage: () -> Unit,
     onDismiss: () -> Unit
 ) {
     Column(
@@ -248,6 +257,20 @@ fun OfertaAceptadaBottomSheet(
                 modifier = Modifier.padding(end = 8.dp)
             )
             Text("Ver ubicación del comprador")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Botón para ver ubicación
+        Button(
+            onClick = onSendNewMessage,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Icon(
+                imageVector = Icons.Default.Message,
+                contentDescription = null,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Text("Enviar nuevo mensaje")
         }
 
         Spacer(modifier = Modifier.height(16.dp))

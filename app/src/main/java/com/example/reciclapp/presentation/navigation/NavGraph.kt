@@ -27,6 +27,7 @@ import com.example.reciclapp.presentation.ui.drawer.ui.MisionVisionScreen
 import com.example.reciclapp.presentation.ui.drawer.ui.SimpleAyudaScreen
 import com.example.reciclapp.presentation.ui.login.ui.LoginScreen
 import com.example.reciclapp.presentation.ui.login.ui.LoginViewModel
+import com.example.reciclapp.presentation.ui.menu.ui.ChatScreen
 import com.example.reciclapp.presentation.ui.menu.ui.CompradorOfertaScreen
 import com.example.reciclapp.presentation.ui.menu.ui.IntroductionScreen
 import com.example.reciclapp.presentation.ui.menu.ui.PantallaPresentacion
@@ -191,16 +192,28 @@ fun NavGraph(
         }
 
         composable("SendingProductsScreen") {
-            SendingProductsScreen(navHostController = mainNavHostController,transaccionViewModel = transaccionViewModel)
+            SendingProductsScreen(
+                navHostController = mainNavHostController,
+                transaccionViewModel = transaccionViewModel
+            )
         }
 
-        composable(route = "CompradorOfertaScreen/{idMensaje}",
+        composable(
+            route = "CompradorOfertaScreen/{idMensaje}",
             arguments = listOf(
                 navArgument("idMensaje") { type = NavType.StringType })
         ) { backStackEntry ->
             val idMensaje = backStackEntry.arguments?.getString("idMensaje") ?: ""
 
-            CompradorOfertaScreen (idMensaje, transaccionViewModel, mainNavHostController)
+            CompradorOfertaScreen(idMensaje, transaccionViewModel, mainNavHostController)
+        }
+
+        composable(
+            "chatScreen/{idTransaccion}",
+            arguments = listOf(navArgument("idTransaccion") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val idTransaccion = backStackEntry.arguments?.getString("idTransaccion") ?: ""
+            ChatScreen(idTransaccion, transaccionViewModel)
         }
     }
 }

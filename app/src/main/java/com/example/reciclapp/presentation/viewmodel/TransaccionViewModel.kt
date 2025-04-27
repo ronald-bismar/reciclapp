@@ -13,9 +13,12 @@ import com.example.reciclapp.domain.repositories.CompradorRepository
 import com.example.reciclapp.domain.repositories.ProductoRepository
 import com.example.reciclapp.domain.usecases.mensaje.CompradorEnviaContraOfertaAVendedorUseCase
 import com.example.reciclapp.domain.usecases.mensaje.CompradorEnviaMensajeAVendedorUseCase
+import com.example.reciclapp.domain.usecases.mensaje.EscucharNuevosMensajesUseCase
+import com.example.reciclapp.domain.usecases.mensaje.GetMessagesByChatUseCase
 import com.example.reciclapp.domain.usecases.mensaje.VendedorEnviaContraOfertaACompradorUseCase
 import com.example.reciclapp.domain.usecases.mensaje.VendedorEnviaMensajeACompradorUseCase
 import com.example.reciclapp.domain.usecases.mensajes.GetMensajeUseCase
+import com.example.reciclapp.domain.usecases.mensajes.SendMessageUseCase
 import com.example.reciclapp.domain.usecases.producto.CompradorAceptaOfertaUseCase
 import com.example.reciclapp.domain.usecases.producto.MarcarProductoComoVendidoUseCase
 import com.example.reciclapp.domain.usecases.producto.SumarPuntosDeProductosUseCase
@@ -46,7 +49,10 @@ class TransaccionViewModel @Inject constructor(
     private val compradorAceptaOfertaUseCase: CompradorAceptaOfertaUseCase,
     private val vendedorAceptaOfertaUseCase: CompradorAceptaOfertaUseCase,
     private val getUsuarioUseCase: GetUsuarioUseCase,
-    private val getMensajeUseCase: GetMensajeUseCase
+    private val getMensajeUseCase: GetMensajeUseCase,
+    private val getMessagesByChatUseCase: GetMessagesByChatUseCase,
+    private val sendMessageUseCase: SendMessageUseCase,
+    private val escucharNuevosMensajesUseCase: EscucharNuevosMensajesUseCase
 ) : ViewModel() {
 
     init {
@@ -87,6 +93,12 @@ class TransaccionViewModel @Inject constructor(
     private val _message = MutableStateFlow<Mensaje>(Mensaje())
     val message: StateFlow<Mensaje> get() = _message
 
+    private val _messagesBotUsers = MutableStateFlow<MutableList<Mensaje>>(mutableListOf())
+    val messagesBotUsers: StateFlow<MutableList<Mensaje>> get() = _messagesBotUsers
+
+    private val _newMessagesChat = MutableStateFlow<List<Mensaje>>(emptyList())
+    val newMessagesChat: StateFlow<List<Mensaje>> get() = _newMessagesChat
+
     private lateinit var _newTransaccionPendiente: TransaccionPendiente
 
     private val _sendingProductsState =
@@ -97,6 +109,12 @@ class TransaccionViewModel @Inject constructor(
         viewModelScope.launch {
             val usuario = getUserPreferencesUseCase.execute()
             _myUser.postValue(usuario)
+        }
+    }
+
+    fun getMessagesByChat(idTransaccion: String) {
+        viewModelScope.launch {
+            _messagesBotUsers.value = getMessagesByChatUseCase(idTransaccion).toMutableList()
         }
     }
 
@@ -192,23 +210,28 @@ class TransaccionViewModel @Inject constructor(
 
     suspend fun sendNotificationToComprador(message: String) {
         try {
+            val mensaje = Mensaje().apply {
+                this.idEmisor = _myUser.value?.idUsuario ?: ""
+                this.idReceptor = _usuarioContactado.value?.idUsuario ?: ""
+                this.contenido = message
+                this.idTransaccion = _newTransaccionPendiente.idTransaccion
+            }
             vendedorEnviaMensajeACompradorUseCase(
                 productos = _productosSeleccionados.value,
-                vendedor = _myUser.value!!,
-                comprador = _usuarioContactado.value!!,
-                message = message
+                message = mensaje,
+                tokenComprador = _usuarioContactado.value?.tokenNotifications ?: ""
             )
         } catch (e: Exception) {
             throw e
         }
     }
 
-    fun enviarOfertaAVendedor() {
+    fun enviarOfertaAVendedor(message: String = "") {
         _isLoading.value = true
         viewModelScope.launch {
             runCatching {
                 guardarTransaccionPendiente()
-                sendNotificationToVendedor()
+                sendNotificationToVendedor(message)
             }.onSuccess {
                 Log.d(TAG, "Transacción guardada correctamente")
             }.onFailure { e ->
@@ -219,12 +242,18 @@ class TransaccionViewModel @Inject constructor(
         }
     }
 
-    suspend fun sendNotificationToVendedor() {
+    suspend fun sendNotificationToVendedor(message: String) {
         try {
+            val mensaje = Mensaje().apply {
+                this.idEmisor =  _myUser.value?.idUsuario ?: ""
+                this.idReceptor = _usuarioContactado.value?.idUsuario ?: ""
+                this.contenido = message
+                this.idTransaccion = _newTransaccionPendiente.idTransaccion
+            }
             compradorEnviaMensajeAVendedorUseCase(
                 productos = _productosSeleccionados.value,
-                vendedor = _myUser.value!!,
-                comprador = _usuarioContactado.value!!
+                message = mensaje,
+                tokenVendedor = _usuarioContactado.value?.tokenNotifications ?: ""
             )
         } catch (e: Exception) {
             Log.e("ViewModel", "Error enviando notificación", e)
@@ -240,7 +269,7 @@ class TransaccionViewModel @Inject constructor(
 
                 getUserAndProductsForTransaction(
                     messageResult.idProductoConPrecio,
-                    messageResult.idVendedor
+                    messageResult.idEmisor
                 )
             }.onSuccess {
                 Log.d(TAG, "Datos obtenidos con éxito")
@@ -282,7 +311,8 @@ class TransaccionViewModel @Inject constructor(
 
             Log.d("MensajeViewModel", "IDs de productos: $idsProductos")
 
-            val productosConPreciosPropuestos = productoRepository.obtenerProductosPorIds(idsProductos) //Modificamos los precios por los que nos enviaron
+            val productosConPreciosPropuestos =
+                productoRepository.obtenerProductosPorIds(idsProductos) //Modificamos los precios por los que nos enviaron
 
             for (producto in productosConPreciosPropuestos) {
                 producto.apply {
@@ -299,7 +329,7 @@ class TransaccionViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getUserForTransaction(idUsuario: String) {
+    suspend fun getUserForTransaction(idUsuario: String) {
         try {
             _usuarioContactado.value = getUsuarioUseCase.execute(idUsuario)
         } catch (e: Exception) {
@@ -372,5 +402,23 @@ class TransaccionViewModel @Inject constructor(
 
     fun resetSendingProductsState() {
         _sendingProductsState.value = SendingProductsState.InitialState
+    }
+
+    fun sendMessage(message: Mensaje, receiverToken: String) {
+        viewModelScope.launch {
+            Log.d(TAG, "Enviando mensaje 1")
+            sendMessageUseCase(message, receiverToken)
+        }
+    }
+
+    fun escucharNuevosMensajes(idTransaccion: String, idReceptor: String){
+        viewModelScope.launch {
+            escucharNuevosMensajesUseCase(idTransaccion, idReceptor).collect {
+                nuevomensaje ->
+                _messagesBotUsers.value.add(nuevomensaje)
+                _messagesBotUsers.value = _messagesBotUsers.value.toMutableList()
+                Log.d(TAG, "escucharNuevosMensajes: $nuevomensaje")
+            }
+        }
     }
 }

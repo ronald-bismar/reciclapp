@@ -5,6 +5,7 @@ import com.example.reciclapp.data.services.notification.NotificationService
 import com.example.reciclapp.domain.repositories.MensajeRepository
 import com.example.reciclapp.domain.usecases.mensaje.CompradorEnviaContraOfertaAVendedorUseCase
 import com.example.reciclapp.domain.usecases.mensaje.CompradorEnviaMensajeAVendedorUseCase
+import com.example.reciclapp.domain.usecases.mensaje.GetMessagesByChatUseCase
 import com.example.reciclapp.domain.usecases.mensaje.ObtenerMensajePorUsuarioUseCase
 import com.example.reciclapp.domain.usecases.mensaje.VendedorEnviaContraOfertaACompradorUseCase
 import com.example.reciclapp.domain.usecases.mensaje.VendedorEnviaMensajeACompradorUseCase
@@ -97,5 +98,11 @@ object MensajeModule {
     @Singleton
     fun provideSenMessageUseCase(repository: MensajeRepository): SendMessageUseCase {
         return SendMessageUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetMessagesByChatUseCase(repository: MensajeRepository): GetMessagesByChatUseCase {
+        return GetMessagesByChatUseCase(repository)
     }
 }

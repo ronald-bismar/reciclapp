@@ -1,6 +1,6 @@
 package com.example.reciclapp.util
 
 object NameRoutes {
-    val QRSCANNER = "QRScanner"
-    val PANTALLAPRINCIPAL = "menu"
+    const val QRSCANNER = "QRScanner"
+    const val PANTALLAPRINCIPAL = "PantallaPrincipal"
 }
