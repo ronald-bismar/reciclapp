@@ -1,6 +1,5 @@
 package com.example.reciclapp.presentation.ui.menu.ui.vistas
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
@@ -75,25 +74,27 @@ import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.SendingProductsState
+import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.example.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
 
 @Composable
 fun SendingProductsScreen(
     navHostController: NavController,
-    transaccionViewModel: TransaccionViewModel
+    transaccionViewModel: TransaccionViewModel,
+    mensajeViewModel: MensajeViewModel
 ) {
 
     val myUser = transaccionViewModel.myUser.value
     val vendedor = transaccionViewModel.usuarioContactado.collectAsState().value
     val productosSeleccionados = transaccionViewModel.productosSeleccionados.collectAsState().value
+    val state = mensajeViewModel.sendingProductsState.collectAsState()
+
     var mensaje by remember { mutableStateOf("") }
     var showCompletedModal by remember { mutableStateOf(false) }
-    val state = transaccionViewModel.sendingProductsState.collectAsState()
-    val context = LocalContext.current
-
     var messageButtonSend by remember { mutableStateOf("Enviar Mensaje") }
 
+    val context = LocalContext.current
 
     val animatedContentAlpha by animateFloatAsState(
         targetValue = if (state.value == SendingProductsState.Loading) 0.6f else 1f,
@@ -116,7 +117,7 @@ fun SendingProductsScreen(
 
     DisposableEffect(key1 = Unit) {
         onDispose {
-            transaccionViewModel.resetSendingProductsState()
+            mensajeViewModel.resetSendingProductsState()
         }
     }
 
@@ -158,7 +159,7 @@ fun SendingProductsScreen(
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                CampoDeMensajeOpcional(mensaje, onMensajeChange = { mensaje = it })
+                CampoDeMensaje(mensaje, onMensajeChange = { mensaje = it })
 
                 Spacer(modifier = Modifier.weight(1f))
 
@@ -187,7 +188,7 @@ fun SendingProductsScreen(
 
                 Button(
                     onClick = {
-                        transaccionViewModel.enviarOfertaAComprador(mensaje)
+                        mensajeViewModel.enviarOfertaAComprador(mensaje)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -220,7 +221,7 @@ fun SendingProductsScreen(
 }
 
 @Composable
-fun CampoDeMensajeOpcional(mensaje: String, onMensajeChange: (String) -> Unit) {
+fun CampoDeMensaje(mensaje: String, onMensajeChange: (String) -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -570,8 +571,4 @@ fun CompletedTransactionModal(
             }
         }
     }
-}
-
-fun errorState(context: Context) {
-    Toast.makeText(context, "Error al enviar el mensaje", Toast.LENGTH_SHORT).show()
 }

@@ -47,6 +47,7 @@ import com.example.reciclapp.presentation.ui.registro.ui.RegistroScreen
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroViewModel
 import com.example.reciclapp.presentation.ui.splash.SplashScreenContent
 import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
+import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.example.reciclapp.presentation.viewmodel.UbicacionViewModel
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
@@ -71,6 +72,7 @@ fun NavGraph(
     val compradoresViewModel: CompradoresViewModel = hiltViewModel()
     val transaccionViewModel: TransaccionViewModel = hiltViewModel()
     val ubicacionViewModel: UbicacionViewModel = hiltViewModel()
+    val mensajeViewModel: MensajeViewModel = hiltViewModel()
 
     var nextScreen by remember { mutableStateOf("splash") }
     var usuario by remember { mutableStateOf(Usuario()) }
@@ -176,7 +178,7 @@ fun NavGraph(
         }
 
         composable("QRGeneratorScreen") {
-            QRGeneratorScreen(transaccionViewModel, mainNavHostController)
+            QRGeneratorScreen(transaccionViewModel,mensajeViewModel, mainNavHostController)
         }
 
         composable("TransaccionesPendientes") {
@@ -194,7 +196,8 @@ fun NavGraph(
         composable("SendingProductsScreen") {
             SendingProductsScreen(
                 navHostController = mainNavHostController,
-                transaccionViewModel = transaccionViewModel
+                transaccionViewModel = transaccionViewModel,
+                mensajeViewModel = mensajeViewModel
             )
         }
 
@@ -205,7 +208,7 @@ fun NavGraph(
         ) { backStackEntry ->
             val idMensaje = backStackEntry.arguments?.getString("idMensaje") ?: ""
 
-            CompradorOfertaScreen(idMensaje, transaccionViewModel, mainNavHostController)
+            CompradorOfertaScreen(idMensaje, mensajeViewModel, mainNavHostController)
         }
 
         composable(
@@ -213,7 +216,7 @@ fun NavGraph(
             arguments = listOf(navArgument("idTransaccion") { type = NavType.StringType })
         ) { backStackEntry ->
             val idTransaccion = backStackEntry.arguments?.getString("idTransaccion") ?: ""
-            ChatScreen(idTransaccion, transaccionViewModel)
+            ChatScreen(idTransaccion, mensajeViewModel)
         }
     }
 }

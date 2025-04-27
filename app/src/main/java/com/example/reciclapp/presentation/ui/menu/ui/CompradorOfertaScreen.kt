@@ -82,7 +82,7 @@ import coil.request.ImageRequest
 import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
+import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.example.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
 import kotlin.math.min
 
@@ -90,17 +90,17 @@ import kotlin.math.min
 @Composable
 fun CompradorOfertaScreen(
     idMensaje: String,
-    transaccionViewModel: TransaccionViewModel,
+    mensajeViewModel: MensajeViewModel,
     navHostController: NavHostController
 ) {
     var contraofertaMode by remember { mutableStateOf(false) }
     var contrapreciosMap by remember { mutableStateOf(mapOf<String, Double>()) }
     var showSuccessMessage by remember { mutableStateOf(false) }
 
-    val isLoading by transaccionViewModel.isLoading.collectAsState()
-    val productos by transaccionViewModel.productos.collectAsState()
-    val usuarioQueSeContacto by transaccionViewModel.usuarioContactado.collectAsState()
-    val message by transaccionViewModel.message.collectAsState()
+    val isLoading by mensajeViewModel.isLoading.collectAsState()
+    val productos by mensajeViewModel.productos.collectAsState()
+    val usuarioQueSeContacto by mensajeViewModel.usuarioContactado.collectAsState()
+    val message by mensajeViewModel.message.collectAsState()
 
     var showAceptacionModal by remember { mutableStateOf(false) }
     var showContraofertaModal by remember { mutableStateOf(false) }
@@ -114,7 +114,7 @@ fun CompradorOfertaScreen(
     var mensaje by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
-        transaccionViewModel.getMessage(idMensaje)
+        mensajeViewModel.getMessage(idMensaje)
     }
 
     val inicializarContraprecios = {
@@ -211,7 +211,7 @@ fun CompradorOfertaScreen(
                     FloatingActionButton(
                         onClick = {
                             // Enviar contraoferta
-                            transaccionViewModel.enviarContraofertaAVendedor(
+                            mensajeViewModel.enviarContraofertaAVendedor(
                                 contrapreciosMap,
                                 message,
                                 usuarioQueSeContacto?.tokenNotifications ?: "",
@@ -370,7 +370,7 @@ fun CompradorOfertaScreen(
                                 onClick = {
                                     showSuccessMessage = true
                                     message.contenido = mensaje
-                                    transaccionViewModel.compradorAceptaOferta(
+                                    mensajeViewModel.compradorAceptaOferta(
                                         message, usuarioQueSeContacto?.tokenNotifications ?: ""
                                     )
                                     showAceptacionModal = true

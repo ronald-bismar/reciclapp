@@ -43,6 +43,7 @@ import androidx.core.graphics.createBitmap
 import androidx.core.graphics.set
 import androidx.navigation.NavHostController
 import com.example.reciclapp.domain.entities.TransaccionPendiente
+import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.example.reciclapp.util.TipoDeUsuario.VENDEDOR
 import com.google.gson.JsonObject
@@ -60,7 +61,9 @@ private const val TAG = "QRGeneratorDialog"
 @SuppressLint("NewApi")
 @Composable
 fun QRGeneratorScreen(
-    transaccionViewModel: TransaccionViewModel, mainNavHostController: NavHostController
+    transaccionViewModel: TransaccionViewModel,
+    mensajeViewModel: MensajeViewModel,
+    mainNavHostController: NavHostController
 ) {
     val productosSeleccionados = transaccionViewModel.productosSeleccionados.collectAsState()
     val usuarioContactado = transaccionViewModel.usuarioContactado.collectAsState()
@@ -256,7 +259,7 @@ fun QRGeneratorScreen(
 
             delay(1000)
 
-            transaccionViewModel.setTransaccionPendiente(
+            mensajeViewModel.setTransaccionPendiente(
                 TransaccionPendiente(
                     idTransaccion = JsonParser.parseString(transaccionInfo).asJsonObject["idTransaccion"].asString,
                     idsProductos = idsProductosSeleccionados.value,

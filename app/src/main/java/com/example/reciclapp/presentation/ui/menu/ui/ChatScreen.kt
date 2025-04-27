@@ -55,7 +55,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.reciclapp.domain.entities.Mensaje
-import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
+import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.example.reciclapp.util.FechaUtils.formatChatDateTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -65,22 +65,22 @@ import kotlinx.coroutines.withContext
 @Composable
 fun ChatScreen(
     idTransaccion: String,
-    transaccionViewModel: TransaccionViewModel
+    mensajeViewModel: MensajeViewModel
 ) {
     var contentNewMessage by remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
     val scrollState = rememberLazyListState()
-    val messagesBothUsers by transaccionViewModel.messagesBotUsers.collectAsState()
-    val usuarioQueContacta by transaccionViewModel.usuarioContactado.collectAsState()
-    val myUser by transaccionViewModel.myUser.observeAsState()
+    val messagesBothUsers by mensajeViewModel.messagesBotUsers.collectAsState()
+    val usuarioQueContacta by mensajeViewModel.usuarioContactado.collectAsState()
+    val myUser by mensajeViewModel.myUser.observeAsState()
     var messageToSend: Mensaje? = null
     LaunchedEffect(Unit) {
-        transaccionViewModel.getMessagesByChat(idTransaccion)
+        mensajeViewModel.getMessagesByChat(idTransaccion)
     }
 
     LaunchedEffect(myUser) {
         myUser?.let {
-            transaccionViewModel.escucharNuevosMensajes(idTransaccion, myUser!!.idUsuario)
+            mensajeViewModel.escucharNuevosMensajes(idTransaccion, myUser!!.idUsuario)
         }
     }
 
@@ -92,7 +92,7 @@ fun ChatScreen(
                 messagesBothUsers.findLast { it.idEmisor != myUser?.idUsuario }?.idEmisor
 
             idUsuarioQueContacta?.let {
-                withContext(Dispatchers.IO) { transaccionViewModel.getUserForTransaction(it) }
+                withContext(Dispatchers.IO) { mensajeViewModel.getUserForTransaction(it) }
             }
         }
     }
@@ -168,7 +168,7 @@ fun ChatScreen(
                                     it.copy(
                                         contenido = contentNewMessage
                                     )
-                                    transaccionViewModel.sendMessage(it,
+                                    mensajeViewModel.sendMessage(it,
                                         usuarioQueContacta?.tokenNotifications ?: ""
                                     )
                                     sendMessage(contentNewMessage, { }, focusManager)
