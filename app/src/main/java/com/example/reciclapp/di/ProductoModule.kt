@@ -13,6 +13,7 @@ import com.example.reciclapp.domain.usecases.producto.ListarProductosPorUsuarioU
 import com.example.reciclapp.domain.usecases.producto.ListarTodosLosProductosUseCase
 import com.example.reciclapp.domain.usecases.producto.MarcarProductoComoVendidoUseCase
 import com.example.reciclapp.domain.usecases.producto.ObtenerProductoVendedorUseCase
+import com.example.reciclapp.domain.usecases.producto.ObtenerProductosPorIdsUseCase
 import com.example.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
 import com.example.reciclapp.domain.usecases.producto.SumarPuntosDeProductosUseCase
 import com.example.reciclapp.domain.usecases.producto.UpdateLikedProductoUseCase
@@ -102,6 +103,11 @@ object ProductoModule {
     @Provides
     fun provideCompradorAceptaOfertaUseCase(productoRepository: ProductoRepository): CompradorAceptaOfertaUseCase {
         return CompradorAceptaOfertaUseCase(productoRepository)
+    }
+
+    @Provides
+    fun provideObtenerProductosPorIdsUseCase(productoRepository: ProductoRepository): ObtenerProductosPorIdsUseCase {
+        return ObtenerProductosPorIdsUseCase(productoRepository)
     }
 
 }
