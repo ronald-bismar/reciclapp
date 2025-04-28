@@ -1,4 +1,4 @@
-package com.example.reciclapp.presentation
+package com.example.reciclapp.presentation.states
 
 sealed class SendingProductsState {
     data object Loading : SendingProductsState()

@@ -13,6 +13,7 @@ import com.example.reciclapp.domain.usecases.mensaje.CompradorEnviaContraOfertaA
 import com.example.reciclapp.domain.usecases.mensaje.CompradorEnviaMensajeAVendedorUseCase
 import com.example.reciclapp.domain.usecases.mensaje.EscucharNuevosMensajesUseCase
 import com.example.reciclapp.domain.usecases.mensaje.GetMessagesByChatUseCase
+import com.example.reciclapp.domain.usecases.mensaje.ObtenerUltimoMensajePorTransaccionUseCase
 import com.example.reciclapp.domain.usecases.mensaje.VendedorEnviaContraOfertaACompradorUseCase
 import com.example.reciclapp.domain.usecases.mensaje.VendedorEnviaMensajeACompradorUseCase
 import com.example.reciclapp.domain.usecases.mensajes.GetMensajeUseCase
@@ -22,7 +23,7 @@ import com.example.reciclapp.domain.usecases.producto.ObtenerProductosPorIdsUseC
 import com.example.reciclapp.domain.usecases.transaccion.CrearTransaccionPendienteUseCase
 import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.example.reciclapp.domain.usecases.usuario.GetUsuarioUseCase
-import com.example.reciclapp.presentation.SendingProductsState
+import com.example.reciclapp.presentation.states.SendingProductsState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -42,13 +43,15 @@ class MensajeViewModel @Inject constructor(
     private val compradorEnviaContraOfertaAVendedorUseCase: CompradorEnviaContraOfertaAVendedorUseCase,
     private val compradorAceptaOfertaUseCase: CompradorAceptaOfertaUseCase,
     private val getMessagesByChatUseCase: GetMessagesByChatUseCase,
-    private val vendedorAceptaOfertaUseCase: CompradorAceptaOfertaUseCase,    private val getUsuarioUseCase: GetUsuarioUseCase,
+    private val vendedorAceptaOfertaUseCase: CompradorAceptaOfertaUseCase,
+    private val getUsuarioUseCase: GetUsuarioUseCase,
     private val getMensajeUseCase: GetMensajeUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
     private val escucharNuevosMensajesUseCase: EscucharNuevosMensajesUseCase,
     private val obtenerProductosPorIdsUseCase: ObtenerProductosPorIdsUseCase,
-    private val crearTransaccionPendienteUseCase: CrearTransaccionPendienteUseCase
-    ): ViewModel() {
+    private val crearTransaccionPendienteUseCase: CrearTransaccionPendienteUseCase,
+    private val obtenerUltimoMensajePorTransaccionUseCase: ObtenerUltimoMensajePorTransaccionUseCase,
+) : ViewModel() {
 
     private val _sendingProductsState =
         MutableStateFlow<SendingProductsState>(SendingProductsState.InitialState)
@@ -59,8 +62,7 @@ class MensajeViewModel @Inject constructor(
     private val _usuarioContactado = MutableStateFlow<Usuario?>(null)
     val usuarioContactado: StateFlow<Usuario?> get() = _usuarioContactado
 
-    private val _productosSeleccionados = MutableStateFlow<List<ProductoReciclable>>(emptyList())
-    val productosSeleccionados: StateFlow<List<ProductoReciclable>> get() = _productosSeleccionados
+    private val _productosSeleccionados: MutableList<ProductoReciclable> = mutableListOf()
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> get() = _isLoading
@@ -74,14 +76,18 @@ class MensajeViewModel @Inject constructor(
     private val _productos = MutableStateFlow<List<ProductoReciclable>>(emptyList())
     val productos: StateFlow<List<ProductoReciclable>> = _productos
 
+    private val _mensajesConUsuario = MutableStateFlow<List<Pair<Usuario, Mensaje>>>(emptyList())
+    val mensajesConUsuario: StateFlow<List<Pair<Usuario, Mensaje>>> = _mensajesConUsuario
+
+
     init {
         loadMyUserPreferences()
     }
 
     private fun loadMyUserPreferences() {
         viewModelScope.launch {
-            val usuario = getUserPreferencesUseCase.execute()
-            _myUser.postValue(usuario)
+            val userResult = getUserPreferencesUseCase.execute()
+            _myUser.postValue(userResult)
         }
     }
 
@@ -119,8 +125,11 @@ class MensajeViewModel @Inject constructor(
                 this.contenido = message
                 this.idTransaccion = _newTransaccionPendiente.idTransaccion
             }
+
+            Log.d(TAG, "mensaje: $mensaje")
+
             vendedorEnviaMensajeACompradorUseCase(
-                productos = _productosSeleccionados.value,
+                productos = _productosSeleccionados,
                 message = mensaje,
                 tokenComprador = _usuarioContactado.value?.tokenNotifications ?: ""
             )
@@ -154,7 +163,7 @@ class MensajeViewModel @Inject constructor(
                 this.idTransaccion = _newTransaccionPendiente.idTransaccion
             }
             compradorEnviaMensajeAVendedorUseCase(
-                productos = _productosSeleccionados.value,
+                productos = _productosSeleccionados,
                 message = mensaje,
                 tokenVendedor = _usuarioContactado.value?.tokenNotifications ?: ""
             )
@@ -329,8 +338,30 @@ class MensajeViewModel @Inject constructor(
             }
         }
     }
+
     fun setTransaccionPendiente(transaccion: TransaccionPendiente) {
+        Log.d(TAG, "setTransaccionPendiente: $transaccion")
+
         _newTransaccionPendiente = transaccion
     }
 
+    fun setUserContacted(usuario: Usuario) {
+        _usuarioContactado.value = usuario
+    }
+
+    fun setProductosSeleccionados(productos: List<ProductoReciclable>) {
+        _productosSeleccionados.clear()
+        _productosSeleccionados.addAll(productos)
+    }
+
+    fun getListOfMessagesWithUsuario(idsTransaccion: List<String>){
+        viewModelScope.launch {
+            try {
+              val mensajesConUsuario = obtenerUltimoMensajePorTransaccionUseCase(idsTransaccion, myUser.value?.idUsuario?:"")
+                _mensajesConUsuario.value = mensajesConUsuario
+            }catch (e: Exception){
+                Log.e(TAG, "Error al obtener los mensajes: ${e.message}")
+            }
+        }
+    }
 }

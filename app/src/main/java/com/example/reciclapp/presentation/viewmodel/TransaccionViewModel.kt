@@ -129,7 +129,7 @@ class TransaccionViewModel @Inject constructor(
         _productosSeleccionados.value = productosSeleccionados
         sumarPuntosParaComprador()
         sumarPuntosParaAmbosUsuarios()
-        setIdsDeProductosSeleccionados()
+        _idsProductosSeleccionados.value = setIdsDeProductosSeleccionados()
     }
 
     fun setUserContacted(usuario: Usuario) {

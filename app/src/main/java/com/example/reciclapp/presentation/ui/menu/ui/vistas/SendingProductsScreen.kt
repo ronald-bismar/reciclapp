@@ -73,7 +73,7 @@ import coil.request.ImageRequest
 import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.presentation.SendingProductsState
+import com.example.reciclapp.presentation.states.SendingProductsState
 import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.example.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL

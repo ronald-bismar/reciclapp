@@ -65,11 +65,12 @@ import coil.request.ImageRequest
 import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.presentation.ui.menu.ui.content.myproducts.ProductoEtiqueta
+import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 
 @Composable
-fun ScreenProductsForSale(userViewModel: UserViewModel, transaccionViewModel: TransaccionViewModel, mainNavController: NavHostController) {
+fun ScreenProductsForSale(userViewModel: UserViewModel, transaccionViewModel: TransaccionViewModel,mensajeViewModel: MensajeViewModel, mainNavController: NavHostController) {
     val userContacted = transaccionViewModel.usuarioContactado.collectAsState().value
     val selectedProducts = remember { mutableStateListOf<ProductoReciclable>() }
 
@@ -111,7 +112,9 @@ fun ScreenProductsForSale(userViewModel: UserViewModel, transaccionViewModel: Tr
         ) {
             Button(
                 onClick = {
-                    userContacted?.let { transaccionViewModel.prepareTransaction(it, selectedProducts) }
+                    userContacted?.let { transaccionViewModel.prepareTransaction(it, selectedProducts)
+                    mensajeViewModel.setProductosSeleccionados(selectedProducts)}
+
                     mainNavController.navigate("QRGeneratorScreen")
                 },
                 shape = RoundedCornerShape(28.dp),

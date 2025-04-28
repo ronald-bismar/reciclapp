@@ -2,6 +2,7 @@ package com.example.reciclapp.domain.repositories
 
 import com.example.reciclapp.domain.entities.Mensaje
 import com.example.reciclapp.domain.entities.ProductoReciclable
+import com.example.reciclapp.domain.entities.Usuario
 import kotlinx.coroutines.flow.Flow
 
 interface MensajeRepository {
@@ -39,4 +40,9 @@ interface MensajeRepository {
     suspend fun getMessagesByChat(idTransaccion: String): List<Mensaje>
 
     suspend fun escucharNuevosMensajes(idTransaccion: String, idReceptor: String): Flow<Mensaje>
+
+    suspend fun obtenerUltimoMensajePorTransaccion(
+        idsTransaccion: List<String>,
+        myUserId: String
+    ): MutableList<Pair<Usuario, Mensaje>>
 }

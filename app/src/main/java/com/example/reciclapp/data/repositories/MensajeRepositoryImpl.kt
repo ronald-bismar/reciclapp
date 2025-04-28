@@ -6,9 +6,11 @@ import androidx.annotation.RequiresApi
 import com.example.reciclapp.data.services.notification.NotificationService
 import com.example.reciclapp.domain.entities.Mensaje
 import com.example.reciclapp.domain.entities.ProductoReciclable
+import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.repositories.MensajeRepository
 import com.example.reciclapp.util.GenerateID
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -98,6 +100,7 @@ class MensajeRepositoryImpl @Inject constructor(
         saveMensaje(message)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun compradorEnviaOfertaAVendedor(
         productos: List<ProductoReciclable>,
         message: Mensaje,
@@ -115,6 +118,7 @@ class MensajeRepositoryImpl @Inject constructor(
         saveMensaje(message)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun vendedorEnviaContraOfertaAComprador(
         contrapreciosMap: Map<String, Double>,
         mensaje: Mensaje,
@@ -131,6 +135,7 @@ class MensajeRepositoryImpl @Inject constructor(
         saveMensaje(mensaje)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun compradorEnviaContraOfertaAVendedor(
         contrapreciosMap: Map<String, Double>,
         mensaje: Mensaje,
@@ -158,6 +163,7 @@ class MensajeRepositoryImpl @Inject constructor(
         sendMessage(mensaje, tokenVendedor)
         saveMensaje(mensaje)
     }
+
     override suspend fun obtenerMensajesPorUsuario(
         idUsuario: String,
         onlyNewsMessagge: Boolean
@@ -165,10 +171,10 @@ class MensajeRepositoryImpl @Inject constructor(
         val mensajes = mutableListOf<Mensaje>()
 
         var queryComprador = service.collection("mensajes")
-            .whereEqualTo("idComprador", idUsuario)
+            .whereEqualTo("idEmisor", idUsuario)
 
         var queryVendedor = service.collection("mensajes")
-            .whereEqualTo("idVendedor", idUsuario)
+            .whereEqualTo("idReceptor", idUsuario)
 
         if (onlyNewsMessagge) {
             queryComprador = queryComprador.whereEqualTo("mensajeNuevo", true)
@@ -211,23 +217,73 @@ class MensajeRepositoryImpl @Inject constructor(
         idTransaccion: String,
         idReceptor: String
     ): Flow<Mensaje> =
-    callbackFlow {
-        val event = service.collection("mensajes").whereEqualTo("idTransaccion", idTransaccion).whereEqualTo("idReceptor", idTransaccion)
-        val subscription = event.addSnapshotListener { snapshot, error ->
-            if (error != null) {
-                this.trySend(Mensaje()).isSuccess
-                Log.e(TAG, "Error al escuchar mensajes: ${error.message}")
-                return@addSnapshotListener
-            }
-            if (snapshot != null) {
-                for (document in snapshot.documentChanges) {
-                    val mensaje = document.document.toObject(Mensaje::class.java)
-                    if (mensaje.idReceptor == idReceptor) {
-                        this.trySend(mensaje).isSuccess
+        callbackFlow {
+            val event = service.collection("mensajes").whereEqualTo("idTransaccion", idTransaccion)
+                .whereEqualTo("idReceptor", idTransaccion)
+            val subscription = event.addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    this.trySend(Mensaje()).isSuccess
+                    Log.e(TAG, "Error al escuchar mensajes: ${error.message}")
+                    return@addSnapshotListener
+                }
+                if (snapshot != null) {
+                    for (document in snapshot.documentChanges) {
+                        val mensaje = document.document.toObject(Mensaje::class.java)
+                        if (mensaje.idReceptor == idReceptor) {
+                            this.trySend(mensaje).isSuccess
+                        }
                     }
                 }
             }
+            awaitClose { subscription.remove() }
         }
-        awaitClose { subscription.remove() }
-    }
-}
+
+    /***
+     * Para la lista de mensajes se debe obtener el usuario y el ultimo mensaje por transacción para hacer una vista previa de los mensajes
+     * ***/
+
+    override suspend fun obtenerUltimoMensajePorTransaccion(
+        idsTransaccion: List<String>,
+        myUserId: String
+    ): MutableList<Pair<Usuario, Mensaje>> {
+        val usuarioYMensaje = mutableListOf<Pair<Usuario, Mensaje>>()
+        val usuariosCache = mutableMapOf<String, Usuario>() // Cache para evitar consultas repetidas
+
+        try {
+            for (idTransaccion in idsTransaccion) {
+                val query = service.collection("mensajes")
+                    .whereNotEqualTo("idEmisor", myUserId)
+                    .whereEqualTo("idTransaccion", idTransaccion)
+                    .orderBy("fecha", Query.Direction.DESCENDING) // Ordenar por fecha descendente
+                    .limit(1) // Solo el más reciente
+                    .get()
+                    .await()
+
+                if (query.documents.isNotEmpty()) {
+                    val mensaje = query.documents[0].toObject(Mensaje::class.java)
+
+                    // Usar el caché de usuarios para evitar consultas repetidas
+                    var usuario = mensaje?.idEmisor?.let { usuariosCache[it] }
+
+                    if (usuario == null && mensaje?.idEmisor != null) {
+                        usuario = service.collection("usuario")
+                            .document(mensaje.idEmisor)
+                            .get()
+                            .await()
+                            .toObject(Usuario::class.java)
+
+                        // Guardar en caché
+                        usuario?.let { usuariosCache[mensaje.idEmisor] = it }
+                    }
+
+                    if (usuario != null && mensaje != null) {
+                        usuarioYMensaje.add(Pair(usuario, mensaje))
+                    }
+                }
+            }
+            return usuarioYMensaje
+        } catch (e: Exception) {
+            Log.e(TAG, "Error al obtener mensajes por transacción: ${e.message}")
+            return mutableListOf()
+        }
+    }}

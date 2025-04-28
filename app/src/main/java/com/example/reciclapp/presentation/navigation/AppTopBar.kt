@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerState
@@ -48,6 +49,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.reciclapp.R
 import com.example.reciclapp.presentation.ui.registro.ui.showToast
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
+import com.example.reciclapp.util.NameRoutes.MESSAGESSCREEN
 import com.example.reciclapp.util.NameRoutes.QRSCANNER
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -98,6 +100,21 @@ fun AppTopBar(
             }
         },
         actions = {
+            IconButton(onClick = {
+                navControllerMain.navigate(MESSAGESSCREEN) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    restoreState = true
+                }
+            }) {
+                Icon(
+                    imageVector = Icons.Outlined.Notifications,
+                    tint = MaterialTheme.colorScheme.surface,
+                    contentDescription = "Messages by products"
+                )
+            }
+
             IconButton(onClick = {
                 navControllerMain.navigate(QRSCANNER) {
                     popUpTo(navController.graph.startDestinationId) {
@@ -223,7 +240,11 @@ data class MenuItem(
  * @param onMenuItemClick Función de callback que se llama cuando se hace clic en un ítem del menú.
  */
 @Composable
-fun DropdownMenuItems(navController: NavHostController, onMenuItemClick: (MenuItem) -> Unit, userViewModel: UserViewModel) {
+fun DropdownMenuItems(
+    navController: NavHostController,
+    onMenuItemClick: (MenuItem) -> Unit,
+    userViewModel: UserViewModel
+) {
 
     val context = LocalContext.current as Activity
     val items = listOf(

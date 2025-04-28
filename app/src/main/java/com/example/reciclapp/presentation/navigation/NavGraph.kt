@@ -40,6 +40,7 @@ import com.example.reciclapp.presentation.ui.menu.ui.UserTypeScreen
 import com.example.reciclapp.presentation.ui.menu.ui.content.myproducts.MyProductsScreen
 import com.example.reciclapp.presentation.ui.menu.ui.content.mypurchases.MyProductsToBuyScreen
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Comprador
+import com.example.reciclapp.presentation.ui.menu.ui.vistas.MessagesScreen
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Perfil
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.SendingProductsScreen
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.Vendedor
@@ -52,6 +53,7 @@ import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.example.reciclapp.presentation.viewmodel.UbicacionViewModel
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
+import com.example.reciclapp.util.NameRoutes.MESSAGESSCREEN
 import com.example.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
 import com.example.reciclapp.util.NameRoutes.QRSCANNER
 import kotlinx.coroutines.Dispatchers
@@ -146,7 +148,13 @@ fun NavGraph(
             arguments = listOf(navArgument("userId") { type = NavType.StringType })
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId") ?: ""
-            Comprador(mainNavHostController, userId, compradoresViewModel, transaccionViewModel)
+            Comprador(
+                mainNavHostController,
+                userId,
+                compradoresViewModel,
+                transaccionViewModel,
+                mensajeViewModel
+            )
         }
         composable(
             route = "VendedorPerfil/{userId}/{productoId}",
@@ -178,7 +186,7 @@ fun NavGraph(
         }
 
         composable("QRGeneratorScreen") {
-            QRGeneratorScreen(transaccionViewModel,mensajeViewModel, mainNavHostController)
+            QRGeneratorScreen(transaccionViewModel, mensajeViewModel, mainNavHostController)
         }
 
         composable("TransaccionesPendientes") {
@@ -190,7 +198,12 @@ fun NavGraph(
         }
 
         composable("ScreenProductsForSale") {
-            ScreenProductsForSale(userViewModel, transaccionViewModel, mainNavHostController)
+            ScreenProductsForSale(
+                userViewModel,
+                transaccionViewModel,
+                mensajeViewModel,
+                mainNavHostController
+            )
         }
 
         composable("SendingProductsScreen") {
@@ -217,6 +230,10 @@ fun NavGraph(
         ) { backStackEntry ->
             val idTransaccion = backStackEntry.arguments?.getString("idTransaccion") ?: ""
             ChatScreen(idTransaccion, mensajeViewModel)
+        }
+
+        composable(MESSAGESSCREEN) {
+            MessagesScreen(mensajeViewModel, mainNavHostController)
         }
     }
 }

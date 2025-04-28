@@ -41,7 +41,6 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -81,6 +80,7 @@ import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.ui.registro.ui.showToast
 import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
+import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 
 private const val REQUEST_CALL_PERMISSION = 1
@@ -91,7 +91,8 @@ fun Comprador(
     mainNavController: NavHostController,
     compradorId: String,
     compradoresViewModel: CompradoresViewModel,
-    transaccionViewModel: TransaccionViewModel
+    transaccionViewModel: TransaccionViewModel,
+    mensajeViewModel: MensajeViewModel
 ) {
     LaunchedEffect(compradorId) {
         compradoresViewModel.apply {
@@ -129,7 +130,11 @@ fun Comprador(
         ) {
             ProfileHeader(comprador.urlImagenPerfil)
             ProfileDetails3(comprador)
-            ActionButtons(transaccionViewModel,selectedComprador, mainNavController)
+            ActionButtons({
+                transaccionViewModel.setUserContacted(selectedComprador)
+                mensajeViewModel.setUserContacted(selectedComprador)
+                mainNavController.navigate("ScreenProductsForSale")
+            })
             SectionTitle("Productos que compra:")
             MaterialList(materiales)
             SectionTitle("Comentarios:")
@@ -325,7 +330,7 @@ fun ProfileItem3(label: String, value: String) {
 }
 
 @Composable
-fun ActionButtons(transaccionViewModel: TransaccionViewModel,usuarioContactado: Usuario,mainNavController: NavHostController) {
+fun ActionButtons(onContactoCompradorSelected: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -333,12 +338,11 @@ fun ActionButtons(transaccionViewModel: TransaccionViewModel,usuarioContactado: 
         horizontalArrangement = Arrangement.Center
     ) {
         ActionButton3("Contactar para vender productos", Icons.Default.Recycling) {
-            transaccionViewModel.setUserContacted(usuarioContactado)
-            mainNavController.navigate("ScreenProductsForSale")
+            onContactoCompradorSelected()
         }
     }
     Spacer(modifier = Modifier.height(10.dp))
-    Divider()
+    HorizontalDivider()
 }
 
 @Composable
