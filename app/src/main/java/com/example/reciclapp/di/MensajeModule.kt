@@ -15,6 +15,7 @@ import com.example.reciclapp.domain.usecases.mensajes.GetMensajeUseCase
 import com.example.reciclapp.domain.usecases.mensajes.SaveMensajeUseCase
 import com.example.reciclapp.domain.usecases.mensajes.SendMessageUseCase
 import com.example.reciclapp.domain.usecases.mensajes.UpdateMensajeUseCase
+import com.example.reciclapp.domain.usecases.transaccion.GetTransaccionesPendientesUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -36,8 +37,8 @@ object MensajeModule {
 
     @Provides
     @Singleton
-    fun provideMensajeRepository(service: FirebaseFirestore, notificationService: NotificationService): MensajeRepository {
-        return MensajeRepositoryImpl(service, notificationService)
+    fun provideMensajeRepository(service: FirebaseFirestore, notificationService: NotificationService, getTransaccionesPendientesUseCase: GetTransaccionesPendientesUseCase): MensajeRepository {
+        return MensajeRepositoryImpl(service, notificationService, getTransaccionesPendientesUseCase)
     }
 
     @Provides

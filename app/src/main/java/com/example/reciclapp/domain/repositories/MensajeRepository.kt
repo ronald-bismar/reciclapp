@@ -42,7 +42,6 @@ interface MensajeRepository {
     suspend fun escucharNuevosMensajes(idTransaccion: String, idReceptor: String): Flow<Mensaje>
 
     suspend fun obtenerUltimoMensajePorTransaccion(
-        idsTransaccion: List<String>,
         myUserId: String
     ): MutableList<Pair<Usuario, Mensaje>>
 }

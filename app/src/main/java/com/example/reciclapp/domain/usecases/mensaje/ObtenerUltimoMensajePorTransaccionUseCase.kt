@@ -7,9 +7,8 @@ import javax.inject.Inject
 
 class ObtenerUltimoMensajePorTransaccionUseCase @Inject constructor(private val repository: MensajeRepository) {
     suspend operator fun invoke(
-        idsTransaccion: List<String>,
         myUserId: String
     ): List<Pair<Usuario, Mensaje>> {
-        return repository.obtenerUltimoMensajePorTransaccion(idsTransaccion, myUserId)
+        return repository.obtenerUltimoMensajePorTransaccion(myUserId)
     }
 }

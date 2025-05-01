@@ -354,10 +354,10 @@ class MensajeViewModel @Inject constructor(
         _productosSeleccionados.addAll(productos)
     }
 
-    fun getListOfMessagesWithUsuario(idsTransaccion: List<String>){
+    fun getListOfMessagesWithUsuario(){
         viewModelScope.launch {
             try {
-              val mensajesConUsuario = obtenerUltimoMensajePorTransaccionUseCase(idsTransaccion, myUser.value?.idUsuario?:"")
+              val mensajesConUsuario = obtenerUltimoMensajePorTransaccionUseCase(myUser.value?.idUsuario?:"")
                 _mensajesConUsuario.value = mensajesConUsuario
             }catch (e: Exception){
                 Log.e(TAG, "Error al obtener los mensajes: ${e.message}")

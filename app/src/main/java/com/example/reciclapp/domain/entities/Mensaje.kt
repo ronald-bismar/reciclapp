@@ -9,5 +9,6 @@ data class Mensaje(
     var isNewMessage: Boolean = true,
     var titleMessage: String = "",
     var idTransaccion: String = "", //Para traer solo los mensajes de una transaccion
-    var fecha: String = ""
+    var fecha: String = "",
+    var idChat: String = ""
 )
