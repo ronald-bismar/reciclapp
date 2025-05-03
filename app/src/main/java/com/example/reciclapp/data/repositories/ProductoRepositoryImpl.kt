@@ -223,7 +223,8 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
         val idComprador = mensaje.idReceptor
         mensaje.apply { titleMessage = "Oferta aceptada"
             this.idEmisor = idComprador
-            this.idReceptor = idVendedor}
+            this.idReceptor = idVendedor
+        this.contenido = if(this.contenido.isEmpty()) "Me parece una buena oferta, dime cuando podrias venir a dejarlo" else this.contenido}
         sendMessageUseCase(mensaje, tokenVendedor)
     }
 

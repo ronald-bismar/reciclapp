@@ -1,6 +1,7 @@
 package com.example.reciclapp
 
 import android.app.Application
+import com.example.reciclapp.data.local.database.AppDatabase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.HiltAndroidApp

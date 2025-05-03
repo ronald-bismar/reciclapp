@@ -9,6 +9,6 @@ class ObtenerUltimoMensajePorTransaccionUseCase @Inject constructor(private val 
     suspend operator fun invoke(
         myUserId: String
     ): List<Pair<Usuario, Mensaje>> {
-        return repository.obtenerUltimoMensajePorTransaccion(myUserId)
+        return repository.obtenerChatYUltimoMensaje(myUserId)
     }
 }

@@ -12,11 +12,12 @@ import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.domain.usecases.mensaje.CompradorEnviaContraOfertaAVendedorUseCase
 import com.example.reciclapp.domain.usecases.mensaje.CompradorEnviaMensajeAVendedorUseCase
 import com.example.reciclapp.domain.usecases.mensaje.EscucharNuevosMensajesUseCase
+import com.example.reciclapp.domain.usecases.mensaje.GetMensajeUseCase
 import com.example.reciclapp.domain.usecases.mensaje.GetMessagesByChatUseCase
 import com.example.reciclapp.domain.usecases.mensaje.ObtenerUltimoMensajePorTransaccionUseCase
+import com.example.reciclapp.domain.usecases.mensaje.SaveMensajeLocallyUseCase
 import com.example.reciclapp.domain.usecases.mensaje.VendedorEnviaContraOfertaACompradorUseCase
 import com.example.reciclapp.domain.usecases.mensaje.VendedorEnviaMensajeACompradorUseCase
-import com.example.reciclapp.domain.usecases.mensajes.GetMensajeUseCase
 import com.example.reciclapp.domain.usecases.mensajes.SendMessageUseCase
 import com.example.reciclapp.domain.usecases.producto.CompradorAceptaOfertaUseCase
 import com.example.reciclapp.domain.usecases.producto.ObtenerProductosPorIdsUseCase
@@ -25,6 +26,7 @@ import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferences
 import com.example.reciclapp.domain.usecases.usuario.GetUsuarioUseCase
 import com.example.reciclapp.presentation.states.SendingProductsState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,6 +53,7 @@ class MensajeViewModel @Inject constructor(
     private val obtenerProductosPorIdsUseCase: ObtenerProductosPorIdsUseCase,
     private val crearTransaccionPendienteUseCase: CrearTransaccionPendienteUseCase,
     private val obtenerUltimoMensajePorTransaccionUseCase: ObtenerUltimoMensajePorTransaccionUseCase,
+    private val saveMensajeLocallyUseCase: SaveMensajeLocallyUseCase
 ) : ViewModel() {
 
     private val _sendingProductsState =
@@ -70,15 +73,14 @@ class MensajeViewModel @Inject constructor(
     private val _message = MutableStateFlow<Mensaje>(Mensaje())
     val message: StateFlow<Mensaje> get() = _message
 
-    private val _messagesBotUsers = MutableStateFlow<MutableList<Mensaje>>(mutableListOf())
-    val messagesBotUsers: StateFlow<MutableList<Mensaje>> get() = _messagesBotUsers
+    private val _messagesFromBothUsers = MutableStateFlow<MutableList<Mensaje>>(mutableListOf())
+    val messagesFromBothUsers: StateFlow<MutableList<Mensaje>> get() = _messagesFromBothUsers
 
     private val _productos = MutableStateFlow<List<ProductoReciclable>>(emptyList())
     val productos: StateFlow<List<ProductoReciclable>> = _productos
 
     private val _mensajesConUsuario = MutableStateFlow<List<Pair<Usuario, Mensaje>>>(emptyList())
     val mensajesConUsuario: StateFlow<List<Pair<Usuario, Mensaje>>> = _mensajesConUsuario
-
 
     init {
         loadMyUserPreferences()
@@ -238,9 +240,44 @@ class MensajeViewModel @Inject constructor(
         _sendingProductsState.value = SendingProductsState.InitialState
     }
 
-    fun getMessagesByChat(idTransaccion: String) {
+    fun getMessagesByChat(idMensaje: String) {
         viewModelScope.launch {
-            _messagesBotUsers.value = getMessagesByChatUseCase(idTransaccion).toMutableList()
+            var messageResult: Mensaje? = null
+            if (idMensaje.isNotEmpty()) {
+                messageResult = getMensajeUseCase(idMensaje)
+
+                if (messageResult == null) {
+                    _message.value = Mensaje()
+                    Log.d(TAG, "getMessagesByChat: Mensaje no encontrado")
+                    return@launch
+                } else {
+                    _message.value = messageResult
+                }
+            }
+
+            val idEmisor = messageResult?.idEmisor ?: ""
+            val idReceptor = messageResult?.idReceptor ?: ""
+
+            val idUsuario =
+                if (idReceptor.isNotBlank()) idReceptor else _myUser.value?.idUsuario ?: ""
+            val idUserSecondary =
+                if (idEmisor.isNotBlank()) idEmisor else _usuarioContactado.value?.idUsuario ?: ""
+
+            Log.d(TAG, "getMessagesByChat: $idUsuario, $idUserSecondary")
+
+
+            val messagesBothUsers = getMessagesByChatUseCase(
+                idUsuario,
+                idUserSecondary
+            ).toMutableList()
+
+            messagesBothUsers.forEach {
+                Log.d(TAG, "getMessagesByChat: $it")
+            }
+
+            _messagesFromBothUsers.value = messagesBothUsers
+
+            escucharNuevosMensajes(idEmisor, idReceptor)
         }
     }
 
@@ -249,6 +286,9 @@ class MensajeViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 val messageResult = getMensajeUseCase(idMensaje) ?: Mensaje()
+
+                Log.d(TAG, "getMessage: $messageResult")
+
                 _message.value = messageResult
 
                 getUserAndProductsForTransaction(
@@ -293,8 +333,6 @@ class MensajeViewModel @Inject constructor(
                 partes[0] to partes[1].toDouble()
             }
 
-            Log.d("MensajeViewModel", "IDs de productos: $idsProductos")
-
             val productosConPreciosPropuestos =
                 obtenerProductosPorIdsUseCase(idsProductos) //Modificamos los precios por los que nos enviaron
 
@@ -303,7 +341,6 @@ class MensajeViewModel @Inject constructor(
                     precio = mapIdProductosPrecios[idProducto] ?: 0.0
                 }
             }
-
 
             _productos.value = productosConPreciosPropuestos
         } catch (e: Exception) {
@@ -318,30 +355,37 @@ class MensajeViewModel @Inject constructor(
             _usuarioContactado.value = getUsuarioUseCase.execute(idUsuario)
         } catch (e: Exception) {
             Log.d(TAG, "Error al obtener el usuario: ${e.message}")
-            throw e // Relanzamos la excepción
+            throw e
         }
     }
 
     fun sendMessage(message: Mensaje, receiverToken: String) {
         viewModelScope.launch {
-            Log.d(TAG, "Enviando mensaje 1")
             sendMessageUseCase(message, receiverToken)
         }
     }
 
-    fun escucharNuevosMensajes(idTransaccion: String, idReceptor: String) {
+    fun escucharNuevosMensajes(idEmisor: String, idReceptor: String) {
+        val idUsuario = if (idReceptor.isNotBlank()) idReceptor else _myUser.value?.idUsuario ?: ""
+        val idUserSecondary =
+            if (idEmisor.isNotBlank()) idEmisor else _usuarioContactado.value?.idUsuario ?: ""
         viewModelScope.launch {
-            escucharNuevosMensajesUseCase(idTransaccion, idReceptor).collect { nuevomensaje ->
-                _messagesBotUsers.value.add(nuevomensaje)
-                _messagesBotUsers.value = _messagesBotUsers.value.toMutableList()
-                Log.d(TAG, "escucharNuevosMensajes: $nuevomensaje")
+            escucharNuevosMensajesUseCase(
+                idUserSecondary,
+                idUsuario
+            ).collect { nuevomensaje ->
+
+                Log.d(TAG, "Llego un nuevo mensaje: $nuevomensaje")
+
+                val updatedList = _messagesFromBothUsers.value.toMutableList()
+                updatedList.add(nuevomensaje)
+                _messagesFromBothUsers.value = updatedList.distinctBy { it.idMensaje }.sortedBy { it.fecha }.toMutableList()
+
             }
         }
     }
 
     fun setTransaccionPendiente(transaccion: TransaccionPendiente) {
-        Log.d(TAG, "setTransaccionPendiente: $transaccion")
-
         _newTransaccionPendiente = transaccion
     }
 
@@ -354,14 +398,45 @@ class MensajeViewModel @Inject constructor(
         _productosSeleccionados.addAll(productos)
     }
 
-    fun getListOfMessagesWithUsuario(){
+    fun getListOfMessagesWithUsuario() {
         viewModelScope.launch {
             try {
-              val mensajesConUsuario = obtenerUltimoMensajePorTransaccionUseCase(myUser.value?.idUsuario?:"")
+                val mensajesConUsuario =
+                    obtenerUltimoMensajePorTransaccionUseCase(myUser.value?.idUsuario ?: "")
                 _mensajesConUsuario.value = mensajesConUsuario
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.e(TAG, "Error al obtener los mensajes: ${e.message}")
             }
+        }
+    }
+
+    fun getUserWhoContacted() {
+        val idUsuarioQueContacta =
+            _messagesFromBothUsers.value.findLast { it.idEmisor != myUser.value?.idUsuario }?.idEmisor
+
+        idUsuarioQueContacta?.let {
+            viewModelScope.launch(Dispatchers.IO) { getUserForTransaction(it) }
+        }
+    }
+
+    fun responderMensaje(contentNewMessage: String) {
+        Log.d("ChatScreen", "contentNewMessage: $contentNewMessage")
+        var messageBaseOfUser =
+            _messagesFromBothUsers.value.findLast { it.idEmisor == myUser.value?.idUsuario }
+
+        val newMessage = messageBaseOfUser?.copy(
+            titleMessage = "MessageFromChat",
+            contenido = contentNewMessage
+        )
+        newMessage?.let {
+            val tokenUserReceiver = usuarioContactado.value?.tokenNotifications ?: ""
+            sendMessage(newMessage, tokenUserReceiver)
+
+            val updatedList = _messagesFromBothUsers.value.toMutableList()
+            updatedList.add(newMessage)
+            _messagesFromBothUsers.value = updatedList
+
+            Log.d("ChatScreen", "messageToSend: $messageBaseOfUser")
         }
     }
 }

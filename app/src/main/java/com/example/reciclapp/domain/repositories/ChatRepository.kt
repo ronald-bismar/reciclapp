@@ -8,4 +8,5 @@ interface ChatRepository {
     suspend fun actualizarChat(chat: Chat)
     suspend fun eliminarChat(idChat: String)
     suspend fun obtenerChatsPorUsuario(idUsuario: String): MutableList<Chat>
+    suspend fun getChatByUsers(idUsuario1: String, idUsuario2: String): Chat?
 }

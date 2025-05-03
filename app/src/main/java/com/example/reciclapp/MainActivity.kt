@@ -17,6 +17,7 @@ import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferences
 import com.example.reciclapp.presentation.navigation.NavGraph
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.components.InAppNotification
 import com.example.reciclapp.theme.ReciclAppTheme
+import com.example.reciclapp.util.NameRoutes.CHATSCREEN
 import com.example.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -50,29 +51,20 @@ class MainActivity : ComponentActivity() {
                     InAppNotification(
                         // Para notificaciones regulares
                         onNotificationClick = { mensaje ->
-                            Log.d(
-                                "NotificationEntry",
-                                "Regular message clicked: ${mensaje.titleMessage}"
-                            )
+
+                            Log.d("Mensaje", "Su mensaje tututu turuturututu: $mensaje")
+
                             navController?.let {
                                 navController!!.navigate("CompradorOfertaScreen/${mensaje.idMensaje}")
                             }
                         },
                         // Para notificaciones de oferta aceptada (botón de ubicación)
                         onNotificationAccepted = { mensaje ->
-                            Log.d(
-                                "NotificationEntry",
-                                "Offer accepted - showing location: ${mensaje.titleMessage}"
-                            )
                             navController?.let {
                                 navController!!.navigate(PANTALLAPRINCIPAL)
                             }
                         }, onSendNewMessage = { mensaje ->
-                            Log.d(
-                                "NotificationEntry",
-                                "New message - showing location: ${mensaje.idTransaccion}"
-                            )
-                            navController?.navigate("chatScreen/${mensaje.idTransaccion}")
+                            navController?.navigate("$CHATSCREEN?idMensaje=${mensaje.idMensaje}")
                         }
                     )
                 }

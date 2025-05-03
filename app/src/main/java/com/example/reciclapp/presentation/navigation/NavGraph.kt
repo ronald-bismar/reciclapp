@@ -53,6 +53,7 @@ import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.example.reciclapp.presentation.viewmodel.UbicacionViewModel
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
+import com.example.reciclapp.util.NameRoutes.CHATSCREEN
 import com.example.reciclapp.util.NameRoutes.MESSAGESSCREEN
 import com.example.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
 import com.example.reciclapp.util.NameRoutes.QRSCANNER
@@ -225,11 +226,17 @@ fun NavGraph(
         }
 
         composable(
-            "chatScreen/{idTransaccion}",
-            arguments = listOf(navArgument("idTransaccion") { type = NavType.StringType })
+            "$CHATSCREEN?idMensaje={idMensaje}",
+            arguments = listOf(
+                navArgument("idMensaje") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                    nullable = true
+                }
+            )
         ) { backStackEntry ->
-            val idTransaccion = backStackEntry.arguments?.getString("idTransaccion") ?: ""
-            ChatScreen(idTransaccion, mensajeViewModel)
+            val idMensaje = backStackEntry.arguments?.getString("idMensaje") ?: ""
+            ChatScreen(idMensaje, mainNavHostController, mensajeViewModel)
         }
 
         composable(MESSAGESSCREEN) {

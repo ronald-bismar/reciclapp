@@ -113,7 +113,7 @@ fun CompradorOfertaScreen(
 
     var mensaje by remember { mutableStateOf("") }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(idMensaje) {
         mensajeViewModel.getMessage(idMensaje)
     }
 
@@ -369,9 +369,11 @@ fun CompradorOfertaScreen(
                             Button(
                                 onClick = {
                                     showSuccessMessage = true
-                                    message.contenido = mensaje
+                                    val newMessage = message.copy(
+                                        contenido = mensaje
+                                    )
                                     mensajeViewModel.compradorAceptaOferta(
-                                        message, usuarioQueSeContacto?.tokenNotifications ?: ""
+                                        newMessage, usuarioQueSeContacto?.tokenNotifications ?: ""
                                     )
                                     showAceptacionModal = true
                                 },

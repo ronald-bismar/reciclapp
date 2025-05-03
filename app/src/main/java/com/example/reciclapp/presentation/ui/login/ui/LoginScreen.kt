@@ -51,6 +51,7 @@ import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.components.HeaderImageLogoReciclapp
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.components.LoadingButton
 import com.example.reciclapp.presentation.ui.registro.ui.showToast
+import com.example.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
 import kotlinx.coroutines.launch
 
 @Composable
@@ -114,7 +115,7 @@ fun LoginContent(
             when {
                 result.isSuccess -> {
                     showToast(context, "Bienvenido")
-                    navController.navigate("menu") {
+                    navController.navigate(PANTALLAPRINCIPAL) {
                         Log.d("LoginScreen", "Navegando a la pantalla principal")
                         popUpTo("login") { inclusive = true }
                     }

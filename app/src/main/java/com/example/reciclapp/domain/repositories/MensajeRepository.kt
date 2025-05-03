@@ -37,11 +37,13 @@ interface MensajeRepository {
 
     suspend fun obtenerMensajesPorUsuario(idUsuario: String, onlyNews: Boolean): List<Mensaje>
 
-    suspend fun getMessagesByChat(idTransaccion: String): List<Mensaje>
+    suspend fun getMessagesByChat(idUsuario: String, idUserSecondary: String): List<Mensaje>
 
-    suspend fun escucharNuevosMensajes(idTransaccion: String, idReceptor: String): Flow<Mensaje>
+    suspend fun escucharNuevosMensajes(idEmisor: String, idReceptor: String): Flow<Mensaje>
 
-    suspend fun obtenerUltimoMensajePorTransaccion(
+    suspend fun obtenerChatYUltimoMensaje(
         myUserId: String
     ): MutableList<Pair<Usuario, Mensaje>>
+
+    suspend fun getMessagesFromService(idUsuario: String, idUserSecondary: String): List<Mensaje>
 }

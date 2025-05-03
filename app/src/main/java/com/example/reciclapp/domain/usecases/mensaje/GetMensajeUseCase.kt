@@ -1,4 +1,4 @@
-package com.example.reciclapp.domain.usecases.mensajes
+package com.example.reciclapp.domain.usecases.mensaje
 
 import com.example.reciclapp.domain.entities.Mensaje
 import com.example.reciclapp.domain.repositories.MensajeRepository

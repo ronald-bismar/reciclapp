@@ -1,20 +1,24 @@
 package com.example.reciclapp.presentation.ui.menu.ui
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -25,7 +29,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -36,8 +39,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -49,78 +54,87 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusManager
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.reciclapp.domain.entities.Mensaje
 import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.example.reciclapp.util.FechaUtils.formatChatDateTime
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+
+private const val TAG = "ChatScreen"
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(
-    idTransaccion: String,
+    idMensaje: String,
+    mainNavController: NavHostController,
     mensajeViewModel: MensajeViewModel
 ) {
     var contentNewMessage by remember { mutableStateOf("") }
-    val focusManager = LocalFocusManager.current
     val scrollState = rememberLazyListState()
-    val messagesBothUsers by mensajeViewModel.messagesBotUsers.collectAsState()
-    val usuarioQueContacta by mensajeViewModel.usuarioContactado.collectAsState()
+    val messagesFromBothUsers by mensajeViewModel.messagesFromBothUsers.collectAsState()
+    val userWhoContacted by mensajeViewModel.usuarioContactado.collectAsState()
     val myUser by mensajeViewModel.myUser.observeAsState()
-    var messageToSend: Mensaje? = null
-    LaunchedEffect(Unit) {
-        mensajeViewModel.getMessagesByChat(idTransaccion)
+
+    LaunchedEffect(key1 = idMensaje) {
+        mensajeViewModel.getMessagesByChat(idMensaje)
     }
 
-    LaunchedEffect(myUser) {
-        myUser?.let {
-            mensajeViewModel.escucharNuevosMensajes(idTransaccion, myUser!!.idUsuario)
+    LaunchedEffect(messagesFromBothUsers.size) {
+        if (messagesFromBothUsers.isNotEmpty()) {
+            scrollState.animateScrollToItem(0)
+            mensajeViewModel.getUserWhoContacted()
         }
     }
 
-    LaunchedEffect(messagesBothUsers.size) {
-        if (messagesBothUsers.isNotEmpty()) {
-            scrollState.animateScrollToItem(0) // Scroll al último mensaje
-            messageToSend = messagesBothUsers.findLast { it.idEmisor == myUser?.idUsuario }
-            val idUsuarioQueContacta =
-                messagesBothUsers.findLast { it.idEmisor != myUser?.idUsuario }?.idEmisor
-
-            idUsuarioQueContacta?.let {
-                withContext(Dispatchers.IO) { mensajeViewModel.getUserForTransaction(it) }
-            }
-        }
-    }
-
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         TopAppBar(
-            title = { Text("User") },
+            title = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    Column {
+                        Text(
+                            text = "${userWhoContacted?.nombre}",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+                }
+            },
             navigationIcon = {
-                IconButton(onClick = { }) {
+                IconButton(onClick = { mainNavController.popBackStack() }) {
                     Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
                 }
             },
-            actions = {
-                IconButton(onClick = { /* Opciones */ }) {
-                    Icon(Icons.Default.MoreVert, contentDescription = "Más opciones")
-                }
-            }
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
         )
 
         HorizontalDivider()
 
         LazyColumn(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 8.dp),
             state = scrollState,
             reverseLayout = true,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            itemsIndexed(messagesBothUsers.reversed()) { index, message ->
+            itemsIndexed(messagesFromBothUsers.reversed()) { index, message ->
                 AnimatedVisibility(
                     visible = true,
                     enter = fadeIn() + slideInVertically(),
@@ -128,68 +142,83 @@ fun ChatScreen(
                 ) {
                     MessageBubble(
                         message = message,
-                        isCurrentUser = message.idEmisor == myUser?.idUsuario
+                        isCurrentUser = message.idEmisor == myUser?.idUsuario,
+                        showAvatar = index == 0 || 
+                            messagesFromBothUsers.getOrNull(index - 1)?.idEmisor != message.idEmisor
                     )
                 }
             }
         }
 
+        MessageInputField(
+            value = contentNewMessage,
+            onValueChange = { contentNewMessage = it },
+            onSendMessage = {
+                if (contentNewMessage.isNotBlank()) {
+                    mensajeViewModel.responderMensaje(contentNewMessage)
+                    contentNewMessage = ""
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun MessageInputField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    onSendMessage: () -> Unit
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        tonalElevation = 2.dp,
+        color = MaterialTheme.colorScheme.surface
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .padding(horizontal = 8.dp, vertical = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             OutlinedTextField(
-                value = contentNewMessage,
-                onValueChange = { contentNewMessage = it },
-                modifier = Modifier.weight(1f),
+                value = value,
+                onValueChange = onValueChange,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp),
                 placeholder = { Text("Escribe un mensaje...") },
                 shape = RoundedCornerShape(24.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
                     unfocusedBorderColor = MaterialTheme.colorScheme.outline
                 ),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
-                keyboardActions = KeyboardActions(
-                    onSend = {
-                        Log.d("ChatScreen", "onSend1")
-                        sendMessage(contentNewMessage, {}, focusManager)
-                        contentNewMessage = ""
-                    }
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Send,
+                    capitalization = KeyboardCapitalization.Sentences
                 ),
-                trailingIcon = {
-                    AnimatedVisibility(visible = contentNewMessage.isNotBlank()) {
-                        IconButton(
-                            onClick = {
-                                Log.d("ChatScreen", "Click") // Es null no esta pasando de aqui
-
-                                messageToSend?.let {
-                                    it.copy(
-                                        contenido = contentNewMessage
-                                    )
-                                    mensajeViewModel.sendMessage(it,
-                                        usuarioQueContacta?.tokenNotifications ?: ""
-                                    )
-                                    sendMessage(contentNewMessage, { }, focusManager)
-                                    contentNewMessage = ""
-                                }
-
-                            },
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.primary)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Send,
-                                contentDescription = "Enviar",
-                                tint = Color.White
-                            )
-                        }
-                    }
-                }
+                keyboardActions = KeyboardActions(onSend = { onSendMessage() }),
+                maxLines = 4
             )
+
+            AnimatedVisibility(
+                visible = value.isNotBlank(),
+                enter = fadeIn() + scaleIn(),
+                exit = fadeOut() + scaleOut()
+            ) {
+                IconButton(
+                    onClick = onSendMessage,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Send,
+                        contentDescription = "Enviar",
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+            }
         }
     }
 }
@@ -198,71 +227,56 @@ fun ChatScreen(
 @Composable
 fun MessageBubble(
     message: Mensaje,
-    isCurrentUser: Boolean
+    isCurrentUser: Boolean,
+    showAvatar: Boolean
 ) {
-    val bubbleColor = if (isCurrentUser) {
-        MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-    } else {
-        MaterialTheme.colorScheme.surfaceVariant
-    }
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp),
-        horizontalArrangement = if (isCurrentUser) Arrangement.End else Arrangement.Start,
-        verticalAlignment = Alignment.Bottom
+            .padding(vertical = 2.dp),
+        horizontalArrangement = if (isCurrentUser) Arrangement.End else Arrangement.Start
     ) {
-        if (!isCurrentUser) {
-            // Avatar del otro usuario
-            Icon(
-                imageVector = Icons.Default.AccountCircle,
-                contentDescription = "Contacto",
-                modifier = Modifier
-                    .size(32.dp)
-                    .padding(end = 4.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
+       if (!isCurrentUser) {
+            Spacer(modifier = Modifier.width(10.dp))
         }
 
-        Column(
-            horizontalAlignment = if (isCurrentUser) Alignment.End else Alignment.Start
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = if (isCurrentUser)
+                    MaterialTheme.colorScheme.primary
+                else
+                    MaterialTheme.colorScheme.surfaceVariant
+            ),
+            shape = RoundedCornerShape(
+                topStart = if (isCurrentUser) 16.dp else if (showAvatar) 4.dp else 16.dp,
+                topEnd = if (isCurrentUser) if (showAvatar) 4.dp else 16.dp else 16.dp,
+                bottomStart = 16.dp,
+                bottomEnd = 16.dp
+            ),
+            modifier = Modifier.widthIn(max = 280.dp)
         ) {
-            Card(
-                colors = CardDefaults.cardColors(containerColor = bubbleColor),
-                shape = RoundedCornerShape(
-                    topStart = if (isCurrentUser) 16.dp else 0.dp,
-                    topEnd = if (isCurrentUser) 0.dp else 16.dp,
-                    bottomStart = 16.dp,
-                    bottomEnd = 16.dp
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            Column(
+                modifier = Modifier.padding(8.dp)
             ) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    Text(
-                        text = message.contenido,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Text(
-                        text = formatChatDateTime(message.fecha), // Usar fecha real
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.outline,
-                        modifier = Modifier.align(Alignment.End)
-                    )
-                }
+                Text(
+                    text = message.contenido,
+                    color = if (isCurrentUser)
+                        MaterialTheme.colorScheme.onPrimary
+                    else
+                        MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                
+                Text(
+                    text = formatChatDateTime(message.fecha),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = if (isCurrentUser)
+                        MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
+                    else
+                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                    modifier = Modifier.align(Alignment.End)
+                )
             }
         }
-    }
-}
-
-private fun sendMessage(
-    message: String,
-    onSend: (String) -> Unit,
-    focusManager: FocusManager
-) {
-    if (message.isNotBlank()) {
-        onSend(message)
-        focusManager.clearFocus()
     }
 }

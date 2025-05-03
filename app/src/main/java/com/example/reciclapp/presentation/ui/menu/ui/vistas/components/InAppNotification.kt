@@ -1,5 +1,6 @@
 package com.example.reciclapp.presentation.ui.menu.ui.vistas.components
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -48,9 +49,15 @@ import com.example.reciclapp.domain.entities.Mensaje
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+private const val TAG = "InAppNotification"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InAppNotification(onNotificationClick: (Mensaje) -> Unit = {}, onNotificationAccepted : (Mensaje) -> Unit = {}, onSendNewMessage: (Mensaje) -> Unit = {}) {
+fun InAppNotification(
+    onNotificationClick: (Mensaje) -> Unit = {},
+    onNotificationAccepted: (Mensaje) -> Unit = {},
+    onSendNewMessage: (Mensaje) -> Unit = {}
+) {
     val scope = rememberCoroutineScope()
     var currentNotification by remember { mutableStateOf<Mensaje?>(null) }
     var isVisible by remember { mutableStateOf(false) }
@@ -67,7 +74,7 @@ fun InAppNotification(onNotificationClick: (Mensaje) -> Unit = {}, onNotificatio
             } else {
                 isVisible = true
                 scope.launch {
-                    delay(5000) // Auto-dismiss after 5 seconds
+                    delay(5000)
                     isVisible = false
                 }
             }
@@ -121,6 +128,9 @@ fun InAppNotification(onNotificationClick: (Mensaje) -> Unit = {}, onNotificatio
             exit = slideOutVertically(targetOffsetY = { -it })
         ) {
             currentNotification?.let { mensaje ->
+
+                Log.d(TAG, "Notificación recibida: $mensaje")
+
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()

@@ -3,6 +3,7 @@ package com.example.reciclapp.data.repositories
 import android.util.Log
 import com.example.reciclapp.domain.entities.Chat
 import com.example.reciclapp.domain.repositories.ChatRepository
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -72,4 +73,33 @@ class ChatRepositoryImpl @Inject constructor(private val service: FirebaseFirest
         resultado2.documents.mapNotNull { it.toObject(Chat::class.java) }.forEach { chats.add(it) }
 
         return chats
+    }
+
+    override suspend fun getChatByUsers(
+        idUsuario1: String,
+        idUsuario2: String
+    ): Chat? {
+        try {
+            // Usar OR lógico con dos consultas pero en una sola llamada a Firestore
+            val query = service.collection(COLLECTIONPATH)
+                .where(
+                    Filter.or(
+                        Filter.and(
+                            Filter.equalTo("idUsuario1", idUsuario1),
+                            Filter.equalTo("idUsuario2", idUsuario2)
+                        ),
+                        Filter.and(
+                            Filter.equalTo("idUsuario1", idUsuario2),
+                            Filter.equalTo("idUsuario2", idUsuario1)
+                        )
+                    )
+                )
+                .get()
+                .await()
+
+            return query.documents.firstNotNullOfOrNull { it.toObject(Chat::class.java) }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error al obtener chat por usuarios: ${e.message}", e)
+            return null
+        }
     }}

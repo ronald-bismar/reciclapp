@@ -103,7 +103,7 @@ fun Comprador(
     }
 
     val selectedComprador = compradoresViewModel.selectedComprador.observeAsState().value
-    val materiales = compradoresViewModel.productos.collectAsState().value
+    val productos = compradoresViewModel.productos.collectAsState().value
     val comentarios = compradoresViewModel.comentarios.collectAsState().value
 
     val stateNewComment by compradoresViewModel.stateNewComment.observeAsState()
@@ -130,13 +130,13 @@ fun Comprador(
         ) {
             ProfileHeader(comprador.urlImagenPerfil)
             ProfileDetails3(comprador)
-            ActionButtons({
+            ActionButtons {
                 transaccionViewModel.setUserContacted(selectedComprador)
                 mensajeViewModel.setUserContacted(selectedComprador)
                 mainNavController.navigate("ScreenProductsForSale")
-            })
+            }
             SectionTitle("Productos que compra:")
-            MaterialList(materiales)
+            MaterialList(productos)
             SectionTitle("Comentarios:")
             PuntuarUsuario(onComentarioCreado = { newComment, puntuacion ->
                 compradoresViewModel.enviarComentario(newComment, puntuacion)

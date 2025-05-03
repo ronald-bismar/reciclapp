@@ -37,6 +37,7 @@ import com.example.reciclapp.domain.entities.Mensaje
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.example.reciclapp.util.FechaUtils.formatChatDateTime
+import com.example.reciclapp.util.NameRoutes.CHATSCREEN
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -82,9 +83,12 @@ fun MessagesScreen(
                     messagesWithUsers.forEach { (usuario, mensaje) ->
                         item {
                             MessageCard(
-                                usuario = Usuario(idUsuario = usuario.idUsuario), // Reemplazar con datos reales del usuario
+                                usuario = usuario, // Reemplazar con datos reales del usuario
                                 lastMessage = mensaje,
-                                onClick = { }
+                                onClick = {
+                                    mensajeViewModel.setUserContacted(usuario)
+                                    mainNavController.navigate(CHATSCREEN)
+                                }
                             )
                         }
                     }
@@ -130,7 +134,7 @@ fun MessageCard(
             ) {
                 // Nombre del usuario
                 Text(
-                    text = usuario.nombre ?: "Usuario desconocido",
+                    text = usuario.nombre,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.onSurface

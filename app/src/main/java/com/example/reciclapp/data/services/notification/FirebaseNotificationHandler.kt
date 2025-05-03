@@ -15,15 +15,12 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.reciclapp.MainActivity
 import com.example.reciclapp.R
-import com.example.reciclapp.di.MessagingServiceEntryPoint
-import com.example.reciclapp.domain.usecases.mensajes.GetMensajeUseCase
+import com.example.reciclapp.domain.entities.Mensaje
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 private const val CHANNEL_ID = "high_importance_channel"
 private const val TAG = "FirebaseMessagingHandler"
@@ -31,17 +28,8 @@ private const val TAG = "FirebaseMessagingHandler"
 @SuppressLint("MissingFirebaseInstanceTokenRefresh")
 class FirebaseMessagingHandler: FirebaseMessagingService() {
 
-    @Inject
-    lateinit var getMensajeUseCase: GetMensajeUseCase
-
     override fun onCreate() {
         super.onCreate()
-        // Initialize getMensajeUseCase using the EntryPoint
-        val entryPoint = EntryPointAccessors.fromApplication(
-            applicationContext,
-            MessagingServiceEntryPoint::class.java
-        )
-        getMensajeUseCase = entryPoint.getMensajeUseCase()
         createNotificationChannel()
     }
 
@@ -70,17 +58,24 @@ class FirebaseMessagingHandler: FirebaseMessagingService() {
         val data = remoteMessage.data
 
         val idMensaje = data["idMensaje"] ?: ""
+        val contentMessage = data["contentMessage"] ?: ""
+        val titleMessage = data["titleMessage"] ?: ""
 
+
+
+        Log.d(TAG, "onMessageReceived: idMensaje $idMensaje")
+        Log.d(TAG, "onMessageReceived: contentMessage $contentMessage")
+        Log.d(TAG, "onMessageReceived: titleMessage $titleMessage")
 
         if (notification != null) {
             CoroutineScope(Dispatchers.IO).launch {
 
                 try {
-                    val mensaje = getMensajeUseCase(idMensaje)
-
-                    if (mensaje == null) return@launch
-
-                    Log.d(TAG, "Mensaje recibido: $mensaje")
+                    val mensaje = Mensaje().apply{
+                        this.idMensaje = idMensaje
+                        this.contenido = contentMessage
+                        this.titleMessage = titleMessage
+                    }
 
                     NotificationEventBus.emitNotification(mensaje)
 

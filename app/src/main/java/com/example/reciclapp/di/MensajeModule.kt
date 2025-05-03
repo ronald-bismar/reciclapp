@@ -1,26 +1,37 @@
 package com.example.reciclapp.di
 
+import android.content.Context
+import androidx.room.Room
+import com.example.reciclapp.data.local.dao.MensajeDao
+import com.example.reciclapp.data.local.database.AppDatabase
+import com.example.reciclapp.data.repositories.MensajeLocalRepositoryImpl
 import com.example.reciclapp.data.repositories.MensajeRepositoryImpl
 import com.example.reciclapp.data.services.notification.NotificationService
+import com.example.reciclapp.domain.repositories.MensajeLocalRepository
 import com.example.reciclapp.domain.repositories.MensajeRepository
+import com.example.reciclapp.domain.usecases.chat.GetChatByUsersUseCase
+import com.example.reciclapp.domain.usecases.chat.ObtenerChatsPorUsuarioUseCase
 import com.example.reciclapp.domain.usecases.mensaje.CompradorEnviaContraOfertaAVendedorUseCase
 import com.example.reciclapp.domain.usecases.mensaje.CompradorEnviaMensajeAVendedorUseCase
+import com.example.reciclapp.domain.usecases.mensaje.GetMensajeUseCase
 import com.example.reciclapp.domain.usecases.mensaje.GetMessagesByChatUseCase
+import com.example.reciclapp.domain.usecases.mensaje.GetMessagesByChatUseCaseLocal
+import com.example.reciclapp.domain.usecases.mensaje.GetUltimoMensajePorChatUseCase
 import com.example.reciclapp.domain.usecases.mensaje.ObtenerMensajePorUsuarioUseCase
 import com.example.reciclapp.domain.usecases.mensaje.ObtenerUltimoMensajePorTransaccionUseCase
+import com.example.reciclapp.domain.usecases.mensaje.SaveMensajeLocallyUseCase
+import com.example.reciclapp.domain.usecases.mensaje.SaveMensajeUseCase
 import com.example.reciclapp.domain.usecases.mensaje.VendedorEnviaContraOfertaACompradorUseCase
 import com.example.reciclapp.domain.usecases.mensaje.VendedorEnviaMensajeACompradorUseCase
 import com.example.reciclapp.domain.usecases.mensajes.DeleteMensajeUseCase
-import com.example.reciclapp.domain.usecases.mensajes.GetMensajeUseCase
-import com.example.reciclapp.domain.usecases.mensajes.SaveMensajeUseCase
 import com.example.reciclapp.domain.usecases.mensajes.SendMessageUseCase
 import com.example.reciclapp.domain.usecases.mensajes.UpdateMensajeUseCase
-import com.example.reciclapp.domain.usecases.transaccion.GetTransaccionesPendientesUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -28,17 +39,33 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 interface MessagingServiceEntryPoint {
     fun getMensajeUseCase(): GetMensajeUseCase
+    fun saveMessageLocallyUseCase(): SaveMensajeLocallyUseCase
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
 object MensajeModule {
 
-
     @Provides
     @Singleton
-    fun provideMensajeRepository(service: FirebaseFirestore, notificationService: NotificationService, getTransaccionesPendientesUseCase: GetTransaccionesPendientesUseCase): MensajeRepository {
-        return MensajeRepositoryImpl(service, notificationService, getTransaccionesPendientesUseCase)
+    fun provideMensajeRepository(
+        service: FirebaseFirestore,
+        notificationService: NotificationService,
+        obtenerChatsPorUsuarioUseCase: ObtenerChatsPorUsuarioUseCase,
+        getUltimoMensajePorChatUseCase: GetUltimoMensajePorChatUseCase,
+        saveMensajeLocallyUseCase: SaveMensajeLocallyUseCase,
+        getMessagesByChatUseCaseLocal: GetMessagesByChatUseCaseLocal,
+        getChatByUsersUseCase: GetChatByUsersUseCase
+    ): MensajeRepository {
+        return MensajeRepositoryImpl(
+            service,
+            notificationService,
+            obtenerChatsPorUsuarioUseCase,
+            getUltimoMensajePorChatUseCase,
+            saveMensajeLocallyUseCase,
+            getMessagesByChatUseCaseLocal,
+            getChatByUsersUseCase
+        )
     }
 
     @Provides
@@ -49,7 +76,9 @@ object MensajeModule {
 
     @Provides
     @Singleton
-    fun provideSaveMensajeUseCase(repository: MensajeRepository): SaveMensajeUseCase {
+    fun provideSaveMensajeUseCase(
+        repository: MensajeRepository,
+    ): SaveMensajeUseCase {
         return SaveMensajeUseCase(repository)
     }
 
@@ -112,5 +141,40 @@ object MensajeModule {
     @Singleton
     fun provideObtenerMensajesPorTransaccionUseCase(repository: MensajeRepository): ObtenerUltimoMensajePorTransaccionUseCase {
         return ObtenerUltimoMensajePorTransaccionUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMensajeDao(database: AppDatabase): MensajeDao {
+        return database.mensajeDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMensajeLocalRepository(mensajeDao: MensajeDao): MensajeLocalRepository {
+        return MensajeLocalRepositoryImpl(mensajeDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
+        return Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "DBReciclapp"
+        ).build()
+
+    }
+
+    @Provides
+    @Singleton
+    fun provideSaveMensajeLocallyUseCase(localRepository: MensajeLocalRepository): SaveMensajeLocallyUseCase {
+        return SaveMensajeLocallyUseCase(localRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetMessagesByChatUseCaseLocal(localRepository: MensajeLocalRepository): GetMessagesByChatUseCaseLocal {
+        return GetMessagesByChatUseCaseLocal(localRepository)
     }
 }
