@@ -15,7 +15,6 @@ import com.example.reciclapp.domain.usecases.mensaje.EscucharNuevosMensajesUseCa
 import com.example.reciclapp.domain.usecases.mensaje.GetMensajeUseCase
 import com.example.reciclapp.domain.usecases.mensaje.GetMessagesByChatUseCase
 import com.example.reciclapp.domain.usecases.mensaje.ObtenerUltimoMensajePorTransaccionUseCase
-import com.example.reciclapp.domain.usecases.mensaje.SaveMensajeLocallyUseCase
 import com.example.reciclapp.domain.usecases.mensaje.VendedorEnviaContraOfertaACompradorUseCase
 import com.example.reciclapp.domain.usecases.mensaje.VendedorEnviaMensajeACompradorUseCase
 import com.example.reciclapp.domain.usecases.mensajes.SendMessageUseCase
@@ -53,7 +52,6 @@ class MensajeViewModel @Inject constructor(
     private val obtenerProductosPorIdsUseCase: ObtenerProductosPorIdsUseCase,
     private val crearTransaccionPendienteUseCase: CrearTransaccionPendienteUseCase,
     private val obtenerUltimoMensajePorTransaccionUseCase: ObtenerUltimoMensajePorTransaccionUseCase,
-    private val saveMensajeLocallyUseCase: SaveMensajeLocallyUseCase
 ) : ViewModel() {
 
     private val _sendingProductsState =
@@ -141,17 +139,16 @@ class MensajeViewModel @Inject constructor(
     }
 
     fun enviarOfertaAVendedor(message: String = "") {
-        _isLoading.value = true
         viewModelScope.launch {
+            _sendingProductsState.value = SendingProductsState.Loading
             runCatching {
                 guardarTransaccionPendiente()
                 sendNotificationToVendedor(message)
             }.onSuccess {
-                Log.d(TAG, "Transacción guardada correctamente")
+                _sendingProductsState.value = SendingProductsState.Success
             }.onFailure { e ->
-                Log.e(TAG, "Error al guardar la transacción: ${e.message}")
-            }.also {
-                _isLoading.value = false
+                _sendingProductsState.value =
+                    SendingProductsState.Error("Error al enviar el mensaje ${e.message}")
             }
         }
     }
@@ -179,6 +176,7 @@ class MensajeViewModel @Inject constructor(
         mensaje: Mensaje,
         tokenVendedor: String
     ) {
+
         viewModelScope.launch {
             try {
                 compradorEnviaContraOfertaAVendedorUseCase(

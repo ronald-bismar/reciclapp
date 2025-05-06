@@ -8,6 +8,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,7 +28,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Card
@@ -54,10 +54,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
+import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.Mensaje
 import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.example.reciclapp.util.FechaUtils.formatChatDateTime
@@ -100,11 +104,16 @@ fun ChatScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.AccountCircle,
-                        contentDescription = null,
-                        modifier = Modifier.size(32.dp),
-                        tint = MaterialTheme.colorScheme.primary
+                    Image(
+                        painter = rememberAsyncImagePainter(
+                            userWhoContacted?.urlImagenPerfil,
+                            placeholder = painterResource(R.drawable.perfil)
+                        ),
+                        contentDescription = "Imagen del perfil del usuario",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(CircleShape)
                     )
                     Column {
                         Text(
@@ -143,8 +152,8 @@ fun ChatScreen(
                     MessageBubble(
                         message = message,
                         isCurrentUser = message.idEmisor == myUser?.idUsuario,
-                        showAvatar = index == 0 || 
-                            messagesFromBothUsers.getOrNull(index - 1)?.idEmisor != message.idEmisor
+                        showAvatar = index == 0 ||
+                                messagesFromBothUsers.getOrNull(index - 1)?.idEmisor != message.idEmisor
                     )
                 }
             }
@@ -236,7 +245,7 @@ fun MessageBubble(
             .padding(vertical = 2.dp),
         horizontalArrangement = if (isCurrentUser) Arrangement.End else Arrangement.Start
     ) {
-       if (!isCurrentUser) {
+        if (!isCurrentUser) {
             Spacer(modifier = Modifier.width(10.dp))
         }
 
@@ -266,7 +275,7 @@ fun MessageBubble(
                         MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodyMedium
                 )
-                
+
                 Text(
                     text = formatChatDateTime(message.fecha),
                     style = MaterialTheme.typography.labelSmall,

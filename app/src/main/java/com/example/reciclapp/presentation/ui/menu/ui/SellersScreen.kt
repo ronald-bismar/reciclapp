@@ -19,7 +19,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.initiateCall
 import com.example.reciclapp.presentation.ui.menu.ui.vistas.openWhatsAppMessage
 import com.example.reciclapp.presentation.viewmodel.UbicacionViewModel
@@ -65,7 +64,7 @@ fun SellersScreen(
                     ContactCard(
                         usuario,
                         viewProfile = {
-                            navController.navigate("VendedorPerfil/${usuario.idUsuario}/${" "}")
+                            navController.navigate("VendedorPerfil/${usuario.idUsuario}")
                         },
                         sendMessage = {
                             openWhatsAppMessage(context, usuario.telefono.toString())

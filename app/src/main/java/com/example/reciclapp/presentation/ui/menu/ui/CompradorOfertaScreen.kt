@@ -1,5 +1,6 @@
 package com.example.reciclapp.presentation.ui.menu.ui
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.Spring
@@ -85,6 +86,8 @@ import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.example.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
 import kotlin.math.min
+
+private const val TAG = "CompradorOfertaScreen"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -210,10 +213,12 @@ fun CompradorOfertaScreen(
                     // FloatingActionButton
                     FloatingActionButton(
                         onClick = {
-                            // Enviar contraoferta
+                            val newMessage = message.copy(
+                                contenido = mensaje
+                            )
                             mensajeViewModel.enviarContraofertaAVendedor(
                                 contrapreciosMap,
-                                message,
+                                newMessage,
                                 usuarioQueSeContacto?.tokenNotifications ?: "",
                             )
                             showSuccessMessage = true
@@ -372,6 +377,9 @@ fun CompradorOfertaScreen(
                                     val newMessage = message.copy(
                                         contenido = mensaje
                                     )
+
+                                    Log.d(TAG, "usuarioQueSeContacto: $usuarioQueSeContacto")
+
                                     mensajeViewModel.compradorAceptaOferta(
                                         newMessage, usuarioQueSeContacto?.tokenNotifications ?: ""
                                     )
@@ -379,10 +387,10 @@ fun CompradorOfertaScreen(
                                 },
                                 modifier = Modifier.fillMaxWidth(),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary, // Usa primary como pediste
+                                    containerColor = MaterialTheme.colorScheme.primary,
                                     contentColor = Color.White
                                 ),
-                                shape = RoundedCornerShape(4.dp) // Menos redondeado
+                                shape = RoundedCornerShape(4.dp)
                             ) {
                                 Icon(
                                     Icons.Rounded.Check,
@@ -398,7 +406,6 @@ fun CompradorOfertaScreen(
                                 )
                             }
 
-                            // TextButton sin bordes como pediste
                             TextButton(
                                 onClick = {
                                     inicializarContraprecios()

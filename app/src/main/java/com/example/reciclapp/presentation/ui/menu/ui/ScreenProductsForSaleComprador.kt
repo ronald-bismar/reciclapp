@@ -68,9 +68,15 @@ import com.example.reciclapp.presentation.ui.menu.ui.content.myproducts.Producto
 import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.example.reciclapp.presentation.viewmodel.UserViewModel
+import com.example.reciclapp.util.NameRoutes.QRGENERATORSCREEN
 
 @Composable
-fun ScreenProductsForSale(userViewModel: UserViewModel, transaccionViewModel: TransaccionViewModel,mensajeViewModel: MensajeViewModel, mainNavController: NavHostController) {
+fun ScreenProductsForSale(
+    userViewModel: UserViewModel,
+    transaccionViewModel: TransaccionViewModel,
+    mensajeViewModel: MensajeViewModel,
+    mainNavController: NavHostController
+) {
     val userContacted = transaccionViewModel.usuarioContactado.collectAsState().value
     val selectedProducts = remember { mutableStateListOf<ProductoReciclable>() }
 
@@ -112,10 +118,12 @@ fun ScreenProductsForSale(userViewModel: UserViewModel, transaccionViewModel: Tr
         ) {
             Button(
                 onClick = {
-                    userContacted?.let { transaccionViewModel.prepareTransaction(it, selectedProducts)
-                    mensajeViewModel.setProductosSeleccionados(selectedProducts)}
+                    userContacted?.let {
+                        transaccionViewModel.prepareTransaction(it, selectedProducts)
+                        mensajeViewModel.setProductosSeleccionados(selectedProducts)
+                    }
 
-                    mainNavController.navigate("QRGeneratorScreen")
+                    mainNavController.navigate(QRGENERATORSCREEN)
                 },
                 shape = RoundedCornerShape(28.dp),
                 colors = ButtonDefaults.buttonColors(

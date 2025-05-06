@@ -73,6 +73,7 @@ fun QRGeneratorScreen(
     var isQRLoading by remember { mutableStateOf(true) }
     var isButtonLoading by remember { mutableStateOf(false) }
 
+
     val usuarioContactadoIsVendedor =
         usuarioContactado.value?.tipoDeUsuario == VENDEDOR
     val idVendedor = if (usuarioContactadoIsVendedor) usuarioContactado.value?.idUsuario ?: ""
@@ -202,7 +203,7 @@ fun QRGeneratorScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
-                text = "Muestra este código QR al ${if (usuarioContactadoIsVendedor) "vendedor" else "comprador"} para validar la transacción y que ambos reciban sus puntos",
+                text = "Muestra este código QR al ${usuarioContactado.value?.tipoDeUsuario?: "otro usuario"} para validar la transacción y que ambos reciban sus puntos",
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)

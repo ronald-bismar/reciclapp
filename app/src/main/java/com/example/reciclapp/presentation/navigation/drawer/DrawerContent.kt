@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
@@ -26,6 +27,8 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -34,9 +37,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.reciclapp.R
+import com.example.reciclapp.presentation.ui.registro.ui.showToast
+import com.example.reciclapp.presentation.viewmodel.UserViewModel
 
 @Composable
-fun DrawerContent(mainNavController: NavController, onItemClick: () -> Unit) {
+fun DrawerContent(
+    mainNavController: NavController,
+    onItemClick: () -> Unit,
+    userViewModel: UserViewModel
+) {
+
+    val logOutState by userViewModel.logOutState.observeAsState()
+
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxWidth(0.8f)
@@ -61,21 +75,54 @@ fun DrawerContent(mainNavController: NavController, onItemClick: () -> Unit) {
 
         DrawerItem(mainNavController, "Calificanos", Icons.Default.Star, onItemClick)
 
-       DrawerItem(mainNavController, "Ajustes", Icons.Default.Settings, onItemClick)
+        DrawerItem(mainNavController, "Ajustes", Icons.Default.Settings, onItemClick)
 
         DrawerItem(mainNavController, "perfil", Icons.Default.Person, onItemClick)
+
+        DrawerItem(mainNavController, "Cerrar Sesion", Icons.Default.Logout, {
+            onItemClick
+            userViewModel.logOutUser()
+        })
 
         // Texto
         Text(
             text = "NextMacroSystem 2024-2025",
 
-            modifier = Modifier.padding(top = 46.dp, bottom = 16.dp, start = 16.dp, end = 16.dp) // Espaciado superior
+            modifier = Modifier.padding(
+                top = 46.dp,
+                bottom = 16.dp,
+                start = 16.dp,
+                end = 16.dp
+            ) // Espaciado superior
         )
+    }
+
+    // Maneja el estado de logout
+    logOutState?.let { result ->
+        when {
+            result.isSuccess -> {
+                mainNavController.navigate("login") {
+                    popUpTo("menu") {
+                        inclusive = true
+                    }
+                }
+            }
+
+            result.isFailure -> {
+                showToast(context, "No se pudo salir de la cuenta")
+            }
+        }
+        userViewModel.resetStateLogout()
     }
 }
 
 @Composable
-fun DrawerItem(navController: NavController, route: String, icon: ImageVector, onItemClick: () -> Unit) {
+fun DrawerItem(
+    navController: NavController,
+    route: String,
+    icon: ImageVector,
+    onItemClick: () -> Unit
+) {
     val context = LocalContext.current
     ListItem(
         headlineContent = { Text(route.capitalize()) },

@@ -95,6 +95,7 @@ class MensajeRepositoryImpl @Inject constructor(
 
         val result = notificationService.sendNotification(bodyNotification)
         Log.d(TAG, "estado envio: $result")
+
         saveMensaje(message)
         saveMensajeLocallyUseCase(message)
     }
@@ -119,7 +120,7 @@ class MensajeRepositoryImpl @Inject constructor(
         saveChat(chat)
     }
 
-    private suspend fun obtenerChat(message: Mensaje): Chat{
+    private suspend fun obtenerChat(message: Mensaje): Chat {
         var chat = getChatByUsers(message.idEmisor, message.idReceptor)
 
         if (chat == null) {
@@ -140,11 +141,11 @@ class MensajeRepositoryImpl @Inject constructor(
         message: Mensaje,
         tokenVendedor: String
     ) {
-
         var chat = obtenerChat(message)
+
         message.apply {
             this.contenido =
-                if (this.contenido.isNotEmpty()) this.contenido else "Un comprador envio una oferta por tus productos"
+                if (this.contenido.isNotEmpty()) this.contenido else "Quisiera comprarte estos productos"
             this.idProductoConPrecio =
                 productos.joinToString(separator = ",") { "${it.idProducto}:${it.precio}" }
             this.idChat = chat.idChat
@@ -160,12 +161,20 @@ class MensajeRepositoryImpl @Inject constructor(
         mensaje: Mensaje,
         tokenComprador: String
     ) {
-        val productosConNuevosPrecios = contrapreciosMap.entries.joinToString(",") { (id, precio) ->
-            "$id:$precio"
-        } // "idProducto:precio,idProducto:precio,idProducto:precio,idProducto:precio"
+        val productosConNuevosPrecios =
+            contrapreciosMap.entries.joinToString(",") { (idProducto, precioOfrecido) ->
+                "$idProducto:$precioOfrecido"
+            } // "idProducto:precio,idProducto:precio,idProducto:precio,idProducto:precio"
 
+        // Guardar IDs originales antes de intercambiarlos
+        val idComprador = mensaje.idEmisor
+        val idVendedor = mensaje.idReceptor
 
-        mensaje.apply { this.idProductoConPrecio = productosConNuevosPrecios }
+        mensaje.apply {
+            this.idProductoConPrecio = productosConNuevosPrecios
+            this.idEmisor = idVendedor
+            this.idReceptor = idComprador
+        }
 
         sendMessage(mensaje, tokenComprador)
     }
@@ -272,60 +281,27 @@ class MensajeRepositoryImpl @Inject constructor(
     override suspend fun obtenerChatYUltimoMensaje(
         myUserId: String
     ): MutableList<Pair<Usuario, Mensaje>> {
-        Log.d(TAG, "obtenerChatYUltimoMensaje: iniciando con myUserId=$myUserId")
 
         val chatsConUsuario = mutableListOf<Pair<Usuario, Mensaje>>()
 
-        // 1. Obtener todos los chats del usuario
-        Log.d(TAG, "obtenerChatYUltimoMensaje: obteniendo chats del usuario")
         val chats = obtenerChatsPorUsuarioUseCase(myUserId)
-        Log.d(TAG, "obtenerChatYUltimoMensaje: se encontraron ${chats.size} chats")
 
-        // 2. Obtener último mensaje de cada chat
         val ultimosMensajes = mutableListOf<Mensaje>()
-        Log.d(TAG, "obtenerChatYUltimoMensaje: buscando últimos mensajes para cada chat")
 
         chats.forEachIndexed { index, chat ->
             val idChat = chat.idChat
-            Log.d(
-                TAG,
-                "obtenerChatYUltimoMensaje: buscando último mensaje para chat[$index] con idChat=$idChat"
-            )
 
             val ultimoMensaje = getUltimoMensajePorChatUseCase(idChat)
 
-            if (ultimoMensaje != null) {
-                Log.d(
-                    TAG,
-                    "obtenerChatYUltimoMensaje: último mensaje encontrado para chat[$index]: " +
-                            "emisor=${ultimoMensaje.idEmisor}, receptor=${ultimoMensaje.idReceptor}, " +
-                            "texto=${ultimoMensaje.contenido.take(20)}..."
-                )
+            if (ultimoMensaje != null)
                 ultimosMensajes.add(ultimoMensaje)
-            } else {
-                Log.w(
-                    TAG,
-                    "obtenerChatYUltimoMensaje: no se encontró último mensaje para chat[$index] con idChat=$idChat"
-                )
-            }
         }
 
-        Log.d(
-            TAG,
-            "obtenerChatYUltimoMensaje: se encontraron ${ultimosMensajes.size} últimos mensajes"
-        )
-
-        // 3. Obtener información de los usuarios
         val usuarios = mutableListOf<Usuario>()
-        Log.d(TAG, "obtenerChatYUltimoMensaje: buscando información de usuarios")
 
         ultimosMensajes.forEachIndexed { index, mensaje ->
             val idUsuario =
                 if (mensaje.idEmisor != myUserId) mensaje.idEmisor else mensaje.idReceptor
-            Log.d(
-                TAG,
-                "obtenerChatYUltimoMensaje: buscando usuario[$index] con idUsuario=$idUsuario"
-            )
 
             try {
                 val usuarioDoc = service.collection("usuario")
@@ -336,16 +312,7 @@ class MensajeRepositoryImpl @Inject constructor(
                 val usuario = usuarioDoc.toObject(Usuario::class.java)
 
                 if (usuario != null) {
-                    Log.d(
-                        TAG,
-                        "obtenerChatYUltimoMensaje: usuario[$index] encontrado: nombre=${usuario.nombre}"
-                    )
                     usuarios.add(usuario)
-                } else {
-                    Log.w(
-                        TAG,
-                        "obtenerChatYUltimoMensaje: usuario[$index] con id=$idUsuario existe pero no se pudo convertir a objeto Usuario"
-                    )
                 }
             } catch (e: Exception) {
                 Log.e(
@@ -356,21 +323,10 @@ class MensajeRepositoryImpl @Inject constructor(
             }
         }
 
-        Log.d(TAG, "obtenerChatYUltimoMensaje: se encontraron ${usuarios.size} usuarios")
-
-        // 4. Crear pares de usuario-mensaje
         usuarios.forEachIndexed { index, usuario ->
-            Log.d(
-                TAG,
-                "obtenerChatYUltimoMensaje: creando par usuario-mensaje[$index] para usuario=${usuario.nombre}"
-            )
             chatsConUsuario.add(Pair(usuario, ultimosMensajes[index]))
         }
 
-        Log.d(
-            TAG,
-            "obtenerChatYUltimoMensaje: finalizado, retornando ${chatsConUsuario.size} chats con usuario"
-        )
         return chatsConUsuario
     }
 

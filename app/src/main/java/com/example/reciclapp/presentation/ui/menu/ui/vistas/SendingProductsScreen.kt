@@ -74,9 +74,11 @@ import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.ProductoReciclable
 import com.example.reciclapp.domain.entities.Usuario
 import com.example.reciclapp.presentation.states.SendingProductsState
+import com.example.reciclapp.presentation.ui.registro.ui.showToast
 import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.example.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
+import com.example.reciclapp.util.TipoDeUsuario
 
 @Composable
 fun SendingProductsScreen(
@@ -86,7 +88,7 @@ fun SendingProductsScreen(
 ) {
 
     val myUser = transaccionViewModel.myUser.value
-    val vendedor = transaccionViewModel.usuarioContactado.collectAsState().value
+    val usuarioContactado = transaccionViewModel.usuarioContactado.collectAsState().value
     val productosSeleccionados = transaccionViewModel.productosSeleccionados.collectAsState().value
     val state = mensajeViewModel.sendingProductsState.collectAsState()
 
@@ -104,11 +106,14 @@ fun SendingProductsScreen(
 
     LaunchedEffect(state.value) {
         when (val currentState = state.value) {
-            is SendingProductsState.Error -> { Toast.makeText(
-                context,
-                currentState.error,
-                Toast.LENGTH_SHORT
-            ).show() }
+            is SendingProductsState.Error -> {
+                Toast.makeText(
+                    context,
+                    currentState.error,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
             SendingProductsState.Success -> showCompletedModal = true
             SendingProductsState.Loading -> messageButtonSend = "Enviando Mensaje..."
             else -> {}
@@ -140,7 +145,7 @@ fun SendingProductsScreen(
             ) {
                 // Header con título
                 Text(
-                    text = "Enviando productos a comprador",
+                    text = "Enviando productos a ${usuarioContactado?.tipoDeUsuario ?: "al usuario contactado"}",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground,
@@ -153,7 +158,7 @@ fun SendingProductsScreen(
 
                 PerfilesConexion(
                     usuarioActual = myUser ?: Usuario(),
-                    vendedor = vendedor ?: Usuario(),
+                    vendedor = usuarioContactado ?: Usuario(),
                     isLoading = state.value == SendingProductsState.Loading
                 )
 
@@ -188,7 +193,16 @@ fun SendingProductsScreen(
 
                 Button(
                     onClick = {
-                        mensajeViewModel.enviarOfertaAComprador(mensaje)
+                        when (usuarioContactado?.tipoDeUsuario?.uppercase()) {
+                            TipoDeUsuario.COMPRADOR ->
+                                mensajeViewModel.enviarOfertaAComprador(mensaje)
+
+                            TipoDeUsuario.VENDEDOR ->
+                                mensajeViewModel.enviarOfertaAVendedor(mensaje)
+
+                            else -> showToast(context, "No se encontro al usuario contactado")
+                        }
+
                     },
                     modifier = Modifier
                         .fillMaxWidth()

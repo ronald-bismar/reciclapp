@@ -135,6 +135,7 @@ fun PantallaPrincipal(
                 DrawerContent(
                     mainNavController = navHostControllerMain,
                     onItemClick = { scope.launch { drawerState.close() } },
+                    userViewModel
                 )
             }
         ) {

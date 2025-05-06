@@ -18,7 +18,10 @@ import javax.inject.Inject
 
 private const val TAG = "ProductoRepositoryImpl"
 
-class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFirestore, private val sendMessageUseCase: SendMessageUseCase) :
+class ProductoRepositoryImpl @Inject constructor(
+    private val service: FirebaseFirestore,
+    private val sendMessageUseCase: SendMessageUseCase
+) :
     ProductoRepository {
     override suspend fun getProducto(idProducto: String): ProductoReciclable? {
         val snapshot = service.collection("productoReciclable")
@@ -63,6 +66,9 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
     }
 
     override suspend fun listarProductosPorVendedor(idVendedor: String): MutableList<ProductoReciclable> {
+
+        Log.d(TAG, "listarProductosPorVendedor: $idVendedor")
+
         val productosDeVendedor = mutableListOf<ProductoReciclable>()
         val querySnapshot =
             service.collection("productoReciclable").whereEqualTo("idVendedor", idVendedor).get()
@@ -221,10 +227,13 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
     ) {
         val idVendedor = mensaje.idEmisor
         val idComprador = mensaje.idReceptor
-        mensaje.apply { titleMessage = "Oferta aceptada"
+        mensaje.apply {
+            titleMessage = "Oferta aceptada"
             this.idEmisor = idComprador
             this.idReceptor = idVendedor
-        this.contenido = if(this.contenido.isEmpty()) "Me parece una buena oferta, dime cuando podrias venir a dejarlo" else this.contenido}
+            this.contenido =
+                if (this.contenido.isEmpty()) "Me parece una buena oferta, dime cuando podrias venir a dejarlo" else this.contenido
+        }
         sendMessageUseCase(mensaje, tokenVendedor)
     }
 
@@ -232,7 +241,16 @@ class ProductoRepositoryImpl @Inject constructor(private val service: FirebaseFi
         mensaje: Mensaje,
         tokenComprador: String,
     ) {
-        mensaje.apply { titleMessage = "Oferta aceptada" }
+        val idVendedor = mensaje.idEmisor
+        val idComprador = mensaje.idReceptor
+
+        mensaje.apply {
+            titleMessage = "Oferta aceptada"
+            this.idEmisor = idVendedor
+            this.idReceptor = idComprador
+            this.contenido =
+                if (this.contenido.isEmpty()) "Me parece bien, podria decirme a que hora podria venir a dejarlo?" else this.contenido
+        }
         sendMessageUseCase(mensaje, tokenComprador)
     }
 

@@ -93,8 +93,12 @@ class VendedoresViewModel @Inject constructor(
     }
 
     fun fetchProductosByVendedor(userId: String) {
+
+        Log.d(TAG, "fetchProductosByVendedor: $userId")
+
         viewModelScope.launch {
-            _productos.value = listarProductosDeVendedorUseCase.execute(userId)
+            val productos = listarProductosDeVendedorUseCase.execute(userId)
+            _productos.value = productos
             contarProductosActivos()
             calcularCO2AhorradoEnKilos()
             calcularMeGustasEnProductos()
@@ -122,17 +126,6 @@ class VendedoresViewModel @Inject constructor(
     fun obtenerProductosPredeterminados() {
         viewModelScope.launch {
             _productosPredeterminados.value = obtenerProductosPredeterminados.execute()
-        }
-    }
-
-    fun setProductsToSale(products: List<ProductoReciclable>) {
-        _productsToSale.value = products
-    }
-
-
-    fun fetchAllProducts() {
-        viewModelScope.launch {
-            _productos.value = listarTodosLosProductosUseCase.execute().toMutableList()
         }
     }
 
@@ -221,12 +214,7 @@ class VendedoresViewModel @Inject constructor(
 
     fun contarProductosActivos() {
         viewModelScope.launch {
-            Log.d("VendedoresViewModel", "Productos ${_productos.value}")
-
-
             _productosActivos.value = _productos.value.filter { !it.fueVendida }.size
-
-            Log.d("VendedoresViewModel", "Productos activos: ${_productosActivos.value}")
         }
     }
 

@@ -34,7 +34,9 @@ import com.example.reciclapp.presentation.ui.menu.ui.PantallaPresentacion
 import com.example.reciclapp.presentation.ui.menu.ui.PantallaPrincipal
 import com.example.reciclapp.presentation.ui.menu.ui.PresentacionAppScreen
 import com.example.reciclapp.presentation.ui.menu.ui.QRGeneratorScreen
+import com.example.reciclapp.presentation.ui.menu.ui.RecyclableClassifierApp
 import com.example.reciclapp.presentation.ui.menu.ui.ScreenProductsForSale
+import com.example.reciclapp.presentation.ui.menu.ui.ScreenProductsForSaleVendedor
 import com.example.reciclapp.presentation.ui.menu.ui.TransaccionesPendientesScreen
 import com.example.reciclapp.presentation.ui.menu.ui.UserTypeScreen
 import com.example.reciclapp.presentation.ui.menu.ui.content.myproducts.MyProductsScreen
@@ -47,6 +49,7 @@ import com.example.reciclapp.presentation.ui.menu.ui.vistas.Vendedor
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroScreen
 import com.example.reciclapp.presentation.ui.registro.ui.RegistroViewModel
 import com.example.reciclapp.presentation.ui.splash.SplashScreenContent
+import com.example.reciclapp.presentation.viewmodel.ClassifierViewModel
 import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
 import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
@@ -57,6 +60,7 @@ import com.example.reciclapp.util.NameRoutes.CHATSCREEN
 import com.example.reciclapp.util.NameRoutes.MESSAGESSCREEN
 import com.example.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
 import com.example.reciclapp.util.NameRoutes.QRSCANNER
+import com.example.reciclapp.util.NameRoutes.RECYCLABLECLASSIFIERSCREEN
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -76,6 +80,7 @@ fun NavGraph(
     val transaccionViewModel: TransaccionViewModel = hiltViewModel()
     val ubicacionViewModel: UbicacionViewModel = hiltViewModel()
     val mensajeViewModel: MensajeViewModel = hiltViewModel()
+    val classifierViewModel: ClassifierViewModel = hiltViewModel()
 
     var nextScreen by remember { mutableStateOf("splash") }
     var usuario by remember { mutableStateOf(Usuario()) }
@@ -158,15 +163,15 @@ fun NavGraph(
             )
         }
         composable(
-            route = "VendedorPerfil/{userId}/{productoId}",
+            route = "VendedorPerfil/{userId}",
             arguments = listOf(
-                navArgument("userId") { type = NavType.StringType },
-                navArgument("productoId") { type = NavType.StringType })
+                navArgument("userId") { type = NavType.StringType })
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId") ?: ""
-            val productoId = backStackEntry.arguments?.getString("productoId") ?: ""
             Vendedor(
-                mainNavHostController, userId, productoId, vendedoresViewModel
+                mainNavHostController, userId, vendedoresViewModel,
+                transaccionViewModel,
+                mensajeViewModel
             )
         }
 
@@ -207,6 +212,15 @@ fun NavGraph(
             )
         }
 
+        composable("ScreenProductsForSaleVendedor") {
+            ScreenProductsForSaleVendedor(
+                vendedoresViewModel,
+                transaccionViewModel,
+                mensajeViewModel,
+                mainNavHostController
+            )
+        }
+
         composable("SendingProductsScreen") {
             SendingProductsScreen(
                 navHostController = mainNavHostController,
@@ -241,6 +255,10 @@ fun NavGraph(
 
         composable(MESSAGESSCREEN) {
             MessagesScreen(mensajeViewModel, mainNavHostController)
+        }
+
+        composable(RECYCLABLECLASSIFIERSCREEN) {
+            RecyclableClassifierApp(classifierViewModel)
         }
     }
 }

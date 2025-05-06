@@ -222,7 +222,7 @@ fun OfertaAceptadaBottomSheet(
 
         // Descripción
         Text(
-            text = "El comprador ha aceptado tu oferta por los productos.",
+            text = "Se ha aceptado tu oferta por los productos.",
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 16.dp)

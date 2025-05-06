@@ -1,9 +1,6 @@
 package com.example.reciclapp.presentation.ui.menu.ui.vistas
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -23,8 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Recycling
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -32,17 +28,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -53,7 +44,8 @@ import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.reciclapp.R
 import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.domain.entities.Usuario
+import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
+import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
 
 private const val TAG = "Vendedor"
@@ -63,11 +55,12 @@ private const val TAG = "Vendedor"
 fun Vendedor(
     mainNavController: NavHostController,
     vendedorId: String,
-    productoId: String,
-    vendedoresViewModel: VendedoresViewModel
+    vendedoresViewModel: VendedoresViewModel,
+    transaccionViewModel: TransaccionViewModel,
+    mensajeViewModel: MensajeViewModel
 ) {
-    val context = LocalContext.current
     LaunchedEffect(vendedorId) {
+
 
         vendedoresViewModel.fetchVendedorById(vendedorId)
         vendedoresViewModel.fetchProductosByVendedor(vendedorId)
@@ -111,15 +104,13 @@ fun Vendedor(
             HorizontalDivider()
             Spacer(modifier = Modifier.height(10.dp))
             // Botones de acciones
-            ActionButtons(
-                selectedVendedor = selectedVendedor,
-                productoId = productoId,
-                vendedorId = vendedorId,
-                context = context,
-                mainNavController = mainNavController
+            ActionButtonsVendedor(
+                {
+                    transaccionViewModel.setUserContacted(selectedVendedor)
+                    mensajeViewModel.setUserContacted(selectedVendedor)
+                    mainNavController.navigate("ScreenProductsForSaleVendedor")
+                }
             )
-            Spacer(modifier = Modifier.height(10.dp))
-            HorizontalDivider()
 
             // Listado de productos a la venta
             ProfileSection2("Productos a la venta")
@@ -208,7 +199,7 @@ fun SoldItemCard(item: ProductoReciclable) {
             model = item.urlImagenProducto,
             contentDescription = "Producto reciclable",
             modifier = Modifier
-                .fillMaxWidth()
+                .width(120.dp)
                 .height(120.dp),
             contentScale = ContentScale.Crop,
             error = painterResource(R.drawable.icono_defecto)
@@ -240,51 +231,18 @@ fun SoldItemCard(item: ProductoReciclable) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ActionButtons(
-    selectedVendedor: Usuario,
-    productoId: String,
-    vendedorId: String,
-    context: Context,
-    mainNavController: NavHostController
-) {
-    var showQRDialog by remember { mutableStateOf(false) }
-
+fun ActionButtonsVendedor(onContactoVendedorSelected: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 2.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly
+        horizontalArrangement = Arrangement.Center
     ) {
-        ActionButton3(
-            "Mensaje",
-            Icons.Default.Email
-        ) {
-            showQRDialog = true
-        }
-
-        ActionButton3(
-            "Llamar",
-            Icons.Default.Call,
-        ) {
-            showQRDialog = true
+        ActionButton3("Contactar por productos", Icons.Default.Recycling) {
+            onContactoVendedorSelected()
         }
     }
-
-    if (showQRDialog) {
-//        val transaccionViewModel: TransaccionViewModel = hiltViewModel()
-//        QRGeneratorDialog(
-//            productoId = productoId,
-//            usuarioContactadoId = vendedorId,
-//            usuarioContactadoIsVendedor = true,
-//            onDismiss = { showQRDialog = false },
-//            onContinue = {
-//                openWhatsAppMessage(
-//                    context = context,
-//                    phoneNumber = "${selectedVendedor.telefono}"
-//                )
-//            }, transaccionViewModel
-//        )
-    }
+    Spacer(modifier = Modifier.height(10.dp))
+    HorizontalDivider()
 }
