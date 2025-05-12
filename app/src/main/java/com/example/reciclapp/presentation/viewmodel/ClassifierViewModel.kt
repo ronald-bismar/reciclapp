@@ -14,8 +14,23 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 private const val TAG = "ClassifierViewModel"
-private const val PROMPT =
-    "Que tipo de material reciclable es lo que esta en la imagen en la clasificacion de materiales reciclables?, responde siempre en espaniol, y da consejos de como reciclarlo que me ayuden, por favor siempre dame consejos utiles."
+private const val PROMPT = """
+Analiza la imagen y responde SOLO con este formato:
+MATERIAL: [tipo de material principal]
+CATEGORÍA: [categoría específica según la lista]
+CONSEJO RÁPIDO: [un consejo corto de reciclaje]
+
+Usa ÚNICAMENTE estas categorías:
+- Plásticos (PET, HDPE, PVC, etc.)
+- Metales (Aluminio, Acero, etc.)
+- Papel y Cartón
+- Vidrio
+- Orgánicos
+- Textiles
+- Electrónicos
+- Madera
+- Otros
+"""
 
 class ClassifierViewModel : ViewModel() {
     private val _uiState: MutableStateFlow<ClassifierState> =
