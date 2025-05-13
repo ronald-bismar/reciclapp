@@ -15,21 +15,9 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "ClassifierViewModel"
 private const val PROMPT = """
-Analiza la imagen y responde SOLO con este formato:
-MATERIAL: [tipo de material principal]
-CATEGORÍA: [categoría específica según la lista]
-CONSEJO RÁPIDO: [un consejo corto de reciclaje]
-
-Usa ÚNICAMENTE estas categorías:
-- Plásticos (PET, HDPE, PVC, etc.)
-- Metales (Aluminio, Acero, etc.)
-- Papel y Cartón
-- Vidrio
-- Orgánicos
-- Textiles
-- Electrónicos
-- Madera
-- Otros
+Ayuda al usuario a identificar el tipo de material reciclable que esta en la imagen 
+para que pueda clasificar de mejor manera sus materiales, da una descripcion no muy extensa
+y siempre trata de brindar informacion util al usuario
 """
 
 class ClassifierViewModel : ViewModel() {

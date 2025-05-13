@@ -51,15 +51,12 @@ class MainActivity : ComponentActivity() {
                     InAppNotification(
                         // Para notificaciones regulares
                         onNotificationClick = { mensaje ->
-
-                            Log.d("Mensaje", "Su mensaje tututu turuturututu: $mensaje")
-
                             navController?.let {
                                 navController!!.navigate("CompradorOfertaScreen/${mensaje.idMensaje}")
                             }
                         },
                         // Para notificaciones de oferta aceptada (botón de ubicación)
-                        onNotificationAccepted = { mensaje ->
+                        onNotificationAccepted = {
                             navController?.let {
                                 navController!!.navigate(PANTALLAPRINCIPAL)
                             }

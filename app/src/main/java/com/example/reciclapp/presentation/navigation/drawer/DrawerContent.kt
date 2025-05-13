@@ -79,8 +79,7 @@ fun DrawerContent(
 
         DrawerItem(mainNavController, "perfil", Icons.Default.Person, onItemClick)
 
-        DrawerItem(mainNavController, "Cerrar Sesion", Icons.Default.Logout, {
-            onItemClick
+        DrawerItem(mainNavController, "login", Icons.Default.Logout, {
             userViewModel.logOutUser()
         })
 
@@ -123,7 +122,6 @@ fun DrawerItem(
     icon: ImageVector,
     onItemClick: () -> Unit
 ) {
-    val context = LocalContext.current
     ListItem(
         headlineContent = { Text(route.capitalize()) },
         leadingContent = { Icon(icon, contentDescription = null) },
@@ -159,8 +157,6 @@ fun HeaderImage(modifier: Modifier) {
                 .size(200.dp)
                 .padding(1.dp, 0.dp, 1.dp, 0.dp)
         )
-
-
     }
 }
 
