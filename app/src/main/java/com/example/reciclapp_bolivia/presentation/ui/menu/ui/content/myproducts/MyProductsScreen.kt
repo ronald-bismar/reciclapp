@@ -71,7 +71,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.reciclapp.R
+import com.example.reciclapp_bolivia.R
 import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
 import com.example.reciclapp_bolivia.presentation.viewmodel.VendedoresViewModel
 import com.example.reciclapp_bolivia.util.FechaUtils

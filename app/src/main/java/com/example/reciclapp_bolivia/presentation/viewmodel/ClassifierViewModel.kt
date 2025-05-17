@@ -3,7 +3,7 @@ package com.example.reciclapp_bolivia.presentation.viewmodel
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.reciclapp.BuildConfig
+import com.example.reciclapp_bolivia.BuildConfig
 import com.example.reciclapp_bolivia.presentation.states.ClassifierState
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import com.example.reciclapp.R
 
 private const val TAG = "ClassifierViewModel"
 private const val PROMPT = """
