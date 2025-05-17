@@ -66,7 +66,7 @@ import androidx.core.content.FileProvider
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
-import com.example.reciclapp.R
+import com.example.reciclapp_bolivia.R
 import com.example.reciclapp_bolivia.domain.entities.Categoria
 import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
 import com.example.reciclapp_bolivia.presentation.states.ClassifierState

@@ -21,8 +21,8 @@ import com.example.reciclapp_bolivia.domain.entities.Usuario
 import com.example.reciclapp_bolivia.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.example.reciclapp_bolivia.presentation.ui.CompartirScreen.CompartirScreen
 import com.example.reciclapp_bolivia.presentation.ui.aboutus.AboutUsScreen
-import com.example.reciclapp_bolivia.presentation.ui.contactate.ContactateConNosotrosScreen
 import com.example.reciclapp_bolivia.presentation.ui.drawer.ui.CalificanosScreen
+import com.example.reciclapp_bolivia.presentation.ui.drawer.ui.ContactateConNosotrosScreen
 import com.example.reciclapp_bolivia.presentation.ui.drawer.ui.MisionVisionScreen
 import com.example.reciclapp_bolivia.presentation.ui.drawer.ui.SimpleAyudaScreen
 import com.example.reciclapp_bolivia.presentation.ui.login.ui.LoginScreen

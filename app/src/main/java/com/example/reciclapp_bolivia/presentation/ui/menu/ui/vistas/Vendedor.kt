@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
-import com.example.reciclapp.R
+import com.example.reciclapp_bolivia.R
 import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
 import com.example.reciclapp_bolivia.presentation.viewmodel.MensajeViewModel
 import com.example.reciclapp_bolivia.presentation.viewmodel.TransaccionViewModel

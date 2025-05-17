@@ -1,8 +1,10 @@
 package com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas.mapa
 
 
-import android.annotation.SuppressLint
+//import com.google.android.gms.maps.MapView
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -41,29 +43,27 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.graphics.drawable.toDrawable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-import com.example.reciclapp_bolivia.domain.entities.UbicacionGPS
 import com.example.reciclapp_bolivia.domain.entities.Usuario
 import com.example.reciclapp_bolivia.presentation.animations.AnimatedTransitionDialog
 import com.example.reciclapp_bolivia.presentation.viewmodel.CompradoresViewModel
 import com.example.reciclapp_bolivia.presentation.viewmodel.MarkerData
 import com.example.reciclapp_bolivia.presentation.viewmodel.UbicacionViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionState
-import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import org.osmdroid.config.Configuration
+import org.osmdroid.events.MapEventsReceiver
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.MapEventsOverlay
+import org.osmdroid.views.overlay.Marker
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalPermissionsApi::class)
@@ -73,67 +73,75 @@ fun MapsView(
     ubicacionViewModel: UbicacionViewModel,
 ) {
     val myCurrentLocation by ubicacionViewModel.myCurrentLocation.collectAsState()
-    val mapView = rememberMapViewWithLifecycle()
     val locationPermissionState =
         rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
-    var googleMap by remember { mutableStateOf<GoogleMap?>(null) }
     val markers = ubicacionViewModel.markers.collectAsState().value
     var showDialog by remember { mutableStateOf(false) }
     var selectedMarker by remember { mutableStateOf<MarkerData?>(null) }
 
+    var mapView by remember { mutableStateOf<MapView?>(null) }
+
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        Configuration.getInstance().load(context, context.getSharedPreferences("osm_pref", 0))
+        Configuration.getInstance().userAgentValue = context.packageName
+    }
+
     // Move camera to my current location when it changes and is not null
-    LaunchedEffect(myCurrentLocation) {
-        Log.d("CurrentLocation", "My current location: $myCurrentLocation")
-        googleMap?.let { map ->
+    LaunchedEffect(myCurrentLocation, mapView) {
+        mapView?.let { view ->
             myCurrentLocation?.let { location ->
-                val myLocationLatLng = LatLng(location.latitude, location.longitude)
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocationLatLng, 13f))
+                Log.d("CurrentLocation", "My current location: $myCurrentLocation")
+                val geoPoint = GeoPoint(location.latitude, location.longitude)
+                view.controller.animateTo(geoPoint)
+                view.controller.setZoom(13.0)
             }
         }
     }
 
-    // Update map markers when markers change
-    LaunchedEffect(markers, googleMap) {
-        googleMap?.let { map ->
-            updateMapMarkers(map, markers) { markerData ->
-                selectedMarker = markerData
-                showDialog = true
-            }
-        }
-    }
+//    // Update map markers when markers change
+    LaunchedEffect(markers, mapView) {
+        mapView?.let { view ->
+            Log.d("MarkersUpdate", "Updating ${markers.size} markers")
+            view.overlays.removeIf { it is Marker }
+            // Añadir nuevos marcadores
+            markers.forEach { markerData ->
+                val marker = Marker(view).apply {
+                    position =
+                        GeoPoint(markerData.ubicacion.latitude, markerData.ubicacion.longitude)
+                    title = "${markerData.usuario.nombre} ${markerData.usuario.apellido}"
+                    subDescription = "Dirección: ${markerData.usuario.direccion}"
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        // Map view
-        AndroidView(
-            factory = {
-                mapView.apply {
-                    getMapAsync @androidx.annotation.RequiresPermission(allOf = [android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION]) { map ->
-                        googleMap = map
-                        if (locationPermissionState.status.isGranted) {
-                            map.isMyLocationEnabled = true
-                        }
-                        myCurrentLocation?.let { location ->
-                            setupMap(location, map, locationPermissionState)
-                        }
-                        map.setOnMarkerClickListener { marker ->
-                            googleMap?.let {
-                                val point = map.projection.toScreenLocation(marker.position)
-                                Log.d(
-                                    "Posicion de clic en mapa",
-                                    "Pantalla x: ${point.x}, y: ${point.y}"
-                                )
-                                (marker.tag as? MarkerData)?.let {
-                                    selectedMarker = it
-                                    showDialog = true
-                                    true
-                                } ?: false
-                            } ?: false
-                        }
+                    markerData.bitmap?.let { bitmap ->
+                        val contextView = view.context
+                        icon = createCustomMarkerIcon(bitmap, contextView)
+                    }
+
+                    setOnMarkerClickListener { _, _ ->
+                        selectedMarker = markerData
+                        showDialog = true
+                        true
                     }
                 }
-            },
-            modifier = Modifier.fillMaxSize()
+
+                view.overlays.add(marker)
+                marker.id = markerData.ubicacion.idUbicacionGPS
+
+            }
+            view.invalidate() // Refrescar el mapa
+        }
+    }
+
+    val ctx = LocalContext.current
+    Configuration.getInstance().load(ctx, ctx.getSharedPreferences("osm_pref", 0))
+    Configuration.getInstance().userAgentValue = ctx.packageName
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        OsmAndroidMapView(
+            onMapReady = { mapView = it },
         )
+
 
         // Title overlay
         Box(
@@ -160,51 +168,56 @@ fun MapsView(
     }
 }
 
-
-@OptIn(ExperimentalPermissionsApi::class)
-private fun setupMap(
-    myLocation: UbicacionGPS?,
-    googleMap: GoogleMap,
-    locationPermissionState: PermissionState
+@Composable
+fun OsmAndroidMapView(
+    onMapReady: (MapView) -> Unit,
 ) {
-    myLocation?.let { location ->
-        val latLng = LatLng(location.latitude, location.longitude)
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f))
 
-        if (locationPermissionState.status.isGranted) {
-            @SuppressLint("MissingPermission")
-            googleMap.isMyLocationEnabled = true
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    AndroidView(
+        factory = { context ->
+            MapView(context).apply {
+                setTileSource(TileSourceFactory.MAPNIK)
+                setMultiTouchControls(true)
+                setBuiltInZoomControls(true)
+
+                //Configurar eventos del mapa
+                overlays.add(MapEventsOverlay(object : MapEventsReceiver {
+                    override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
+                        return false
+                    }
+
+                    override fun longPressHelper(p: GeoPoint?): Boolean {
+                        return false
+                    }
+                }))
+                onMapReady(this)
+            }
+        },
+        modifier = Modifier.fillMaxSize(),
+    )
+    // Manejo del ciclo de vida
+    DisposableEffect(lifecycleOwner) {
+        val observer = object : DefaultLifecycleObserver {
+            override fun onResume(owner: LifecycleOwner) {
+                Configuration.getInstance()
+                    .load(context, context.getSharedPreferences("osmdroid", Context.MODE_PRIVATE))
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 }
-private fun updateMapMarkers(
-    googleMap: GoogleMap,
-    markers: List<MarkerData>,
-    onMarkerClick: (MarkerData) -> Unit
-) {
-    googleMap.clear()
-    markers.forEach { markerData ->
-        val markerOptions = MarkerOptions()
-            .position(LatLng(markerData.ubicacion.latitude, markerData.ubicacion.longitude))
-            .title("${markerData.usuario.nombre} ${markerData.usuario.apellido}")
-            .snippet("Dirección: ${markerData.usuario.direccion}")
-        markerData.bitmap?.let {
-            markerOptions.icon(createCustomMarkerIcon(it))
-        }
-        val marker = googleMap.addMarker(markerOptions)
-        marker?.tag = markerData
-    }
 
-    googleMap.setOnMarkerClickListener { marker ->
-        (marker.tag as? MarkerData)?.let {
-            onMarkerClick(it)
-            true
-        } ?: false
+private fun createCustomMarkerIcon(bitmap: Bitmap, context: Context): Drawable {
+    return bitmap.toDrawable(context.resources).apply{
+        setBounds(0,0,intrinsicWidth, intrinsicHeight)
     }
-}
-
-private fun createCustomMarkerIcon(bitmap: Bitmap): BitmapDescriptor {
-    return BitmapDescriptorFactory.fromBitmap(bitmap)
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -228,7 +241,12 @@ fun MarkerDialog(
             contentAlignment = Alignment.Center
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                profileComprador(markerData.usuario, onDismiss = onDismiss, materiales = materiales, navController = mainNavController)
+                ProfileComprador(
+                    markerData.usuario,
+                    onDismiss = onDismiss,
+                    materiales = materiales,
+                    navController = mainNavController
+                )
 
             }
         }
@@ -236,7 +254,12 @@ fun MarkerDialog(
 }
 
 @Composable
-fun profileComprador(usuario: Usuario, materiales: List<ProductoReciclable>, onDismiss: () -> Unit, navController: NavController) {
+fun ProfileComprador(
+    usuario: Usuario,
+    materiales: List<ProductoReciclable>,
+    onDismiss: () -> Unit,
+    navController: NavController
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -263,17 +286,26 @@ fun profileComprador(usuario: Usuario, materiales: List<ProductoReciclable>, onD
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(vertical = 10.dp)
         )
-        materiales.forEach{ material ->
-            Text(text = "${material.nombreProducto} ${material.monedaDeCompra} ${material.precio} por ${material.unidadMedida}", color = Color.Black)
+        materiales.forEach { material ->
+            Text(
+                text = "${material.nombreProducto} ${material.monedaDeCompra} ${material.precio} por ${material.unidadMedida}",
+                color = Color.Black
+            )
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Row (modifier = Modifier.fillMaxWidth(),verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly){
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
             Button(onClick = onDismiss, shape = RoundedCornerShape(4.dp)) {
                 Text("Cerrar")
             }
-            Button(onClick = { val profileRoute =
+            Button(onClick = {
+                val profileRoute =
                     "compradorPerfil/${usuario.idUsuario}" //vamos a pantalla perfil del comprador
-                navController.navigate(profileRoute) }, shape = RoundedCornerShape(4.dp)) {
+                navController.navigate(profileRoute)
+            }, shape = RoundedCornerShape(4.dp)) {
                 Text("Contactar")
             }
         }
@@ -291,12 +323,12 @@ fun rememberMapViewWithLifecycle(): MapView {
 
     DisposableEffect(lifecycleOwner) {
         val observer = object : DefaultLifecycleObserver {
-            override fun onCreate(owner: LifecycleOwner) = mapView.onCreate(null)
-            override fun onStart(owner: LifecycleOwner) = mapView.onStart()
+            // override fun onCreate(owner: LifecycleOwner) = mapView.onCreate(null)
+            // override fun onStart(owner: LifecycleOwner) = mapView.onStart()
             override fun onResume(owner: LifecycleOwner) = mapView.onResume()
             override fun onPause(owner: LifecycleOwner) = mapView.onPause()
-            override fun onStop(owner: LifecycleOwner) = mapView.onStop()
-            override fun onDestroy(owner: LifecycleOwner) = mapView.onDestroy()
+            // override fun onStop(owner: LifecycleOwner) = mapView.onStop()
+            // override fun onDestroy(owner: LifecycleOwner) = mapView.onDestroy()
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {

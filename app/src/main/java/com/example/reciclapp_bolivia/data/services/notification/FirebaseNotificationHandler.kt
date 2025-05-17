@@ -13,7 +13,7 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.example.reciclapp.R
+import com.example.reciclapp_bolivia.R
 import com.example.reciclapp_bolivia.MainActivity
 import com.example.reciclapp_bolivia.domain.entities.Mensaje
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -60,12 +60,6 @@ class FirebaseMessagingHandler: FirebaseMessagingService() {
         val idMensaje = data["idMensaje"] ?: ""
         val contentMessage = data["contentMessage"] ?: ""
         val titleMessage = data["titleMessage"] ?: ""
-
-
-
-        Log.d(TAG, "onMessageReceived: idMensaje $idMensaje")
-        Log.d(TAG, "onMessageReceived: contentMessage $contentMessage")
-        Log.d(TAG, "onMessageReceived: titleMessage $titleMessage")
 
         if (notification != null) {
             CoroutineScope(Dispatchers.IO).launch {

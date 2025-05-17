@@ -24,7 +24,7 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.example.reciclapp_bolivia.MainActivity
-import com.example.reciclapp.R
+import com.example.reciclapp_bolivia.R
 import kotlinx.coroutines.delay
 
 class SplashScreen : ComponentActivity() {

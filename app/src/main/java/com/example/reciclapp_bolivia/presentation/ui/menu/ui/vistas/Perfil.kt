@@ -66,7 +66,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.example.reciclapp.R
+import com.example.reciclapp_bolivia.R
 import com.example.reciclapp_bolivia.domain.entities.Usuario
 import com.example.reciclapp_bolivia.presentation.animations.AnimatedTransitionDialog
 import com.example.reciclapp_bolivia.presentation.animations.UserTypeAnimated

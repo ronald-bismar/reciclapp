@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.example.reciclapp.R
+import com.example.reciclapp_bolivia.R
 import com.example.reciclapp_bolivia.presentation.viewmodel.UserViewModel
 import com.example.reciclapp_bolivia.util.NameRoutes.MESSAGESSCREEN
 import com.example.reciclapp_bolivia.util.NameRoutes.QRSCANNER
