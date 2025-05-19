@@ -44,7 +44,7 @@ interface GlobalWasteApi {
                     val original = chain.request()
                     val requestBuilder = original.newBuilder()
                         .header("Content-Type", "application/json")
-                        .header("x-rapidapi-key", "a27c306b3fmsh57a2e70cface907p149c6cjsn9d2700248277")
+                        .header("x-rapidapi-key", "63094abc46msh461c29770cdcab1p1661a2jsne11ade5cf080")
                         .header("x-rapidapi-host", "reciclapi-garbage-detection.p.rapidapi.com")
                     val request = requestBuilder.build()
                     chain.proceed(request)

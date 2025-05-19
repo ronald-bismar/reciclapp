@@ -61,7 +61,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.example.reciclapp.R
+import com.example.reciclapp_bolivia.R
 import com.example.reciclapp_bolivia.domain.entities.Mensaje
 import com.example.reciclapp_bolivia.presentation.viewmodel.MensajeViewModel
 import com.example.reciclapp_bolivia.util.FechaUtils.formatChatDateTime

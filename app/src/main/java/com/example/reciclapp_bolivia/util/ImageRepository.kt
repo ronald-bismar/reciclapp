@@ -10,7 +10,7 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import coil.size.Scale
 import coil.transform.CircleCropTransformation
-import com.example.reciclapp.R
+import com.example.reciclapp_bolivia.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,6 +25,13 @@ class ImageRepository @Inject constructor(@ApplicationContext private val contex
 
     // Inicializa el ImageLoader de la librería Coil
     private val imageLoader = ImageLoader.Builder(context).build()
+
+    companion object {
+        // Tamaños fijos en dp que se convertirán a píxeles según la densidad del dispositivo
+        private const val PROFILE_SIZE_DP = 39
+        private const val MARKER_WIDTH_DP = 50
+        private const val MARKER_HEIGHT_DP = 60
+    }
 
     /**
      * Función de extensión para convertir dp a píxeles.
@@ -47,10 +54,16 @@ class ImageRepository @Inject constructor(@ApplicationContext private val contex
         // Retorna null si la URL está vacía
         if (url.isEmpty()) return null
 
+        // Convertir tamaños dp a píxeles
+        val profileSizePx = context.dpToPx(PROFILE_SIZE_DP).toInt()
+        val markerWidthPx = context.dpToPx(MARKER_WIDTH_DP).toInt()
+        val markerHeightPx = context.dpToPx(MARKER_HEIGHT_DP).toInt()
+
+
         // Construye la solicitud de imagen utilizando Coil
         val request = ImageRequest.Builder(context)
             .data(url)
-            .size(80, 80)  // Redimensiona la imagen a 67x67 píxeles
+            .size(profileSizePx, profileSizePx)  // Redimensiona la imagen a 67x67 píxeles
             .scale(Scale.FILL)
             .transformations(CircleCropTransformation())  // Aplica una transformación de recorte circular
             .build()
@@ -67,7 +80,14 @@ class ImageRepository @Inject constructor(@ApplicationContext private val contex
 
             // Si el bitmap del perfil no es nulo, crea el bitmap combinado
             profileBitmap?.let { profile ->
-                createCombinedBitmap(profile, markerBitmap)
+                // Escalar el marcador al tamaño deseado
+                val scaledMarker = Bitmap.createScaledBitmap(
+                    markerBitmap,
+                    markerWidthPx,
+                    markerHeightPx,
+                    true
+                )
+                createCombinedBitmap(profile, scaledMarker, markerWidthPx, markerHeightPx)
             }
         } else {
             null
@@ -81,33 +101,28 @@ class ImageRepository @Inject constructor(@ApplicationContext private val contex
      * @param markerBitmap el bitmap de la imagen de marcador.
      * @return el bitmap combinado.
      */
-    private fun createCombinedBitmap(profileBitmap: Bitmap, markerBitmap: Bitmap): Bitmap {
-        // Convierte 50dp a píxeles para el tamaño del marcador
-        val markerSize = context.dpToPx(50)
-        // Calcula la relación de aspecto de la imagen del marcador
-        val aspectRatio = markerBitmap.width.toFloat() / markerBitmap.height
-        // Escala la altura de la imagen del marcador manteniendo la relación de aspecto
-        val scaledMarkerHeight = (markerSize / aspectRatio).toInt()
+    private fun createCombinedBitmap(
+        profileBitmap: Bitmap, markerBitmap: Bitmap, markerWidthPx: Int,
+        markerHeightPx: Int
+    ): Bitmap {
+        // Crear bitmap final con tamaño fijo
+        val combinedBitmap = Bitmap.createBitmap(
+            markerWidthPx,
+            markerHeightPx,
+            Bitmap.Config.ARGB_8888
+        )
 
-        // Escala la imagen del marcador al tamaño calculado
-        val scaledMarkerBitmap = Bitmap.createScaledBitmap(markerBitmap, markerSize, scaledMarkerHeight, true)
-        // Crea un nuevo bitmap con las dimensiones del bitmap del marcador escalado
-        val combinedBitmap = Bitmap.createBitmap(markerSize, scaledMarkerHeight, scaledMarkerBitmap.config)
-
-        // Inicializa un lienzo para dibujar el bitmap combinado
         val canvas = Canvas(combinedBitmap)
-        // Calcula la posición para centrar el bitmap del perfil del usuario en el bitmap del marcador
-        val profileLeft = (markerSize - profileBitmap.width) / 2f
-        val profileTop = (scaledMarkerHeight - profileBitmap.height) / 4f
-        val markerLeft = (markerSize - scaledMarkerBitmap.width) / 2f
-        val markerTop = (scaledMarkerHeight - scaledMarkerBitmap.height) / 2f
 
-        // Dibuja primero la imagen de perfil
+        // Calcular posición centrada para la foto de perfil
+        val profileLeft = (markerWidthPx - profileBitmap.width) / 2f
+        val profileTop = (markerHeightPx - profileBitmap.height) / 4f
+
+        // Dibujar primero el marcador
+        canvas.drawBitmap(markerBitmap, 0f, 0f, null)
+        // Dibujar la foto de perfil encima
         canvas.drawBitmap(profileBitmap, profileLeft, profileTop, null)
-        // Dibuja la imagen del marcador encima de la imagen de perfil
-        canvas.drawBitmap(scaledMarkerBitmap, markerLeft, markerTop, null)
 
-        // Retorna el bitmap combinado
         return combinedBitmap
     }
 }
