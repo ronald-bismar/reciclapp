@@ -40,7 +40,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import com.example.reciclapp_bolivia.R
 import com.example.reciclapp_bolivia.domain.entities.Usuario
@@ -50,13 +49,13 @@ import com.example.reciclapp_bolivia.domain.entities.Usuario
 fun SinglePhotoPicker(
     onImageUriReady: (Uri?) -> Unit,
     sizeImageProfile: Int,
-    imageDefault: Uri = "android.resource://com.example.reciclapp/drawable/perfil".toUri(),
+    imageDefault: Uri? = null,
     user: Usuario = Usuario()
 ) {
     var imageUri by remember {
         mutableStateOf(
             if (user.urlImagenPerfil.isNotEmpty()) Uri.parse(user.urlImagenPerfil)
-            else imageDefault
+            else null
         )
     }
 
@@ -76,7 +75,7 @@ fun SinglePhotoPicker(
                 imageUri = null
             } else {
                 bitmapImage = null
-                imageUri = imageDefault
+                imageUri = null
             }
             onImageUriReady(null) // Si quieres trabajar con el bitmap, no pasas Uri aquí
         }
@@ -125,7 +124,7 @@ fun SinglePhotoPicker(
             )
         } else {
             AsyncImage(
-                model = imageUri,
+                model = imageUri?: R.drawable.perfil,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

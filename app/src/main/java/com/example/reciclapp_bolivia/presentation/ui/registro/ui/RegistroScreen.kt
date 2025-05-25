@@ -1,8 +1,6 @@
 package com.example.reciclapp_bolivia.presentation.ui.registro.ui
 
 import android.content.Context
-import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -48,15 +46,13 @@ import androidx.navigation.NavHostController
 import com.example.reciclapp_bolivia.R
 import com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas.components.HeaderImageLogoReciclapp
 import com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas.components.LoadingButton
-import com.example.reciclapp_bolivia.presentation.ui.registro.ui.photo_profile.SinglePhotoPicker
-import com.example.reciclapp_bolivia.util.StorageUtil
-import kotlinx.coroutines.launch
+import com.example.reciclapp_bolivia.util.NameRoutes.UPLOADIMAGEPROFILESCREEN
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistroScreen(viewModel: RegistroViewModel, navController: NavHostController) {
-    val context = LocalContext.current
     val registerState by viewModel.registerState.observeAsState()
+    val context = LocalContext.current
     val name by viewModel.name.observeAsState("")
     val lastName by viewModel.lastname.observeAsState("")
     val phone by viewModel.phone.observeAsState("")
@@ -65,10 +61,6 @@ fun RegistroScreen(viewModel: RegistroViewModel, navController: NavHostControlle
     val password by viewModel.password.observeAsState("")
     val recordEnable by viewModel.recordEnable.observeAsState(false)
     val isLoading by viewModel.isLoading.observeAsState(false)
-    val coroutineScope = rememberCoroutineScope()
-    val defaultUri = Uri.parse("android.resource://com.example.reciclapp/drawable/perfil")
-    var imageUri by remember { mutableStateOf<Uri?>(defaultUri) }
-    var imageUrl by remember { mutableStateOf<String?>(null) }
 
     Box(
         modifier = Modifier
@@ -86,12 +78,10 @@ fun RegistroScreen(viewModel: RegistroViewModel, navController: NavHostControlle
             ) {
                 HeaderImageLogoReciclapp(
                     modifier = Modifier
-                        .size(width = 300.dp, height = 60.dp)
+                        .size(width = 330.dp, height = 70.dp)
                         .align(Alignment.CenterHorizontally)
                 )
-                SinglePhotoPicker(onImageUriReady = { uri ->
-                    imageUri = uri
-                }, sizeImageProfile = 150)
+                Spacer(modifier = Modifier.height(20.dp))
                 NameField(name) { newName ->
                     viewModel.onRecordChanged(
                         newName, lastName, phone, address, email, password
@@ -127,33 +117,22 @@ fun RegistroScreen(viewModel: RegistroViewModel, navController: NavHostControlle
                         name, lastName, phone, address, email, newPassword
                     )
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 RegistroButton(isLoading, recordEnable = recordEnable, onRecordSelected = {
-                    viewModel.initLoading()
-                    coroutineScope.launch {
-                        val url = imageUri.let {
-                            StorageUtil.uploadToStorage(it!!, context)
-                        }
-                        viewModel.onRecordSelected(
-                            name,
-                            lastName,
-                            phone.toLong(),
-                            address,
-                            email,
-                            password,
-                            url ?: ""
-                        )
-                        viewModel.stopLoading()
-                    }
+                    viewModel.onRecordSelected(
+                        name,
+                        lastName,
+                        phone.toLong(),
+                        address,
+                        email,
+                        password
+                    )
                 })
 
                 registerState?.let { result ->
-
-                    Log.d("Estado", "result: $result")
                     when {
                         result.isSuccess -> {
-                            navController.navigate("pantalla presentacion")
-                            viewModel.resetState()
+                            navController.navigate(UPLOADIMAGEPROFILESCREEN)
                         }
 
                         result.isFailure -> {
@@ -163,6 +142,7 @@ fun RegistroScreen(viewModel: RegistroViewModel, navController: NavHostControlle
                             )
                         }
                     }
+                    viewModel.resetState()
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 AccountButton(Modifier.align(Alignment.End), navController)

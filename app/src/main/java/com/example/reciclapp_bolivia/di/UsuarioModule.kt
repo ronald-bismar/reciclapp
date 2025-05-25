@@ -3,6 +3,7 @@ package com.example.reciclapp_bolivia.di
 import com.example.reciclapp_bolivia.data.repositories.UsuarioRepositoryImpl
 import com.example.reciclapp_bolivia.domain.repositories.UsuarioRepository
 import com.example.reciclapp_bolivia.domain.usecases.user_preferences.SaveUserPreferencesUseCase
+import com.example.reciclapp_bolivia.domain.usecases.usuario.ActualizarImagenPerfilUseCase
 import com.example.reciclapp_bolivia.domain.usecases.usuario.ActualizarUsuarioUseCase
 import com.example.reciclapp_bolivia.domain.usecases.usuario.CambiarTipoDeUsuarioUseCase
 import com.example.reciclapp_bolivia.domain.usecases.usuario.EliminarUsuarioUseCase
@@ -52,5 +53,10 @@ object UsuarioModule {
     @Provides
     fun provideCambiarTipoDeUsuarioUseCase(usuarioRepository: UsuarioRepository): CambiarTipoDeUsuarioUseCase {
         return CambiarTipoDeUsuarioUseCase(usuarioRepository)
+    }
+
+    @Provides
+    fun provideActualizarImagenPerfilUseCase(usuarioRepository: UsuarioRepository): ActualizarImagenPerfilUseCase {
+        return ActualizarImagenPerfilUseCase(usuarioRepository)
     }
 }

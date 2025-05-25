@@ -1,5 +1,6 @@
 package com.example.reciclapp_bolivia.presentation.ui.menu.ui
 
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
@@ -42,6 +43,7 @@ import androidx.navigation.NavController
 import com.example.reciclapp_bolivia.R
 import com.example.reciclapp_bolivia.presentation.ui.registro.ui.showToast
 import com.example.reciclapp_bolivia.presentation.viewmodel.UserViewModel
+import com.example.reciclapp_bolivia.util.NameRoutes.PANTALLAPRINCIPAL
 
 @Composable
 fun UserTypeScreen(
@@ -57,15 +59,23 @@ fun UserTypeScreen(
     var text by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
 
+    LaunchedEffect(Unit) {
+        userViewModel.resetUpdateUserState()
+        userViewModel.loadUserPreferences()
+    }
+
     LaunchedEffect(updateUserState) {
+        Log.d("User Type Screen", "updateUserState: $updateUserState")
         isLoading = false
         if (updateUserState?.isSuccess == true) {
-            mainNavController.navigate("menu") {
+            userViewModel.resetUpdateState()
+            mainNavController.navigate(PANTALLAPRINCIPAL) {
                 popUpTo(mainNavController.graph.startDestinationId) {
                     inclusive = true
                 }
                 launchSingleTop = true
             }
+            showToast(context, "Bienvenido a Reciclapp!")
         } else if (updateUserState?.isFailure == true) {
             showToast(context, "Ocurrio un error intentalo de nuevo")
         }

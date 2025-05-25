@@ -75,7 +75,7 @@ fun PantallaPresentacion(mainNavController: NavController) {
 
             ButtonWithBorderRadius(
                 mainNavController = mainNavController,
-                2600,
+                600,
                 "presentacion app"
             )
         }

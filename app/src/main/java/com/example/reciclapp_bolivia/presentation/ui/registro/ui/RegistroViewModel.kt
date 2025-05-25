@@ -1,5 +1,7 @@
 package com.example.reciclapp_bolivia.presentation.ui.registro.ui
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.LiveData
@@ -8,8 +10,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.reciclapp_bolivia.domain.entities.Usuario
 import com.example.reciclapp_bolivia.domain.usecases.user_preferences.SaveUserPreferencesUseCase
+import com.example.reciclapp_bolivia.domain.usecases.usuario.ActualizarImagenPerfilUseCase
 import com.example.reciclapp_bolivia.domain.usecases.usuario.RegistrarUsuarioUseCase
 import com.example.reciclapp_bolivia.util.GenerateID
+import com.example.reciclapp_bolivia.util.StorageUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,8 +21,11 @@ import javax.inject.Inject
 @HiltViewModel
 class RegistroViewModel @Inject constructor(
     private val registrarUsuarioUseCase: RegistrarUsuarioUseCase,
-    private val saveUserPreferencesUseCase: SaveUserPreferencesUseCase
+    private val saveUserPreferencesUseCase: SaveUserPreferencesUseCase,
+    private val actualizarImagenPerfilUseCase: ActualizarImagenPerfilUseCase
 ) : ViewModel() {
+
+    var user: Usuario = Usuario()
 
     private val _registerState = MutableLiveData<Result<Usuario>?>()
     val registerState: MutableLiveData<Result<Usuario>?> get() = _registerState
@@ -130,17 +137,18 @@ class RegistroViewModel @Inject constructor(
      * Registro del usuario se guarda un usuario en el servidor remoto y dentro del celular del usuario con
      * Data Store preferences (parecido a Shared preferences)
      */
-    suspend fun onRecordSelected(
+    fun onRecordSelected(
         name: String,
         lastName: String,
         phone: Long,
         address: String,
         email: String,
-        password: String, urlImagenPerfil: String
+        password: String
     ) {
         viewModelScope.launch {
+            initLoading()
             try {
-                val user = Usuario(
+                user = Usuario(
                     idUsuario = GenerateID(),
                     nombre = name,
                     apellido = lastName,
@@ -149,8 +157,6 @@ class RegistroViewModel @Inject constructor(
                     tipoDeUsuario = if (_isVendedor.value == true) "vendedor" else "comprador",
                     correo = email,
                     contrasena = password,
-                    urlImagenPerfil = urlImagenPerfil
-
                 )
                 registrarUsuarioUseCase.execute(user)
                 saveUserPreferencesUseCase.execute(user)
@@ -187,5 +193,32 @@ class RegistroViewModel @Inject constructor(
         _password.value = ""
         _recordEnable.value = false
         _isLoading.value = false
+    }
+
+    fun updateProfileImage(uri: Uri?, context: Context) {
+       viewModelScope.launch {
+           initLoading()
+           runCatching {
+
+               uri ?: return@launch
+
+               val url =  StorageUtil.uploadToStorage(uri, context)
+
+               if(url == null){
+                   registerState.value = Result.failure(Exception("Error al subir la imagen"))
+               }else{
+                   user.urlImagenPerfil = url
+                   registrarUsuarioUseCase.execute(user)
+                   actualizarImagenPerfilUseCase(user.idUsuario, url)
+               }
+
+           }.onSuccess {
+               _registerState.value = Result.success(user)
+           }.onFailure {
+               _registerState.value = Result.failure(it)
+           }.also{
+               stopLoading()
+           }
+       }
     }
 }

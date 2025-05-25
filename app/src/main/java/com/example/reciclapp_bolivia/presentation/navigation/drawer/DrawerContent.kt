@@ -1,5 +1,6 @@
 package com.example.reciclapp_bolivia.presentation.navigation.drawer
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,6 +40,9 @@ import androidx.navigation.NavController
 import com.example.reciclapp_bolivia.R
 import com.example.reciclapp_bolivia.presentation.ui.registro.ui.showToast
 import com.example.reciclapp_bolivia.presentation.viewmodel.UserViewModel
+import com.example.reciclapp_bolivia.util.NameRoutes.PANTALLAPRINCIPAL
+
+private const val TAG = "DrawerContent"
 
 @Composable
 fun DrawerContent(
@@ -81,7 +85,7 @@ fun DrawerContent(
 
         DrawerItem(mainNavController, "login", Icons.Default.Logout, {
             userViewModel.logOutUser()
-        })
+        }, isLogOut = true)
 
         // Texto
         Text(
@@ -98,10 +102,11 @@ fun DrawerContent(
 
     // Maneja el estado de logout
     logOutState?.let { result ->
+        Log.d(TAG, "DrawerContent: ${logOutState.toString()}")
         when {
             result.isSuccess -> {
                 mainNavController.navigate("login") {
-                    popUpTo("menu") {
+                    popUpTo(PANTALLAPRINCIPAL) {
                         inclusive = true
                     }
                 }
@@ -120,7 +125,8 @@ fun DrawerItem(
     navController: NavController,
     route: String,
     icon: ImageVector,
-    onItemClick: () -> Unit
+    onItemClick: () -> Unit,
+    isLogOut: Boolean = false
 ) {
     ListItem(
         headlineContent = { Text(route.capitalize()) },
@@ -128,13 +134,14 @@ fun DrawerItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                // Toast.makeText(context, "$route clicked", Toast.LENGTH_SHORT).show()
-                navController.navigate(route) {
-                    popUpTo(navController.graph.startDestinationId) {
-                        saveState = true
+                if (!isLogOut) {
+                    navController.navigate(route) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
                     }
-                    launchSingleTop = true
-                    restoreState = true
                 }
                 onItemClick()
             }

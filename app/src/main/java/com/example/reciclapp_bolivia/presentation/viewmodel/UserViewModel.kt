@@ -12,7 +12,6 @@ import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
 import com.example.reciclapp_bolivia.domain.entities.Usuario
 import com.example.reciclapp_bolivia.domain.usecases.comprador.GetCompradoresUseCase
 import com.example.reciclapp_bolivia.domain.usecases.producto.ListarProductosDeVendedorUseCase
-import com.example.reciclapp_bolivia.domain.usecases.ubicacionGPS.RegistrarUbicacionDeUsuarioUseCase
 import com.example.reciclapp_bolivia.domain.usecases.user_preferences.DeleteSessionUserPreferencesUseCase
 import com.example.reciclapp_bolivia.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.example.reciclapp_bolivia.domain.usecases.usuario.ActualizarUsuarioUseCase
@@ -37,7 +36,6 @@ class UserViewModel @Inject constructor(
     private val getVendedoresUseCase: GetVendedoresUseCase,
     private val getCompradoresUseCase: GetCompradoresUseCase,
     private val listarProductosDeVendedorUseCase: ListarProductosDeVendedorUseCase,
-    private val registrarUbicacionDeUsuarioUseCase: RegistrarUbicacionDeUsuarioUseCase
 ) : ViewModel() {
 
     private val _user = MutableLiveData<Usuario>(Usuario())
@@ -46,7 +44,7 @@ class UserViewModel @Inject constructor(
     private val _logOutState = MutableLiveData<Result<Boolean?>?>()
     val logOutState: LiveData<Result<Boolean?>?> get() = _logOutState
 
-    private val _updateUserState = MutableLiveData<Result<Boolean?>?>()
+    private val _updateUserState = MutableLiveData<Result<Boolean?>?>( null )
     val updateUserState: LiveData<Result<Boolean?>?> get() = _updateUserState
 
     private val _vendedores = MutableStateFlow<List<Usuario>>(emptyList())
@@ -83,7 +81,8 @@ class UserViewModel @Inject constructor(
 
     fun loadUserPreferences() {
         viewModelScope.launch(Dispatchers.IO) {
-            _user.postValue(getUserPreferencesUseCase.execute())
+            val userResult = getUserPreferencesUseCase.execute()
+            _user.postValue(userResult)
         }
     }
 
@@ -94,15 +93,17 @@ class UserViewModel @Inject constructor(
     fun updateUser(user: Usuario) {
         viewModelScope.launch {
             runCatching {
+                Log.d("updateUser", "updateUser: execute")
                 actualizarUsuarioUseCase.execute(user)
             }.onSuccess {
+                Log.d("updateUser", "updateUser: success")
                 _updateUserState.value = Result.success(true)
                 _user.value = user
             }.onFailure {
+                Log.d("updateUser", "updateUser: failure")
                 _updateUserState.value = Result.failure(it)
             }
         }
-        resetUpdateState()
     }
 
     fun resetUpdateState() {

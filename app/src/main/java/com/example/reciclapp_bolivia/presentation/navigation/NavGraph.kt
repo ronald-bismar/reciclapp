@@ -48,6 +48,7 @@ import com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas.SendingProdu
 import com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas.Vendedor
 import com.example.reciclapp_bolivia.presentation.ui.registro.ui.RegistroScreen
 import com.example.reciclapp_bolivia.presentation.ui.registro.ui.RegistroViewModel
+import com.example.reciclapp_bolivia.presentation.ui.registro.ui.UploadImageScreen
 import com.example.reciclapp_bolivia.presentation.ui.splash.SplashScreenContent
 import com.example.reciclapp_bolivia.presentation.viewmodel.ClassifierViewModel
 import com.example.reciclapp_bolivia.presentation.viewmodel.CompradoresViewModel
@@ -58,9 +59,11 @@ import com.example.reciclapp_bolivia.presentation.viewmodel.UserViewModel
 import com.example.reciclapp_bolivia.presentation.viewmodel.VendedoresViewModel
 import com.example.reciclapp_bolivia.util.NameRoutes.CHATSCREEN
 import com.example.reciclapp_bolivia.util.NameRoutes.MESSAGESSCREEN
+import com.example.reciclapp_bolivia.util.NameRoutes.PANTALLAPRESENTACION
 import com.example.reciclapp_bolivia.util.NameRoutes.PANTALLAPRINCIPAL
 import com.example.reciclapp_bolivia.util.NameRoutes.QRSCANNER
 import com.example.reciclapp_bolivia.util.NameRoutes.RECYCLABLECLASSIFIERSCREEN
+import com.example.reciclapp_bolivia.util.NameRoutes.UPLOADIMAGEPROFILESCREEN
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -115,7 +118,7 @@ fun NavGraph(
                 mainNavHostController,
             )
         }
-        composable("pantalla presentacion") {
+        composable(PANTALLAPRESENTACION) {
             PantallaPresentacion(mainNavHostController)
         }
         composable("presentacion app") {
@@ -259,6 +262,10 @@ fun NavGraph(
 
         composable(RECYCLABLECLASSIFIERSCREEN) {
             RecyclableClassifierApp(classifierViewModel)
+        }
+
+        composable(UPLOADIMAGEPROFILESCREEN){
+            UploadImageScreen(registroViewModel, mainNavHostController)
         }
     }
 }

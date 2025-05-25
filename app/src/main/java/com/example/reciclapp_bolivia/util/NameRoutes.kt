@@ -7,4 +7,6 @@ object NameRoutes {
     const val CHATSCREEN = "ChatScreen"
     const val QRGENERATORSCREEN = "QRGeneratorScreen"
     const val RECYCLABLECLASSIFIERSCREEN = "RecyclableClassifierScreen"
+    const val UPLOADIMAGEPROFILESCREEN = "UploadImageScreen"
+    const val PANTALLAPRESENTACION = "PantallaPresentacion"
 }

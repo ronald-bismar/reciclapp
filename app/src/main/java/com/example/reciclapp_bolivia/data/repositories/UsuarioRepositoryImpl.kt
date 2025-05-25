@@ -73,4 +73,10 @@ class UsuarioRepositoryImpl @Inject constructor(
         }
         return usuarios.find { it.correo == email && it.contrasena == password }
     }
-}
+
+    override suspend fun actualizarImagenPerfil(idUsuario: String, nuevaUrlImagen: String) {
+        service.collection("usuario")
+            .document(idUsuario)
+            .update("urlImagenPerfil", nuevaUrlImagen)
+            .await()
+    }}

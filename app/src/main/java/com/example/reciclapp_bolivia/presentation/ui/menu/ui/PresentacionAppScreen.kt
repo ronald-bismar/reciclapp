@@ -63,7 +63,7 @@ fun PresentacionAppScreen(mainNavController: NavController) {
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 TextDescriptionApp()
-                ButtonWithBorderRadius(mainNavController, 6000, "introduction screen")
+                ButtonWithBorderRadius(mainNavController, 600, "introduction screen")
             }
         }
     }
@@ -72,10 +72,10 @@ fun PresentacionAppScreen(mainNavController: NavController) {
 @Composable
 fun TextDescriptionApp() {
     Text(
-        text = "Reciclapp es una comunidad de recicladores que te permite conectar con compradores y vendedores de reciclaje que se encuentran cerca de tu zona y buscar los mejores precios para el material reciclable que tienes en casa",
+        text = "Reciclapp es una aplicacion que te permite conectar con compradores y vendedores de reciclaje que se encuentran cerca de tu zona y buscar los mejores precios para el material reciclable que tienes en casa",
         style = MaterialTheme.typography.headlineSmall,
         modifier = Modifier
-            .padding(horizontal = 30.dp),
+            .padding(horizontal = 26.dp),
         textAlign = TextAlign.Justify
     )
 }

@@ -10,4 +10,5 @@ interface UsuarioRepository {
     suspend fun getAllUsers(): MutableList<Usuario>
     suspend fun cambiarTipoDeUsuario(usuario: Usuario)
     suspend fun loginUsuario(email: String, password: String): Usuario?
+    suspend fun actualizarImagenPerfil(idUsuario: String, nuevaUrlImagen: String)
 }

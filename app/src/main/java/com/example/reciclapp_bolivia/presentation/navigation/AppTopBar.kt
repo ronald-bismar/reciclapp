@@ -140,7 +140,11 @@ fun AppTopBar(
                 }
             }) {
                 user?.let { user ->
-                    val painter = rememberAsyncImagePainter(model = user.urlImagenPerfil)
+                    val painter = if(user.urlImagenPerfil.isEmpty())
+                        painterResource(R.drawable.perfil)
+                    else
+                        rememberAsyncImagePainter(model = user.urlImagenPerfil)
+
                     Image(
                         painter = painter,
                         contentDescription = "Imagen del usuario",
