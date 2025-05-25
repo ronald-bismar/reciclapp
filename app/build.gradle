@@ -26,13 +26,38 @@ android {
             useSupportLibrary true
         }
     }
+/*
+    signingConfigs {
+        release {
+            storeFile file('C:/Users/HP/AppTerminadas') // Reemplaza con la ruta real
+            storePassword 'teddyrico12345*' // Reemplaza con tu contraseña
+            keyAlias 'miClaveNuevaApp' // Reemplaza con tu alias
+            keyPassword 'miclavenuevaapp12345*' // Reemplaza con tu contraseña
+            v1SigningEnabled true // Opcional, pero recomendado
+            v2SigningEnabled true // Recomendado
+            v3SigningEnabled true // Recomendado
+            v4SigningEnabled true // Recomendado
+        }
+    }
 
+
+ */
     buildTypes {
         release {
+
+         //   signingConfig signingConfigs.release
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    bundle {
+        storeArchive {
+            enable = true
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

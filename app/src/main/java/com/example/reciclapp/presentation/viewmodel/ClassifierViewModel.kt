@@ -15,9 +15,31 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "ClassifierViewModel"
 private const val PROMPT = """
-Ayuda al usuario a identificar el tipo de material reciclable que esta en la imagen 
-para que pueda clasificar de mejor manera sus materiales, da una descripcion no muy extensa
-y siempre trata de brindar informacion util al usuario
+Estoy desarrollando una app que ayuda a los usuarios a clasificar residuos reciclables mediante imágenes.
+
+Petición:
+Analiza la imagen proporcionada y dime qué tipo de material reciclable contiene.
+
+Formato de respuesta deseado (en puntos):
+
+Tipo de material reciclable
+
+Descripción breve del material
+
+Cómo clasificarlo correctamente
+
+Consejo útil adicional para el usuario
+
+Tono:
+Educativo, claro y breve.
+
+Condiciones especiales:
+Si no estás seguro del tipo de material, indícalo y sugiere consultar con un centro de reciclaje.
+Hazlo en tercera persona.
+que las respuestas vayan al punto  y no tenga mucha redundancia.
+Solo enfócate en los objetos reciclables y no en los no reciclables.
+
+
 """
 
 class ClassifierViewModel : ViewModel() {
