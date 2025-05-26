@@ -86,6 +86,10 @@ fun Perfil(
         }
     }
 
+    LaunchedEffect(Unit) {
+        userViewModel.resetUpdateUserState()
+    }
+
     user?.let { user ->
 
         Log.d("User, Perfil", user.toString())
@@ -110,16 +114,15 @@ fun Perfil(
             ProfileNuevoObjetoParaVender(navControllerMain, user)
         }
     }
+
     updateState?.let { result ->
         when {
             result.isSuccess -> {
                 showToast(context, "Actualizacion exitosa")
-                userViewModel.resetUpdateState()
             }
 
             result.isFailure -> {
                 showToast(context, "Actualizacion fallida")
-                userViewModel.resetUpdateState()
             }
         }
         userViewModel.resetUpdateUserState()
@@ -350,7 +353,8 @@ fun EditProfileDialog(
                         email = email,
                         onEmailChange = { email = it },
                         onImageUriChange = { imageUri = it },
-                        user = user)
+                        user = user, context = context
+                    )
 
                     Row(
                         horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()
@@ -411,6 +415,7 @@ fun EditProfileContent(
     onEmailChange: (String) -> Unit,
     onImageUriChange: (Uri?) -> Unit,
     user: Usuario,
+    context: Context,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -420,7 +425,7 @@ fun EditProfileContent(
             user = user,
             onImageUriReady = onImageUriChange,
             sizeImageProfile = 120,
-            imageDefault = Uri.parse(user.urlImagenPerfil)
+            imageDefault = Uri.parse(user.urlImagenPerfil), context = context
         )
         Column(
             modifier = Modifier

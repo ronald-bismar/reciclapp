@@ -23,6 +23,7 @@ import com.example.reciclapp_bolivia.domain.usecases.producto.ObtenerProductosPo
 import com.example.reciclapp_bolivia.domain.usecases.transaccion.CrearTransaccionPendienteUseCase
 import com.example.reciclapp_bolivia.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.example.reciclapp_bolivia.domain.usecases.usuario.GetUsuarioUseCase
+import com.example.reciclapp_bolivia.presentation.states.MessagesScreenState
 import com.example.reciclapp_bolivia.presentation.states.SendingProductsState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -57,6 +58,10 @@ class MensajeViewModel @Inject constructor(
     private val _sendingProductsState =
         MutableStateFlow<SendingProductsState>(SendingProductsState.InitialState)
     val sendingProductsState: StateFlow<SendingProductsState> = _sendingProductsState
+
+    private val _messagesScreenState =
+        MutableStateFlow<MessagesScreenState>(MessagesScreenState.Loading)
+    val messagesScreenState: StateFlow<MessagesScreenState> = _messagesScreenState
 
     private lateinit var _newTransaccionPendiente: TransaccionPendiente
 
@@ -377,7 +382,8 @@ class MensajeViewModel @Inject constructor(
 
                 val updatedList = _messagesFromBothUsers.value.toMutableList()
                 updatedList.add(nuevomensaje)
-                _messagesFromBothUsers.value = updatedList.distinctBy { it.idMensaje }.sortedBy { it.fecha }.toMutableList()
+                _messagesFromBothUsers.value =
+                    updatedList.distinctBy { it.idMensaje }.sortedBy { it.fecha }.toMutableList()
 
             }
         }
@@ -398,12 +404,19 @@ class MensajeViewModel @Inject constructor(
 
     fun getListOfMessagesWithUsuario() {
         viewModelScope.launch {
-            try {
+            runCatching {
+                _messagesScreenState.value = MessagesScreenState.Loading
                 val mensajesConUsuario =
                     obtenerUltimoMensajePorTransaccionUseCase(myUser.value?.idUsuario ?: "")
                 _mensajesConUsuario.value = mensajesConUsuario
-            } catch (e: Exception) {
-                Log.e(TAG, "Error al obtener los mensajes: ${e.message}")
+            }.onSuccess {
+                if (_mensajesConUsuario.value.isNotEmpty())
+                    _messagesScreenState.value = MessagesScreenState.Success
+                else
+                    _messagesScreenState.value = MessagesScreenState.Empty
+            }.onFailure {
+                _messagesScreenState.value =
+                    MessagesScreenState.Error(it.message ?: "Ocurrio un error")
             }
         }
     }

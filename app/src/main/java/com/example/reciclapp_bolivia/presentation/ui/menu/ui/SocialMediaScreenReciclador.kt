@@ -1,6 +1,8 @@
 package com.example.reciclapp_bolivia.presentation.ui.menu.ui
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -21,12 +23,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.Category
-import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material.icons.outlined.Checkroom
 import androidx.compose.material.icons.outlined.Construction
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.PhoneAndroid
 import androidx.compose.material.icons.outlined.Recycling
 import androidx.compose.material.icons.outlined.Share
@@ -272,7 +273,7 @@ fun CardSocialMediaReciclador(
                     contentDescription = "Producto reciclable",
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(220.dp),
+                        .height(280.dp),
                     contentScale = ContentScale.Crop,
                     error = painterResource(R.drawable.icono_defecto)
                 )
@@ -411,7 +412,7 @@ fun CardSocialMediaReciclador(
                                             isLiked
                                         )
                                         countLikes = if (isLiked) countLikes + 1 else countLikes - 1
-                                        Toast.makeText(context, "Te interesa este producto", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, if (isLiked) "Me interesa" else "No me interesa", Toast.LENGTH_SHORT).show()
                                     },
                                     modifier = Modifier.size(32.dp)
                                 ) {
@@ -427,34 +428,34 @@ fun CardSocialMediaReciclador(
                             // Contactar
                             IconButton(
                                 onClick = {
-                                    mainNavController.navigate("VendedorPerfil/${if (productoReciclable.idVendedor.isEmpty()) null else productoReciclable.idVendedor}/${productoReciclable.idProducto}")
+                                    mainNavController.navigate("VendedorPerfil/${productoReciclable.idVendedor}")
                                 },
                                 modifier = Modifier.size(32.dp)
                             ) {
                                 Icon(
-                                    imageVector = Icons.Outlined.Chat,
+                                    imageVector = Icons.Outlined.Phone,
                                     contentDescription = "Contactar",
                                     tint = MaterialTheme.colorScheme.onSurface,
                                     modifier = Modifier.size(20.dp)
                                 )
                             }
 
-                            // Ubicación
-                            IconButton(
-                                onClick = { /* Acción para ver ubicación */ },
-                                modifier = Modifier.size(32.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.LocationOn,
-                                    contentDescription = "Ubicación",
-                                    tint = MaterialTheme.colorScheme.onSurface,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
+//                            // Ubicación
+//                            IconButton(
+//                                onClick = { /* Acción para ver ubicación */ },
+//                                modifier = Modifier.size(32.dp)
+//                            ) {
+//                                Icon(
+//                                    imageVector = Icons.Outlined.LocationOn,
+//                                    contentDescription = "Ubicación",
+//                                    tint = MaterialTheme.colorScheme.onSurface,
+//                                    modifier = Modifier.size(20.dp)
+//                                )
+//                            }
 
                             // Compartir
                             IconButton(
-                                onClick = { /* Acción para compartir */ },
+                                onClick = { compartirProductoConImagen(context, productoReciclable) },
                                 modifier = Modifier.size(32.dp)
                             ) {
                                 Icon(
@@ -470,4 +471,34 @@ fun CardSocialMediaReciclador(
             }
         }
     }
+}
+
+fun compartirProductoConImagen(context: Context, producto: ProductoReciclable) {
+    val textoCompartir = buildString {
+        append("🌱 ¡Producto Reciclable Disponible! 🌱\n\n")
+        append("📦 ${producto.nombreProducto}\n")
+        append("💰 Precio: ${producto.monedaDeCompra} ${producto.precio} por ${producto.unidadMedida}\n")
+        append("📍 Ubicación: ${producto.ubicacionProducto}\n")
+        append("📊 Cantidad: ${producto.cantidad} ${producto.unidadMedida}\n")
+        append("🏷️ Categoría: ${producto.categoria}\n")
+
+        if (producto.detallesProducto.isNotEmpty()) {
+            append("📝 Detalles: ${producto.detallesProducto}\n")
+        }
+
+        if (producto.urlImagenProducto.isNotEmpty()) {
+            append("🖼️ Ver imagen: ${producto.urlImagenProducto}\n")
+        }
+
+        append("\n#Reciclaje #EcoFriendly #Bolivia #ReciclaAppBolivia")
+    }
+
+    val intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, textoCompartir)
+        putExtra(Intent.EXTRA_SUBJECT, "Producto Reciclable: ${producto.nombreProducto}")
+    }
+
+    context.startActivity(Intent.createChooser(intent, "Compartir producto"))
 }

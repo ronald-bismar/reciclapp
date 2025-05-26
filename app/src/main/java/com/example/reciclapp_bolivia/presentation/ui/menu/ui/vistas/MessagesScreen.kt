@@ -1,10 +1,13 @@
 package com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,13 +15,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -29,15 +31,23 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
+import com.example.reciclapp_bolivia.R
 import com.example.reciclapp_bolivia.domain.entities.Mensaje
 import com.example.reciclapp_bolivia.domain.entities.Usuario
+import com.example.reciclapp_bolivia.presentation.states.MessagesScreenState
 import com.example.reciclapp_bolivia.presentation.viewmodel.MensajeViewModel
 import com.example.reciclapp_bolivia.util.FechaUtils.formatChatDateTime
 import com.example.reciclapp_bolivia.util.NameRoutes.CHATSCREEN
+
+private const val TAG = "MessagesScreen"
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,9 +57,14 @@ fun MessagesScreen(
     mainNavController: NavHostController,
 ) {
     val messagesWithUsers by mensajeViewModel.mensajesConUsuario.collectAsState()
+    val state by mensajeViewModel.messagesScreenState.collectAsState()
 
     LaunchedEffect(Unit) {
         mensajeViewModel.getListOfMessagesWithUsuario()
+    }
+    
+    LaunchedEffect(state) {
+        Log.d(TAG, "MessagesScreen: $state")
     }
 
     Scaffold(
@@ -65,7 +80,8 @@ fun MessagesScreen(
                 .padding(paddingValues)
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            if (messagesWithUsers.isEmpty()) {
+            if (state is MessagesScreenState.Empty) {
+                Log.d(TAG, "Empty")
                 Text(
                     text = "No hay mensajes",
                     modifier = Modifier
@@ -74,7 +90,20 @@ fun MessagesScreen(
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                     fontSize = 16.sp
                 )
-            } else {
+            } else if (state is MessagesScreenState.Loading) {
+                Log.d(TAG, "Loading")
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(40.dp),
+                        strokeWidth = 3.dp
+                    )
+                }
+            } else if (state is MessagesScreenState.Success) {
+                Log.d(TAG, "Success")
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -92,6 +121,26 @@ fun MessagesScreen(
                             )
                         }
                     }
+                }
+            } else if (state is MessagesScreenState.Error) {
+                Log.d(TAG, "Error")
+                Column(verticalArrangement = Arrangement.Center) {
+                    Text(
+                        text = "Ocurrio un error",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                        fontSize = 20.sp
+                    )
+                    Text(
+                        text = (state as MessagesScreenState.Error).error,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                        fontSize = 16.sp
+                    )
                 }
             }
         }
@@ -122,11 +171,18 @@ fun MessageCard(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             // Avatar del usuario
-            Icon(
-                imageVector = Icons.Default.AccountCircle,
-                contentDescription = "Usuario",
-                modifier = Modifier.size(48.dp),
-                tint = MaterialTheme.colorScheme.primary
+            val painter = if (usuario.urlImagenPerfil.isEmpty())
+                painterResource(R.drawable.perfil)
+            else
+                rememberAsyncImagePainter(model = usuario.urlImagenPerfil)
+
+            Image(
+                painter = painter,
+                contentDescription = "Imagen del usuario",
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
             )
 
             Column(

@@ -56,28 +56,12 @@ class UserViewModel @Inject constructor(
     private val _isVendedor = MutableLiveData<Boolean>()
     val isVendedor: LiveData<Boolean> get() = _isVendedor
 
-    private val _autorizeChangeKindUser = MutableLiveData<Boolean?>(null)
-    val autorizeChangeKindUser: LiveData<Boolean?> = _autorizeChangeKindUser
-
     private val _email = MutableLiveData<String>()
     val email: LiveData<String> = _email
-
-    private val _password = MutableLiveData<String>()
-    val password: LiveData<String> = _password
 
     private val _productosAsVendedor =
         MutableStateFlow<MutableList<ProductoReciclable>>(mutableListOf())
     val productosAsVendedor: StateFlow<MutableList<ProductoReciclable>> = _productosAsVendedor
-
-    fun verifyAutorizeChangeKindUser(correo: String, password: String) {
-        _autorizeChangeKindUser.value =
-            _user.value?.correo?.equals(correo) == true &&
-                    _user.value?.contrasena?.equals(password) == true
-    }
-
-    fun resetAutorizeChangeKindUser() {
-        _autorizeChangeKindUser.value = null
-    }
 
     fun loadUserPreferences() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -93,15 +77,14 @@ class UserViewModel @Inject constructor(
     fun updateUser(user: Usuario) {
         viewModelScope.launch {
             runCatching {
-                Log.d("updateUser", "updateUser: execute")
                 actualizarUsuarioUseCase.execute(user)
             }.onSuccess {
-                Log.d("updateUser", "updateUser: success")
                 _updateUserState.value = Result.success(true)
                 _user.value = user
             }.onFailure {
-                Log.d("updateUser", "updateUser: failure")
                 _updateUserState.value = Result.failure(it)
+            }.also {
+                resetUpdateState()
             }
         }
     }

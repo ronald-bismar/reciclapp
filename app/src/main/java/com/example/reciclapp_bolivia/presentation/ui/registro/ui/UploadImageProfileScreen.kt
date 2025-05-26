@@ -63,7 +63,7 @@ fun UploadImageScreen(viewModel: RegistroViewModel, navController: NavHostContro
                 SinglePhotoPicker(onImageUriReady = { uri ->
                     recordEnable = uri != null
                     imageUri = uri
-                }, sizeImageProfile = 150)
+                }, sizeImageProfile = 150, context = context)
                 Spacer(modifier = Modifier.weight(1f))
                 RegistroButton(isLoading, recordEnable = recordEnable, onRecordSelected = {
                     viewModel.updateProfileImage(imageUri, context)
