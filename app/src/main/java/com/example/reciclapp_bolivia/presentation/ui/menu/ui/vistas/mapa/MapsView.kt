@@ -1,7 +1,5 @@
 package com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas.mapa
 
-
-//import com.google.android.gms.maps.MapView
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -79,7 +77,7 @@ fun MapsView(
     var showDialog by remember { mutableStateOf(false) }
     var selectedMarker by remember { mutableStateOf<MarkerData?>(null) }
 
-    var mapView by remember { mutableStateOf<MapView?>(null) }
+    var mapView by remember(ubicacionViewModel) { mutableStateOf<MapView?>(null) }
 
     val context = LocalContext.current
 
@@ -140,6 +138,7 @@ fun MapsView(
     Box(modifier = Modifier.fillMaxSize()) {
         OsmAndroidMapView(
             onMapReady = { mapView = it },
+            mapView = mapView
         )
 
 
@@ -171,6 +170,7 @@ fun MapsView(
 @Composable
 fun OsmAndroidMapView(
     onMapReady: (MapView) -> Unit,
+    mapView: MapView? = null // Añadir parámetro para el mapView existente
 ) {
 
     val context = LocalContext.current
@@ -178,7 +178,7 @@ fun OsmAndroidMapView(
 
     AndroidView(
         factory = { context ->
-            MapView(context).apply {
+            mapView?: MapView(context).apply {
                 setTileSource(TileSourceFactory.MAPNIK)
                 setMultiTouchControls(true)
                 setBuiltInZoomControls(true)
