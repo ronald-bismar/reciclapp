@@ -9,60 +9,28 @@ plugins {
 }
 
 android {
-    namespace 'com.example.reciclapp_bolivia'
+    namespace 'com.example.reciclapp'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.reciclapp_bolivia"
+        applicationId "com.example.reciclapp"
         minSdk 24
         targetSdk 33
         versionCode 1
         versionName "1.0"
-
-        buildConfigField("String", "API_KEY", "\"${getApiKey()}\"")
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
         }
     }
-/*
-    signingConfigs {
-        release {
-            storeFile file('C:/Users/HP/AppTerminadas') // Reemplaza con la ruta real
-            storePassword 'teddyrico12345*' // Reemplaza con tu contraseña
-            keyAlias 'miClaveNuevaApp' // Reemplaza con tu alias
-            keyPassword 'miclavenuevaapp12345*' // Reemplaza con tu contraseña
-            v1SigningEnabled true // Opcional, pero recomendado
-            v2SigningEnabled true // Recomendado
-            v3SigningEnabled true // Recomendado
-            v4SigningEnabled true // Recomendado
-        }
-    }
 
-
- */
     buildTypes {
         release {
-
-         //   signingConfig signingConfigs.release
-
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-
-        debug {
-            minifyEnabled false
-            shrinkResources false
-        }
     }
-
-    bundle {
-        storeArchive {
-            enable = true
-        }
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -72,27 +40,19 @@ android {
     }
     buildFeatures {
         compose true
-        buildConfig true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.5.8'
+        kotlinCompilerExtensionVersion '1.5.1'
     }
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
-            excludes += '/META-INF/DEPENDENCIES'
         }
     }
     // Allow references to generated code
     kapt {
         correctErrorTypes = true
     }
-}
-
-def getApiKey() {
-    def properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    return properties.getProperty('apiKey', "")
 }
 
 dependencies {
@@ -111,9 +71,9 @@ dependencies {
     implementation "androidx.compose.material3:material3:1.2.1"
     implementation "androidx.compose.foundation:foundation:1.6.8"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.22"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.22"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22"
     implementation "com.google.android.material:material:1.12.0"
     implementation "io.coil-kt:coil-gif:2.4.0"
     implementation("io.coil-kt:coil-compose:2.4.0")
@@ -125,7 +85,7 @@ dependencies {
     //Nuevas implementaciones
     // Hilt dependencies
     implementation "com.google.dagger:hilt-android:2.51.1"
-    implementation 'com.google.android.gms:play-services-location:21.0.1'
+    implementation 'com.google.android.gms:play-services-location:21.3.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-compose-android:2.8.4'
     kapt "com.google.dagger:hilt-android-compiler:2.51.1"
 
@@ -142,16 +102,13 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:33.1.2')
     //Firebasestorage
     implementation 'com.google.firebase:firebase-storage-ktx:21.0.0'
-    //Cloud messaging
-    implementation("com.google.firebase:firebase-messaging:24.1.1")
 
     // When using the BoM, don't specify versions in Firebase dependencies
     implementation 'com.google.firebase:firebase-analytics-ktx:22.0.2'
     implementation 'com.google.firebase:firebase-firestore-ktx:25.0.0'
 
-    // Google Auth Library para manejar la autenticación
-    implementation 'com.google.auth:google-auth-library-oauth2-http:1.3.0'
-    implementation 'com.google.auth:google-auth-library-credentials:1.3.0'
+    // Test
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines'
 
     // Livedata
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.8.4'
@@ -163,17 +120,14 @@ dependencies {
     implementation 'androidx.datastore:datastore-preferences:1.1.1'
 
     // Google Maps
-    implementation 'com.google.android.gms:play-services-maps:18.2.0'
+    implementation 'com.google.android.gms:play-services-maps:19.0.0'
     implementation 'com.google.maps.android:maps-compose:2.1.1'
     implementation 'com.google.accompanist:accompanist-permissions:0.30.0'
 
-    //Open street map
-    implementation 'org.osmdroid:osmdroid-android:6.1.20'
-    implementation 'org.osmdroid:osmdroid-mapsforge:6.1.20' //Cache offline
-
-
-    //Mas iconos de material
-    implementation("androidx.compose.material:material-icons-extended:1.5.4")
+    //retrofit
+   // implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+   // implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+   // implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
@@ -185,29 +139,8 @@ dependencies {
     implementation "androidx.compose.ui:ui:1.3.0"
     implementation "androidx.compose.foundation:foundation:1.3.0"
 
-    //room
-    implementation "androidx.room:room-runtime:2.6.0"
-    kapt "androidx.room:room-compiler:2.6.0"
-    implementation "androidx.room:room-ktx:2.6.0"
 
-    implementation "com.google.ai.client.generativeai:generativeai:0.9.0"
-
-    //Para generar qr
-    implementation "com.google.zxing:core:3.4.1"
-    implementation "com.journeyapps:zxing-android-embedded:4.3.0"
-
-    //Scanner de qr
-    def camerax_version = "1.3.0-alpha04"
-    implementation "androidx.camera:camera-core:$camerax_version"
-    implementation "androidx.camera:camera-camera2:$camerax_version"
-    implementation "androidx.camera:camera-lifecycle:$camerax_version"
-    implementation "androidx.camera:camera-view:$camerax_version"
-    implementation "com.google.mlkit:barcode-scanning:17.2.0"
-
-    //Tests de diferentes tipos
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
     androidTestImplementation platform('androidx.compose:compose-bom:2022.10.00')
