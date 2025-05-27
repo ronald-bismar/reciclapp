@@ -9,7 +9,7 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.example.reciclapp" />
+                  <option name="appId" value="com.nextmacrosystem.reciclapp" />
                   <option name="mobileSdkAppId" value="1:302989319460:android:909fa7c79e1528527ee7b1" />
                   <option name="projectId" value="backend-recyclapp" />
                   <option name="projectNumber" value="302989319460" />
