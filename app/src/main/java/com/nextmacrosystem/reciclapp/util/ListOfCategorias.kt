@@ -1,4 +1,4 @@
-import com.example.reciclapp.domain.entities.Categoria
+import com.nextmacrosystem.reciclapp.domain.entities.Categoria
 
 object ListOfCategorias {
 

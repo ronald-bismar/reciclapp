@@ -7,8 +7,8 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.domain.repositories.UserPreferencesRepository
+import com.nextmacrosystem.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.domain.repositories.UserPreferencesRepository
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 

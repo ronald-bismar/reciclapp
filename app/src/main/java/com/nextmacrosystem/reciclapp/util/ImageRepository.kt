@@ -10,7 +10,7 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import coil.size.Scale
 import coil.transform.CircleCropTransformation
-import com.example.reciclapp.R
+import com.nextmacrosystem.reciclapp.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

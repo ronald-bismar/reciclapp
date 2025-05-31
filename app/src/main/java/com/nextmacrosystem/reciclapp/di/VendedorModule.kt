@@ -1,11 +1,11 @@
 package com.nextmacrosystem.reciclapp.di
 
-import com.example.reciclapp.data.repositories.VendedorRepositoryImpl
-import com.example.reciclapp.domain.repositories.VendedorRepository
-import com.example.reciclapp.domain.usecases.comentario.CrearComentarioUseCase
-import com.example.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
-import com.example.reciclapp.domain.usecases.vendedor.*
+import com.nextmacrosystem.reciclapp.data.repositories.VendedorRepositoryImpl
+import com.nextmacrosystem.reciclapp.domain.repositories.VendedorRepository
+import com.nextmacrosystem.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.vendedor.*
 import com.google.firebase.firestore.FirebaseFirestore
+import com.nextmacrosystem.reciclapp.domain.usecases.comentario.CrearComentarioUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

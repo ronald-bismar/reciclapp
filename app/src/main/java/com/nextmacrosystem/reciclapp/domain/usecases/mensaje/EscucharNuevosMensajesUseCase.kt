@@ -1,7 +1,7 @@
 package com.nextmacrosystem.reciclapp.domain.usecases.mensaje
 
-import com.example.reciclapp.domain.entities.Mensaje
-import com.example.reciclapp.domain.repositories.MensajeRepository
+import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
+import com.nextmacrosystem.reciclapp.domain.repositories.MensajeRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

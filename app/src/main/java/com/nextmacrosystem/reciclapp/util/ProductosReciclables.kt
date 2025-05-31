@@ -1,7 +1,7 @@
 package com.nextmacrosystem.reciclapp.util
 
 import android.util.Log
-import com.example.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 
 // TODO: Realizar la investigación más precisa para los pesos por unidad
 object ProductosReciclables {

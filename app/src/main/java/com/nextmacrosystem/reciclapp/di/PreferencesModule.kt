@@ -1,11 +1,11 @@
 package com.nextmacrosystem.reciclapp.di
 
-import com.example.reciclapp.data.local.UserPreferencesRepositoryImpl
+import com.nextmacrosystem.reciclapp.data.local.UserPreferencesRepositoryImpl
 import android.content.Context
-import com.example.reciclapp.domain.repositories.UserPreferencesRepository
-import com.example.reciclapp.domain.usecases.user_preferences.DeleteSessionUserPreferencesUseCase
-import com.example.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
-import com.example.reciclapp.domain.usecases.user_preferences.SaveUserPreferencesUseCase
+import com.nextmacrosystem.reciclapp.domain.repositories.UserPreferencesRepository
+import com.nextmacrosystem.reciclapp.domain.usecases.user_preferences.DeleteSessionUserPreferencesUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.user_preferences.SaveUserPreferencesUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

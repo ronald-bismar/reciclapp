@@ -65,10 +65,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.reciclapp.R
-import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
+import com.nextmacrosystem.reciclapp.R
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.VendedoresViewModel
 
 private const val TAG = "SocialMediaScreenReciclador"
 

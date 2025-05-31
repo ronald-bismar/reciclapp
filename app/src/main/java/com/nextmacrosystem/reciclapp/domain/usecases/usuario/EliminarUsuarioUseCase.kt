@@ -1,6 +1,6 @@
 package com.nextmacrosystem.reciclapp.domain.usecases.usuario
 
-import com.example.reciclapp.domain.repositories.UsuarioRepository
+import com.nextmacrosystem.reciclapp.domain.repositories.UsuarioRepository
 import javax.inject.Inject
 
 class EliminarUsuarioUseCase @Inject constructor(

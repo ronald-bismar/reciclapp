@@ -1,7 +1,7 @@
 package com.example.reciclapp.domain.usecases.mensajes
 
-import com.example.reciclapp.domain.entities.Mensaje
-import com.example.reciclapp.domain.repositories.MensajeRepository
+import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
+import com.nextmacrosystem.reciclapp.domain.repositories.MensajeRepository
 import javax.inject.Inject
 
 class UpdateMensajeUseCase @Inject constructor(

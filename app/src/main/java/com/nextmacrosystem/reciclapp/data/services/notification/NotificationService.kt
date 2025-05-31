@@ -1,7 +1,7 @@
 package com.nextmacrosystem.reciclapp.data.services.notification
 
 import android.util.Log
-import com.example.reciclapp.domain.entities.Result
+import com.nextmacrosystem.reciclapp.domain.entities.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType

@@ -1,8 +1,8 @@
 package com.nextmacrosystem.reciclapp.domain.usecases.mensaje
 
-import com.example.reciclapp.domain.entities.Mensaje
-import com.example.reciclapp.domain.repositories.MensajeLocalRepository
-import com.example.reciclapp.domain.repositories.MensajeRepository
+import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
+import com.nextmacrosystem.reciclapp.domain.repositories.MensajeLocalRepository
+import com.nextmacrosystem.reciclapp.domain.repositories.MensajeRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 

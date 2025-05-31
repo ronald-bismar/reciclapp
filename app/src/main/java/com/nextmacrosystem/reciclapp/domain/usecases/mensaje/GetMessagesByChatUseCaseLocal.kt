@@ -1,6 +1,6 @@
 package com.nextmacrosystem.reciclapp.domain.usecases.mensaje
 
-import com.example.reciclapp.domain.repositories.MensajeLocalRepository
+import com.nextmacrosystem.reciclapp.domain.repositories.MensajeLocalRepository
 import javax.inject.Inject
 
 class GetMessagesByChatUseCaseLocal @Inject constructor( private val repository: MensajeLocalRepository) {

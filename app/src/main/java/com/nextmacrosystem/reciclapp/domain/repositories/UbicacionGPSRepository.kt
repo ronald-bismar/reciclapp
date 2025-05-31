@@ -1,7 +1,7 @@
 package com.nextmacrosystem.reciclapp.domain.repositories
 
-import com.example.reciclapp.domain.entities.UbicacionGPS
-import com.example.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.domain.entities.UbicacionGPS
+import com.nextmacrosystem.reciclapp.domain.entities.Usuario
 
 interface UbicacionGPSRepository {
     suspend fun actualizarUbicacionGPS(ubicacionGPS: UbicacionGPS)

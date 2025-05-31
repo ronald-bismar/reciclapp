@@ -1,9 +1,9 @@
 package com.nextmacrosystem.reciclapp.data.repositories
 
 import android.util.Log
-import com.example.reciclapp.domain.entities.EstadoTransaccion
-import com.example.reciclapp.domain.entities.TransaccionPendiente
-import com.example.reciclapp.domain.repositories.TransaccionRepository
+import com.nextmacrosystem.reciclapp.domain.entities.EstadoTransaccion
+import com.nextmacrosystem.reciclapp.domain.entities.TransaccionPendiente
+import com.nextmacrosystem.reciclapp.domain.repositories.TransaccionRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.tasks.await

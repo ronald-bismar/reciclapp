@@ -4,6 +4,10 @@ plugins {
     //Hilt
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+
+
+
+
     //Google Services
     id("com.google.gms.google-services")
 }
@@ -119,10 +123,11 @@ dependencies {
 
     //Nuevas implementaciones
     // Hilt dependencies
-    implementation "com.google.A:hilt-android:2.51.1"
+    //implementation "com.google.A:hilt-android:2.51.1"
+    implementation "com.google.dagger:hilt-android:2.51.1"//reparado
     implementation 'com.google.android.gms:play-services-location:21.0.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-compose-android:2.8.4'
-    kapt "com.google.dagger:hilt-android-compiler:2.51.1"
+    kapt "com.google.dagger:hilt-android-compiler:2.51.1" // antes 2.51.1  actual 2.56.2
 
     //Livedata
     implementation "androidx.lifecycle:lifecycle-livedata-core-ktx:2.8.4"

@@ -1,8 +1,8 @@
 package com.nextmacrosystem.reciclapp.util
 
 import android.util.Log
-import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.domain.entities.Usuario
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale

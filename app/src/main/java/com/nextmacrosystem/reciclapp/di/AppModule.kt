@@ -2,7 +2,7 @@ package com.nextmacrosystem.reciclapp.di
 
 import android.app.Application
 import android.content.Context
-import com.example.reciclapp.util.ImageRepository
+import com.nextmacrosystem.reciclapp.util.ImageRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

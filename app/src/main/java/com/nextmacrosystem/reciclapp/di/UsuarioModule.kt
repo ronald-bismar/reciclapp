@@ -1,14 +1,14 @@
 package com.nextmacrosystem.reciclapp.di
 
-import com.example.reciclapp.data.repositories.UsuarioRepositoryImpl
-import com.example.reciclapp.domain.repositories.UsuarioRepository
-import com.example.reciclapp.domain.usecases.user_preferences.SaveUserPreferencesUseCase
-import com.example.reciclapp.domain.usecases.usuario.ActualizarUsuarioUseCase
-import com.example.reciclapp.domain.usecases.usuario.CambiarTipoDeUsuarioUseCase
-import com.example.reciclapp.domain.usecases.usuario.EliminarUsuarioUseCase
-import com.example.reciclapp.domain.usecases.usuario.GetAllUsersUseCase
-import com.example.reciclapp.domain.usecases.usuario.GetUsuarioUseCase
-import com.example.reciclapp.domain.usecases.usuario.RegistrarUsuarioUseCase
+import com.nextmacrosystem.reciclapp.data.repositories.UsuarioRepositoryImpl
+import com.nextmacrosystem.reciclapp.domain.repositories.UsuarioRepository
+import com.nextmacrosystem.reciclapp.domain.usecases.user_preferences.SaveUserPreferencesUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.usuario.ActualizarUsuarioUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.usuario.CambiarTipoDeUsuarioUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.usuario.EliminarUsuarioUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.usuario.GetAllUsersUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.usuario.GetUsuarioUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.usuario.RegistrarUsuarioUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides

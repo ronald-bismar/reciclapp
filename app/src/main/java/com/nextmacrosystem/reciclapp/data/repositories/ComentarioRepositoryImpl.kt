@@ -1,8 +1,8 @@
 package com.nextmacrosystem.reciclapp.data.repositories
 
 import android.util.Log
-import com.example.reciclapp.domain.entities.Comentario
-import com.example.reciclapp.domain.repositories.ComentarioRepository
+import com.nextmacrosystem.reciclapp.domain.entities.Comentario
+import com.nextmacrosystem.reciclapp.domain.repositories.ComentarioRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject

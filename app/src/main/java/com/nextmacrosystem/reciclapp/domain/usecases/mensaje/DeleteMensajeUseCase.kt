@@ -1,6 +1,6 @@
 package com.example.reciclapp.domain.usecases.mensajes
 
-import com.example.reciclapp.domain.repositories.MensajeRepository
+import com.nextmacrosystem.reciclapp.domain.repositories.MensajeRepository
 import javax.inject.Inject
 
 class DeleteMensajeUseCase @Inject constructor(

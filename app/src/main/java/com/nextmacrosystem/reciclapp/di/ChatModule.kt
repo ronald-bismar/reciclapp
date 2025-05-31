@@ -1,9 +1,9 @@
 package com.nextmacrosystem.reciclapp.di
 
-import com.example.reciclapp.data.repositories.ChatRepositoryImpl
-import com.example.reciclapp.domain.repositories.ChatRepository
-import com.example.reciclapp.domain.usecases.chat.GetChatByUsersUseCase
-import com.example.reciclapp.domain.usecases.chat.ObtenerChatsPorUsuarioUseCase
+import com.nextmacrosystem.reciclapp.data.repositories.ChatRepositoryImpl
+import com.nextmacrosystem.reciclapp.domain.repositories.ChatRepository
+import com.nextmacrosystem.reciclapp.domain.usecases.chat.GetChatByUsersUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.chat.ObtenerChatsPorUsuarioUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides

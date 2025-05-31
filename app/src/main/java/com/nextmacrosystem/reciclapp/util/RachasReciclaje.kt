@@ -1,4 +1,4 @@
-import com.example.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 import java.text.SimpleDateFormat
 import java.util.*
 

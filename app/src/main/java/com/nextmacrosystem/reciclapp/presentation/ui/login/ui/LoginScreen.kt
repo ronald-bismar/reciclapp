@@ -46,12 +46,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.reciclapp.R
-import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.presentation.ui.menu.ui.vistas.components.HeaderImageLogoReciclapp
-import com.example.reciclapp.presentation.ui.menu.ui.vistas.components.LoadingButton
-import com.example.reciclapp.presentation.ui.registro.ui.showToast
-import com.example.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
+import com.nextmacrosystem.reciclapp.R
+import com.nextmacrosystem.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas.components.HeaderImageLogoReciclapp
+import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas.components.LoadingButton
+import com.nextmacrosystem.reciclapp.presentation.ui.registro.ui.showToast
+import com.nextmacrosystem.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
 import kotlinx.coroutines.launch
 
 @Composable

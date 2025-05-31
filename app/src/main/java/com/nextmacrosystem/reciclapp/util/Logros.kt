@@ -25,7 +25,7 @@ import androidx.compose.material.icons.filled.Tab
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material.icons.filled.WbSunny
-import com.example.reciclapp.domain.entities.Logro
+import com.nextmacrosystem.reciclapp.domain.entities.Logro
 
 object Logros {
     // Logros Basados en Cantidad y Frecuencia

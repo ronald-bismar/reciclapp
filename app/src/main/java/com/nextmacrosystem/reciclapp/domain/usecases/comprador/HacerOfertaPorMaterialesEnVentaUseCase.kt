@@ -1,6 +1,6 @@
 package com.nextmacrosystem.reciclapp.domain.usecases.comprador
 
-import com.example.reciclapp.domain.repositories.CompradorRepository
+import com.nextmacrosystem.reciclapp.domain.repositories.CompradorRepository
 import javax.inject.Inject
 
 class HacerOfertaPorMaterialesEnVentaUseCase @Inject constructor(private val compradorRepository: CompradorRepository) {

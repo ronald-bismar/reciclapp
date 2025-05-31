@@ -1,13 +1,13 @@
 package com.nextmacrosystem.reciclapp.di
 
-import com.example.reciclapp.data.repositories.ComentarioRepositoryImpl
-import com.example.reciclapp.domain.repositories.ComentarioRepository
-import com.example.reciclapp.domain.usecases.comentario.ActualizarComentarioUseCase
-import com.example.reciclapp.domain.usecases.comentario.CrearComentarioUseCase
-import com.example.reciclapp.domain.usecases.comentario.EliminarComentarioUseCase
-import com.example.reciclapp.domain.usecases.comentario.GetComentarioUseCase
-import com.example.reciclapp.domain.usecases.comentario.GetComentariosUseCase
-import com.example.reciclapp.domain.usecases.comentario.ListarComentariosDeCompradorUseCase
+import com.nextmacrosystem.reciclapp.data.repositories.ComentarioRepositoryImpl
+import com.nextmacrosystem.reciclapp.domain.repositories.ComentarioRepository
+import com.nextmacrosystem.reciclapp.domain.usecases.comentario.ActualizarComentarioUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.comentario.CrearComentarioUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.comentario.EliminarComentarioUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.comentario.GetComentarioUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.comentario.GetComentariosUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.comentario.ListarComentariosDeCompradorUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides

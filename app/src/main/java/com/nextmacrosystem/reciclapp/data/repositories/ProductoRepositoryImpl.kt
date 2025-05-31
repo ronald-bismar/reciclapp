@@ -2,13 +2,13 @@ package com.nextmacrosystem.reciclapp.data.repositories
 
 import ListOfCategorias
 import android.util.Log
-import com.example.reciclapp.domain.entities.Mensaje
-import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.domain.entities.TransaccionPendiente
-import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.domain.repositories.ProductoRepository
+import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.domain.entities.TransaccionPendiente
+import com.nextmacrosystem.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.domain.repositories.ProductoRepository
 import com.example.reciclapp.domain.usecases.mensajes.SendMessageUseCase
-import com.example.reciclapp.util.ProductosReciclables
+import com.nextmacrosystem.reciclapp.util.ProductosReciclables
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

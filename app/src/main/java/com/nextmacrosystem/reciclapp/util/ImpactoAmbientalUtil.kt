@@ -1,6 +1,6 @@
 package com.nextmacrosystem.reciclapp.util
 
-import com.example.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 import kotlin.math.roundToInt
 
 object ImpactoAmbientalUtil {

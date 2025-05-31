@@ -1,6 +1,6 @@
 package com.nextmacrosystem.reciclapp.di
 
-import com.example.reciclapp.data.services.notification.NotificationService
+import com.nextmacrosystem.reciclapp.data.services.notification.NotificationService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

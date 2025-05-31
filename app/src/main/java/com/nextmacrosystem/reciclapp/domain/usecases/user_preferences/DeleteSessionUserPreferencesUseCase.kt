@@ -1,6 +1,6 @@
 package com.nextmacrosystem.reciclapp.domain.usecases.user_preferences
 
-import com.example.reciclapp.domain.repositories.UserPreferencesRepository
+import com.nextmacrosystem.reciclapp.domain.repositories.UserPreferencesRepository
 import javax.inject.Inject
 
 class DeleteSessionUserPreferencesUseCase @Inject constructor(private val userPreferencesRepository: UserPreferencesRepository) {

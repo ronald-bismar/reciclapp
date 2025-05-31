@@ -1,7 +1,7 @@
 package com.nextmacrosystem.reciclapp.domain.usecases.transaccion
 
-import com.example.reciclapp.domain.entities.TransaccionPendiente
-import com.example.reciclapp.domain.repositories.TransaccionRepository
+import com.nextmacrosystem.reciclapp.domain.entities.TransaccionPendiente
+import com.nextmacrosystem.reciclapp.domain.repositories.TransaccionRepository
 import javax.inject.Inject
 
 class CrearTransaccionPendienteUseCase @Inject constructor(private val repository: TransaccionRepository) {

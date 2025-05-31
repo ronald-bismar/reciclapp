@@ -1,7 +1,7 @@
 package com.nextmacrosystem.reciclapp.domain.usecases.producto
 
-import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.domain.repositories.ProductoRepository
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.domain.repositories.ProductoRepository
 import javax.inject.Inject
 
 class GetProductoUseCase @Inject constructor(private val productoRepository: ProductoRepository) {

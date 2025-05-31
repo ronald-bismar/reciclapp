@@ -50,8 +50,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.CompradoresViewModel
 
 private const val TAG = "MyPurchasesScreen"
 

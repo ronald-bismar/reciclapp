@@ -1,7 +1,7 @@
 package com.nextmacrosystem.reciclapp.domain.usecases.vendedor
 
-import com.example.reciclapp.domain.entities.UbicacionGPS
-import com.example.reciclapp.domain.repositories.VendedorRepository
+import com.nextmacrosystem.reciclapp.domain.entities.UbicacionGPS
+import com.nextmacrosystem.reciclapp.domain.repositories.VendedorRepository
 import javax.inject.Inject
 
 class VerMapaConCompradoresCercanosUseCase @Inject constructor(private val vendedorRepository: VendedorRepository) {

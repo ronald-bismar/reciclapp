@@ -48,11 +48,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.reciclapp.domain.entities.EstadoTransaccion
-import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.domain.entities.TransaccionPendiente
-import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
-import com.example.reciclapp.util.NameRoutes.QRSCANNER
+import com.nextmacrosystem.reciclapp.domain.entities.EstadoTransaccion
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.domain.entities.TransaccionPendiente
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.TransaccionViewModel
+import com.nextmacrosystem.reciclapp.util.NameRoutes.QRSCANNER
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

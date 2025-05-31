@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.example.reciclapp.domain.entities.Mensaje
+import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
 
 @Composable
 fun NotificationDialog(

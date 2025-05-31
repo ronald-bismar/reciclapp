@@ -1,8 +1,8 @@
 package com.nextmacrosystem.reciclapp.domain.usecases.mensaje
 
-import com.example.reciclapp.domain.entities.Mensaje
-import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.domain.repositories.MensajeRepository
+import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.domain.repositories.MensajeRepository
 import javax.inject.Inject
 
 class VendedorEnviaMensajeACompradorUseCase @Inject constructor(private val mensajeRepository: MensajeRepository) {

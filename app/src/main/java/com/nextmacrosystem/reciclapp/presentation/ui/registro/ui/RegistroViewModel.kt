@@ -6,10 +6,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.domain.usecases.user_preferences.SaveUserPreferencesUseCase
-import com.example.reciclapp.domain.usecases.usuario.RegistrarUsuarioUseCase
-import com.example.reciclapp.util.GenerateID
+import com.nextmacrosystem.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.domain.usecases.user_preferences.SaveUserPreferencesUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.usuario.RegistrarUsuarioUseCase
+import com.nextmacrosystem.reciclapp.util.GenerateID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

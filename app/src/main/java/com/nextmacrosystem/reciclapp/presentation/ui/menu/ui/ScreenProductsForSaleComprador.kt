@@ -62,13 +62,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.reciclapp.R
-import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.presentation.ui.menu.ui.content.myproducts.ProductoEtiqueta
-import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
-import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
-import com.example.reciclapp.presentation.viewmodel.UserViewModel
-import com.example.reciclapp.util.NameRoutes.QRGENERATORSCREEN
+import com.nextmacrosystem.reciclapp.R
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.content.myproducts.ProductoEtiqueta
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.MensajeViewModel
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.TransaccionViewModel
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.UserViewModel
+import com.nextmacrosystem.reciclapp.util.NameRoutes.QRGENERATORSCREEN
 
 @Composable
 fun ScreenProductsForSale(

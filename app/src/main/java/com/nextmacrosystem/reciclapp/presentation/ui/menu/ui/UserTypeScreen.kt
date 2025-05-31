@@ -40,9 +40,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.reciclapp.R
-import com.example.reciclapp.presentation.ui.registro.ui.showToast
-import com.example.reciclapp.presentation.viewmodel.UserViewModel
+import com.nextmacrosystem.reciclapp.R
+import com.nextmacrosystem.reciclapp.presentation.ui.registro.ui.showToast
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.UserViewModel
 
 @Composable
 fun UserTypeScreen(

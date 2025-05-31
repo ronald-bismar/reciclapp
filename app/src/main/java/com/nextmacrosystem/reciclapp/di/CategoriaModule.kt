@@ -1,13 +1,13 @@
 package com.nextmacrosystem.reciclapp.di
 
-import com.example.reciclapp.data.repositories.CategoriaRepositoryImpl
-import com.example.reciclapp.domain.repositories.CategoriaRepository
-import com.example.reciclapp.domain.usecases.categoria.ActualizarCategoriaUseCase
-import com.example.reciclapp.domain.usecases.categoria.AgregarCategoriaUseCase
-import com.example.reciclapp.domain.usecases.categoria.AgregarCategoriasUseCase
-import com.example.reciclapp.domain.usecases.categoria.EliminarCategoriaUseCase
-import com.example.reciclapp.domain.usecases.categoria.ObtenerCategoriaUseCase
-import com.example.reciclapp.domain.usecases.categoria.ObtenerCategoriasUseCase
+import com.nextmacrosystem.reciclapp.data.repositories.CategoriaRepositoryImpl
+import com.nextmacrosystem.reciclapp.domain.repositories.CategoriaRepository
+import com.nextmacrosystem.reciclapp.domain.usecases.categoria.ActualizarCategoriaUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.categoria.AgregarCategoriaUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.categoria.AgregarCategoriasUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.categoria.EliminarCategoriaUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.categoria.ObtenerCategoriaUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.categoria.ObtenerCategoriasUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides

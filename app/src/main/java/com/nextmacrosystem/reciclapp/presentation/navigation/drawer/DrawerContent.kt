@@ -36,9 +36,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.reciclapp.R
-import com.example.reciclapp.presentation.ui.registro.ui.showToast
-import com.example.reciclapp.presentation.viewmodel.UserViewModel
+import com.nextmacrosystem.reciclapp.R
+import com.nextmacrosystem.reciclapp.presentation.ui.registro.ui.showToast
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.UserViewModel
 
 @Composable
 fun DrawerContent(

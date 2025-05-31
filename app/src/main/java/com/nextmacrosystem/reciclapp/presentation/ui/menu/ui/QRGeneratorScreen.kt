@@ -42,10 +42,10 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.set
 import androidx.navigation.NavHostController
-import com.example.reciclapp.domain.entities.TransaccionPendiente
-import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
-import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
-import com.example.reciclapp.util.TipoDeUsuario.VENDEDOR
+import com.nextmacrosystem.reciclapp.domain.entities.TransaccionPendiente
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.MensajeViewModel
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.TransaccionViewModel
+import com.nextmacrosystem.reciclapp.util.TipoDeUsuario.VENDEDOR
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.zxing.BarcodeFormat

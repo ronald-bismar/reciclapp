@@ -1,6 +1,6 @@
 package com.nextmacrosystem.reciclapp.domain.repositories
 
-import com.example.reciclapp.domain.entities.Mensaje
+import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
 
 interface MensajeLocalRepository {
     suspend fun saveMensaje(mensaje: Mensaje)

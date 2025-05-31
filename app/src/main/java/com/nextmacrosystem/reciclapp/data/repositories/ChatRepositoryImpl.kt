@@ -1,8 +1,8 @@
 package com.nextmacrosystem.reciclapp.data.repositories
 
 import android.util.Log
-import com.example.reciclapp.domain.entities.Chat
-import com.example.reciclapp.domain.repositories.ChatRepository
+import com.nextmacrosystem.reciclapp.domain.entities.Chat
+import com.nextmacrosystem.reciclapp.domain.repositories.ChatRepository
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.async

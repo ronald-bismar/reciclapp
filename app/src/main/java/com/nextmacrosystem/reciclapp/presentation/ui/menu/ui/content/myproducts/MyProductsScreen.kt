@@ -77,10 +77,10 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.example.reciclapp.R
-import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
-import com.example.reciclapp.util.FechaUtils
+import com.nextmacrosystem.reciclapp.R
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.VendedoresViewModel
+import com.nextmacrosystem.reciclapp.util.FechaUtils
 import kotlinx.coroutines.flow.collectLatest
 
 private const val TAG = "MyProductsScreen"

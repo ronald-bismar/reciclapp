@@ -66,11 +66,11 @@ import androidx.core.content.FileProvider
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
-import com.example.reciclapp.R
-import com.example.reciclapp.domain.entities.Categoria
-import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.presentation.states.ClassifierState
-import com.example.reciclapp.presentation.viewmodel.ClassifierViewModel
+import com.nextmacrosystem.reciclapp.R
+import com.nextmacrosystem.reciclapp.domain.entities.Categoria
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.presentation.states.ClassifierState
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.ClassifierViewModel
 import kotlinx.coroutines.delay
 import java.io.File
 import java.text.SimpleDateFormat

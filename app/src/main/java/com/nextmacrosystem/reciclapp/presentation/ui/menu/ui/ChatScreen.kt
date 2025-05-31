@@ -61,10 +61,10 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.example.reciclapp.R
-import com.example.reciclapp.domain.entities.Mensaje
-import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
-import com.example.reciclapp.util.FechaUtils.formatChatDateTime
+import com.nextmacrosystem.reciclapp.R
+import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.MensajeViewModel
+import com.nextmacrosystem.reciclapp.util.FechaUtils.formatChatDateTime
 
 private const val TAG = "ChatScreen"
 

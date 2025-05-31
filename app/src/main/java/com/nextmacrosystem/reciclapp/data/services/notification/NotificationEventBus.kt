@@ -1,6 +1,6 @@
 package com.nextmacrosystem.reciclapp.data.services.notification
 
-import com.example.reciclapp.domain.entities.Mensaje
+import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 

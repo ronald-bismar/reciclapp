@@ -23,8 +23,8 @@ import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
-import com.example.reciclapp.MainActivity
-import com.example.reciclapp.R
+import com.nextmacrosystem.reciclapp.MainActivity
+import com.nextmacrosystem.reciclapp.R
 import kotlinx.coroutines.delay
 
 class SplashScreen : ComponentActivity() {

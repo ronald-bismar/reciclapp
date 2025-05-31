@@ -26,11 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.example.reciclapp.R
-import com.example.reciclapp.presentation.viewmodel.UserViewModel
-import com.example.reciclapp.util.NameRoutes.MESSAGESSCREEN
-import com.example.reciclapp.util.NameRoutes.QRSCANNER
-import com.example.reciclapp.util.NameRoutes.RECYCLABLECLASSIFIERSCREEN
+import com.nextmacrosystem.reciclapp.R
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.UserViewModel
+import com.nextmacrosystem.reciclapp.util.NameRoutes.MESSAGESSCREEN
+import com.nextmacrosystem.reciclapp.util.NameRoutes.QRSCANNER
+import com.nextmacrosystem.reciclapp.util.NameRoutes.RECYCLABLECLASSIFIERSCREEN
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

@@ -47,16 +47,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.reciclapp.R
-import com.example.reciclapp.domain.entities.Logro
-import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.presentation.viewmodel.UserViewModel
-import com.example.reciclapp.util.ImpactoAmbientalUtil
-import com.example.reciclapp.util.Logros
-import com.example.reciclapp.util.NombreNivelUsuario
-import com.example.reciclapp.util.ProductosReciclables
-import com.example.reciclapp.util.ValidarLogros.actualizarLogrosUsuario
+import com.nextmacrosystem.reciclapp.R
+import com.nextmacrosystem.reciclapp.domain.entities.Logro
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.UserViewModel
+import com.nextmacrosystem.reciclapp.util.ImpactoAmbientalUtil
+import com.nextmacrosystem.reciclapp.util.Logros
+import com.nextmacrosystem.reciclapp.util.NombreNivelUsuario
+import com.nextmacrosystem.reciclapp.util.ProductosReciclables
+import com.nextmacrosystem.reciclapp.util.ValidarLogros.actualizarLogrosUsuario
 
 private const val TAG = "PantallaPrincipal"
 

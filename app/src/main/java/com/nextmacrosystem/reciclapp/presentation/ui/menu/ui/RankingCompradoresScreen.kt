@@ -18,9 +18,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
-import com.example.reciclapp.util.NombreNivelUsuario
+import com.nextmacrosystem.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.CompradoresViewModel
+import com.nextmacrosystem.reciclapp.util.NombreNivelUsuario
 
 @Composable
 fun RankingCompradoresScreen(

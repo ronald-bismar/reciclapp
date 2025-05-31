@@ -45,11 +45,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.reciclapp.R
-import com.example.reciclapp.presentation.ui.menu.ui.vistas.components.HeaderImageLogoReciclapp
-import com.example.reciclapp.presentation.ui.menu.ui.vistas.components.LoadingButton
-import com.example.reciclapp.presentation.ui.registro.ui.photo_profile.SinglePhotoPicker
-import com.example.reciclapp.util.StorageUtil
+import com.nextmacrosystem.reciclapp.R
+import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas.components.HeaderImageLogoReciclapp
+import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas.components.LoadingButton
+import com.nextmacrosystem.reciclapp.presentation.ui.registro.ui.photo_profile.SinglePhotoPicker
+import com.nextmacrosystem.reciclapp.util.StorageUtil
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -1,9 +1,9 @@
 package com.nextmacrosystem.reciclapp.domain.repositories
 
-import com.example.reciclapp.domain.entities.Mensaje
-import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.domain.entities.TransaccionPendiente
-import com.example.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.domain.entities.TransaccionPendiente
+import com.nextmacrosystem.reciclapp.domain.entities.Usuario
 
 interface ProductoRepository {
     suspend fun getProducto(idProducto: String): ProductoReciclable?

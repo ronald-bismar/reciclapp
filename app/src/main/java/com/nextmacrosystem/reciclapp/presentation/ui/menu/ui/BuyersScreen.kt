@@ -45,10 +45,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.reciclapp.presentation.ui.menu.ui.vistas.initiateCall
-import com.example.reciclapp.presentation.ui.menu.ui.vistas.openWhatsAppMessage
-import com.example.reciclapp.presentation.viewmodel.UbicacionViewModel
-import com.example.reciclapp.presentation.viewmodel.UserViewModel
+import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas.initiateCall
+import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas.openWhatsAppMessage
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.UbicacionViewModel
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.UserViewModel
 
 enum class BuyerFilterOption {
     ALL, PROXIMITY, RATING

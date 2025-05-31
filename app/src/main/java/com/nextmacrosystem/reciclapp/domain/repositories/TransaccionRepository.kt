@@ -1,6 +1,6 @@
 package com.nextmacrosystem.reciclapp.domain.repositories
 
-import com.example.reciclapp.domain.entities.TransaccionPendiente
+import com.nextmacrosystem.reciclapp.domain.entities.TransaccionPendiente
 
 interface TransaccionRepository {
     suspend fun getTransaccionesPendientes(idUsuario: String): List<TransaccionPendiente>

@@ -1,16 +1,16 @@
 package com.nextmacrosystem.reciclapp.di
 
-import com.example.reciclapp.data.repositories.CompradorRepositoryImpl
-import com.example.reciclapp.domain.repositories.CompradorRepository
-import com.example.reciclapp.domain.usecases.comprador.ActualizarDatosCompradorUseCase
-import com.example.reciclapp.domain.usecases.comprador.EliminarCompradorUseCase
-import com.example.reciclapp.domain.usecases.comprador.GetCompradorUseCase
-import com.example.reciclapp.domain.usecases.comprador.GetCompradoresUseCase
-import com.example.reciclapp.domain.usecases.comprador.HacerOfertaPorMaterialesEnVentaUseCase
-import com.example.reciclapp.domain.usecases.comprador.PublicarListaDeMaterialesQueCompraUseCase
-import com.example.reciclapp.domain.usecases.comprador.VerListaDePublicacionesDeProductosEnVentaUseCase
-import com.example.reciclapp.domain.usecases.producto.ListarTodosLosProductosUseCase
-import com.example.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
+import com.nextmacrosystem.reciclapp.data.repositories.CompradorRepositoryImpl
+import com.nextmacrosystem.reciclapp.domain.repositories.CompradorRepository
+import com.nextmacrosystem.reciclapp.domain.usecases.comprador.ActualizarDatosCompradorUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.comprador.EliminarCompradorUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.comprador.GetCompradorUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.comprador.GetCompradoresUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.comprador.HacerOfertaPorMaterialesEnVentaUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.comprador.PublicarListaDeMaterialesQueCompraUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.comprador.VerListaDePublicacionesDeProductosEnVentaUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.producto.ListarTodosLosProductosUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides

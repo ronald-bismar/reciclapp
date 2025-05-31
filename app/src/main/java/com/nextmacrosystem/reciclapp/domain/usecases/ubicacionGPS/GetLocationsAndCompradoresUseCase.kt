@@ -1,8 +1,8 @@
 package com.nextmacrosystem.reciclapp.domain.usecases.ubicacionGPS
 
-import com.example.reciclapp.domain.entities.UbicacionGPS
-import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.domain.repositories.UbicacionGPSRepository
+import com.nextmacrosystem.reciclapp.domain.entities.UbicacionGPS
+import com.nextmacrosystem.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.domain.repositories.UbicacionGPSRepository
 import javax.inject.Inject
 
 class GetLocationsAndCompradoresUseCase @Inject constructor(private val ubicacionGPSRepository: UbicacionGPSRepository) {

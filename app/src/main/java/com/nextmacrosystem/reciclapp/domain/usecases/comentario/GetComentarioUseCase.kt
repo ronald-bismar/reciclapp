@@ -1,7 +1,7 @@
 package com.nextmacrosystem.reciclapp.domain.usecases.comentario
 
-import com.example.reciclapp.domain.entities.Comentario
-import com.example.reciclapp.domain.repositories.ComentarioRepository
+import com.nextmacrosystem.reciclapp.domain.entities.Comentario
+import com.nextmacrosystem.reciclapp.domain.repositories.ComentarioRepository
 import javax.inject.Inject
 
 class GetComentarioUseCase @Inject constructor(private val comentarioRepository: ComentarioRepository){

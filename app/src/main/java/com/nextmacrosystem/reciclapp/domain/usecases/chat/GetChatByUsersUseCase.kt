@@ -1,6 +1,6 @@
 package com.nextmacrosystem.reciclapp.domain.usecases.chat
 
-import com.example.reciclapp.domain.repositories.ChatRepository
+import com.nextmacrosystem.reciclapp.domain.repositories.ChatRepository
 import javax.inject.Inject
 
 class GetChatByUsersUseCase @Inject constructor(private val repository: ChatRepository) {

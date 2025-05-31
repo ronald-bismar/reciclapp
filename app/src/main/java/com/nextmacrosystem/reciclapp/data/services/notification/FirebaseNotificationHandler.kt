@@ -13,9 +13,9 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.example.reciclapp.MainActivity
-import com.example.reciclapp.R
-import com.example.reciclapp.domain.entities.Mensaje
+import com.nextmacrosystem.reciclapp.MainActivity
+import com.nextmacrosystem.reciclapp.R
+import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import kotlinx.coroutines.CoroutineScope

@@ -1,10 +1,10 @@
 package com.nextmacrosystem.reciclapp.data.repositories
 
-import com.example.reciclapp.domain.entities.UbicacionGPS
-import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.domain.repositories.UbicacionGPSRepository
-import com.example.reciclapp.domain.usecases.comprador.GetCompradoresUseCase
-import com.example.reciclapp.domain.usecases.vendedor.GetVendedoresUseCase
+import com.nextmacrosystem.reciclapp.domain.entities.UbicacionGPS
+import com.nextmacrosystem.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.domain.repositories.UbicacionGPSRepository
+import com.nextmacrosystem.reciclapp.domain.usecases.comprador.GetCompradoresUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.vendedor.GetVendedoresUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject

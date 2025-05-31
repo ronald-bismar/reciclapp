@@ -1,10 +1,10 @@
 package com.nextmacrosystem.reciclapp.di
 
-import com.example.reciclapp.data.repositories.TransaccionRepositoryImpl
-import com.example.reciclapp.domain.repositories.TransaccionRepository
-import com.example.reciclapp.domain.usecases.transaccion.ConfirmarTransaccionPendienteUseCase
-import com.example.reciclapp.domain.usecases.transaccion.CrearTransaccionPendienteUseCase
-import com.example.reciclapp.domain.usecases.transaccion.GetTransaccionesPendientesUseCase
+import com.nextmacrosystem.reciclapp.data.repositories.TransaccionRepositoryImpl
+import com.nextmacrosystem.reciclapp.domain.repositories.TransaccionRepository
+import com.nextmacrosystem.reciclapp.domain.usecases.transaccion.ConfirmarTransaccionPendienteUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.transaccion.CrearTransaccionPendienteUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.transaccion.GetTransaccionesPendientesUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides

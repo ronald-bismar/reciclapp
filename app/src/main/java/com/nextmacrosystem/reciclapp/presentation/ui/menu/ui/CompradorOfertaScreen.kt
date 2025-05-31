@@ -80,11 +80,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.reciclapp.R
-import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
-import com.example.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
+import com.nextmacrosystem.reciclapp.R
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.MensajeViewModel
+import com.nextmacrosystem.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
 import kotlin.math.min
 
 private const val TAG = "CompradorOfertaScreen"

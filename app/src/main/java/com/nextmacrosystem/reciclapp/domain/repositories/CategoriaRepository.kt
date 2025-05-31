@@ -1,6 +1,6 @@
 package com.nextmacrosystem.reciclapp.domain.repositories
 
-import com.example.reciclapp.domain.entities.Categoria
+import com.nextmacrosystem.reciclapp.domain.entities.Categoria
 
 interface CategoriaRepository {
     suspend fun obtenerCategorias(): List<Categoria>

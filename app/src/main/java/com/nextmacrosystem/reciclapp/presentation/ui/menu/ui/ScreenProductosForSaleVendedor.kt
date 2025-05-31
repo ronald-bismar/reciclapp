@@ -36,11 +36,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
-import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
-import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
-import com.example.reciclapp.util.NameRoutes.QRGENERATORSCREEN
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.MensajeViewModel
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.TransaccionViewModel
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.VendedoresViewModel
+import com.nextmacrosystem.reciclapp.util.NameRoutes.QRGENERATORSCREEN
 
 @Composable
 fun ScreenProductsForSaleVendedor(

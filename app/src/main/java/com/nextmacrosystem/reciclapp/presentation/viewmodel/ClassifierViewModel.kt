@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextmacrosystem.reciclapp.BuildConfig
-import com.example.reciclapp.presentation.states.ClassifierState
+import com.nextmacrosystem.reciclapp.presentation.states.ClassifierState
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
 import kotlinx.coroutines.Dispatchers

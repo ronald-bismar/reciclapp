@@ -1,8 +1,8 @@
 package com.nextmacrosystem.reciclapp.data.repositories
 
-import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.domain.repositories.UsuarioRepository
-import com.example.reciclapp.domain.usecases.user_preferences.SaveUserPreferencesUseCase
+import com.nextmacrosystem.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.domain.repositories.UsuarioRepository
+import com.nextmacrosystem.reciclapp.domain.usecases.user_preferences.SaveUserPreferencesUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject

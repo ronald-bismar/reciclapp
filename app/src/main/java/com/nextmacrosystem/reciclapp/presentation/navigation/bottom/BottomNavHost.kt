@@ -9,20 +9,20 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.presentation.ui.menu.ui.BuyersScreen
-import com.example.reciclapp.presentation.ui.menu.ui.RankingCompradoresScreen
-import com.example.reciclapp.presentation.ui.menu.ui.SellersScreen
-import com.example.reciclapp.presentation.ui.menu.ui.SocialMediaScreenVendedores
-import com.example.reciclapp.presentation.ui.menu.ui.content.newsandtips.GlobalWasteApi
-import com.example.reciclapp.presentation.ui.menu.ui.content.newsandtips.NewsTipsScreen
-import com.example.reciclapp.presentation.ui.menu.ui.content.statistics.DetailedStatisticsScreen
-import com.example.reciclapp.presentation.ui.menu.ui.vistas.mapa.MapsView
-import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
-import com.example.reciclapp.presentation.viewmodel.UbicacionViewModel
-import com.example.reciclapp.presentation.viewmodel.UserViewModel
-import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
-import com.example.reciclapp.util.ItemsMenu
+import com.nextmacrosystem.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.BuyersScreen
+import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.RankingCompradoresScreen
+import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.SellersScreen
+import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.SocialMediaScreenVendedores
+import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.content.newsandtips.GlobalWasteApi
+import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.content.newsandtips.NewsTipsScreen
+import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.content.statistics.DetailedStatisticsScreen
+import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas.mapa.MapsView
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.CompradoresViewModel
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.UbicacionViewModel
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.UserViewModel
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.VendedoresViewModel
+import com.nextmacrosystem.reciclapp.util.ItemsMenu
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

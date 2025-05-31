@@ -1,6 +1,6 @@
 package com.nextmacrosystem.reciclapp.domain.repositories
 
-import com.example.reciclapp.domain.entities.Chat
+import com.nextmacrosystem.reciclapp.domain.entities.Chat
 
 interface ChatRepository {
     suspend fun saveChat(chat: Chat)

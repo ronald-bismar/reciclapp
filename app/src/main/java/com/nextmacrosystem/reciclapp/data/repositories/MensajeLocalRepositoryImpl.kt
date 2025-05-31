@@ -1,10 +1,10 @@
 package com.nextmacrosystem.reciclapp.data.repositories
 
 import android.util.Log
-import com.example.reciclapp.data.local.dao.MensajeDao
-import com.example.reciclapp.data.local.entities.MensajeEntity
-import com.example.reciclapp.domain.entities.Mensaje
-import com.example.reciclapp.domain.repositories.MensajeLocalRepository
+import com.nextmacrosystem.reciclapp.data.local.dao.MensajeDao
+import com.nextmacrosystem.reciclapp.data.local.entities.MensajeEntity
+import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
+import com.nextmacrosystem.reciclapp.domain.repositories.MensajeLocalRepository
 import javax.inject.Inject
 
 private const val TAG = "MensajeLocalRepository"

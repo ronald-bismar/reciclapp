@@ -1,4 +1,4 @@
-import com.example.reciclapp.domain.entities.Tip
+import com.nextmacrosystem.reciclapp.domain.entities.Tip
 
 object Tips {
     val tipsList = listOf(
