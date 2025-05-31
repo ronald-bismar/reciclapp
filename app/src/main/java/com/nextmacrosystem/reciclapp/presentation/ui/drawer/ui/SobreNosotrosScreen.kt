@@ -1,4 +1,4 @@
-package com.example.reciclapp.presentation.ui.aboutus
+package com.nextmacrosystem.reciclapp.presentation.ui.aboutus
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*

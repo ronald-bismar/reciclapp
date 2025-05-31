@@ -42,11 +42,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
-import com.example.reciclapp.R
-import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
-import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
-import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
+import com.nextmacrosystem.reciclapp.R
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.MensajeViewModel
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.TransaccionViewModel
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.VendedoresViewModel
 
 private const val TAG = "Vendedor"
 

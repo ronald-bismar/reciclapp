@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.domain.entities.TransaccionPendiente
+import com.nextmacrosystem.reciclapp.domain.entities.TransaccionPendiente
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
 import com.nextmacrosystem.reciclapp.domain.usecases.mensaje.CompradorEnviaContraOfertaAVendedorUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.mensaje.CompradorEnviaMensajeAVendedorUseCase

@@ -44,8 +44,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.example.reciclapp.data.services.notification.NotificationEventBus
-import com.example.reciclapp.domain.entities.Mensaje
+import com.nextmacrosystem.reciclapp.data.services.notification.NotificationEventBus
+import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

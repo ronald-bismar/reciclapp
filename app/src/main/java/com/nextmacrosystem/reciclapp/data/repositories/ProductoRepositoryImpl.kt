@@ -7,7 +7,7 @@ import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 import com.nextmacrosystem.reciclapp.domain.entities.TransaccionPendiente
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
 import com.nextmacrosystem.reciclapp.domain.repositories.ProductoRepository
-import com.example.reciclapp.domain.usecases.mensajes.SendMessageUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.mensajes.SendMessageUseCase
 import com.nextmacrosystem.reciclapp.util.ProductosReciclables
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.async

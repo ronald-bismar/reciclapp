@@ -74,14 +74,14 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.example.reciclapp.R
-import com.example.reciclapp.domain.entities.Comentario
-import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.presentation.ui.registro.ui.showToast
-import com.example.reciclapp.presentation.viewmodel.CompradoresViewModel
-import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
-import com.example.reciclapp.presentation.viewmodel.TransaccionViewModel
+import com.nextmacrosystem.reciclapp.R
+import com.nextmacrosystem.reciclapp.domain.entities.Comentario
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.presentation.ui.registro.ui.showToast
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.CompradoresViewModel
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.MensajeViewModel
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.TransaccionViewModel
 
 private const val REQUEST_CALL_PERMISSION = 1
 

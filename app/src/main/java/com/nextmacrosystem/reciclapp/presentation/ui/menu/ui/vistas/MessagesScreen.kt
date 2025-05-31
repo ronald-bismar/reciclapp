@@ -33,11 +33,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.reciclapp.domain.entities.Mensaje
-import com.example.reciclapp.domain.entities.Usuario
-import com.example.reciclapp.presentation.viewmodel.MensajeViewModel
-import com.example.reciclapp.util.FechaUtils.formatChatDateTime
-import com.example.reciclapp.util.NameRoutes.CHATSCREEN
+import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
+import com.nextmacrosystem.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.MensajeViewModel
+import com.nextmacrosystem.reciclapp.util.FechaUtils.formatChatDateTime
+import com.nextmacrosystem.reciclapp.util.NameRoutes.CHATSCREEN
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)

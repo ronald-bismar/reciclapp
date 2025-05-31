@@ -1,4 +1,4 @@
-package com.example.reciclapp.presentation.ui.menu.ui.content.mypurchases
+package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.content.mypurchases
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

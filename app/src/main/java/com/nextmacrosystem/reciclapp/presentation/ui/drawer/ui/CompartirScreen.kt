@@ -1,4 +1,4 @@
-package com.example.reciclapp.presentation.ui.CompartirScreen
+package com.nextmacrosystem.reciclapp.presentation.ui.CompartirScreen
 
 import android.content.Intent
 import android.net.Uri

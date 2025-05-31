@@ -1,4 +1,4 @@
-package com.example.reciclapp.domain.usecases.mensajes
+package com.nextmacrosystem.reciclapp.domain.usecases.mensajes
 
 import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
 import com.nextmacrosystem.reciclapp.domain.repositories.MensajeRepository

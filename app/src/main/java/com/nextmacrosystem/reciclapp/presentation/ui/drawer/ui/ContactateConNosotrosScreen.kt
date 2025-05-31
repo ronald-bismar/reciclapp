@@ -1,4 +1,4 @@
-package com.example.reciclapp.presentation.ui.contactate
+package com.nextmacrosystem.reciclapp.presentation.ui.contactate
 
 import android.content.Intent
 import android.net.Uri

@@ -63,9 +63,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import com.example.reciclapp.domain.entities.Categoria
-import com.example.reciclapp.domain.entities.ProductoReciclable
-import com.example.reciclapp.presentation.viewmodel.VendedoresViewModel
+import com.nextmacrosystem.reciclapp.domain.entities.Categoria
+import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.VendedoresViewModel
 import kotlinx.coroutines.flow.collectLatest
 import java.util.Date
 import java.util.UUID
