@@ -1,8 +1,5 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/services/notification/FirebaseNotificationHandler.kt
-package com.example.reciclapp_bolivia.data.services.notification
-========
+
 package com.nextmacrosystem.reciclapp.data.services.notification
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/services/notification/FirebaseNotificationHandler.kt
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -17,17 +14,11 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/services/notification/FirebaseNotificationHandler.kt
-import com.example.reciclapp_bolivia.R
-import com.example.reciclapp_bolivia.MainActivity
-import com.example.reciclapp_bolivia.domain.entities.Mensaje
-========
+import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.firebase.messaging.RemoteMessage
 import com.nextmacrosystem.reciclapp.MainActivity
 import com.nextmacrosystem.reciclapp.R
 import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/services/notification/FirebaseNotificationHandler.kt
-import com.google.firebase.messaging.FirebaseMessagingService
-import com.google.firebase.messaging.RemoteMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

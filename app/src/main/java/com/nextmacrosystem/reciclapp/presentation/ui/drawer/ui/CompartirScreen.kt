@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/drawer/ui/CompartirScreen.kt
-package com.example.reciclapp_bolivia.presentation.ui.CompartirScreen
-========
-package com.nextmacrosystem.reciclapp.presentation.ui.CompartirScreen
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/drawer/ui/CompartirScreen.kt
+package com.nextmacrosystem.reciclapp.presentation.ui.drawer.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -31,17 +27,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/drawer/ui/CompartirScreen.kt
-import com.example.reciclapp_bolivia.R
-========
 import com.nextmacrosystem.reciclapp.R
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/drawer/ui/CompartirScreen.kt
 
 @Composable
 fun CompartirScreen() {
@@ -158,7 +151,7 @@ fun CompartirScreen() {
 @Composable
 fun ButtonWithIcon(
     text: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: ImageVector,
     backgroundColor: Color,
     onClick: () -> Unit
 ) {

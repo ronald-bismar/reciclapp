@@ -1,20 +1,8 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/repositories/ProductoRepositoryImpl.kt
-package com.example.reciclapp_bolivia.data.repositories
-
-import ListOfCategorias
-import android.util.Log
-import com.example.reciclapp_bolivia.domain.entities.Mensaje
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-import com.example.reciclapp_bolivia.domain.entities.TransaccionPendiente
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.domain.repositories.ProductoRepository
-import com.example.reciclapp_bolivia.domain.usecases.mensajes.SendMessageUseCase
-import com.example.reciclapp_bolivia.util.ProductosReciclables
-========
 package com.nextmacrosystem.reciclapp.data.repositories
 
 import ListOfCategorias
 import android.util.Log
+import com.google.firebase.firestore.FirebaseFirestore
 import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 import com.nextmacrosystem.reciclapp.domain.entities.TransaccionPendiente
@@ -22,8 +10,6 @@ import com.nextmacrosystem.reciclapp.domain.entities.Usuario
 import com.nextmacrosystem.reciclapp.domain.repositories.ProductoRepository
 import com.nextmacrosystem.reciclapp.domain.usecases.mensajes.SendMessageUseCase
 import com.nextmacrosystem.reciclapp.util.ProductosReciclables
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/repositories/ProductoRepositoryImpl.kt
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope

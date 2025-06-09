@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/UserTypeScreen.kt
-package com.example.reciclapp_bolivia.presentation.ui.menu.ui
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/UserTypeScreen.kt
 
 import android.util.Log
 import androidx.compose.animation.animateContentSize
@@ -44,16 +40,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/UserTypeScreen.kt
-import com.example.reciclapp_bolivia.R
-import com.example.reciclapp_bolivia.presentation.ui.registro.ui.showToast
-import com.example.reciclapp_bolivia.presentation.viewmodel.UserViewModel
-import com.example.reciclapp_bolivia.util.NameRoutes.PANTALLAPRINCIPAL
-========
 import com.nextmacrosystem.reciclapp.R
 import com.nextmacrosystem.reciclapp.presentation.ui.registro.ui.showToast
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.UserViewModel
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/UserTypeScreen.kt
+import com.nextmacrosystem.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
 
 @Composable
 fun UserTypeScreen(

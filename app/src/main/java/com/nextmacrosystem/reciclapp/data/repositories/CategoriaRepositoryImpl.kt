@@ -1,17 +1,9 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/repositories/CategoriaRepositoryImpl.kt
-package com.example.reciclapp_bolivia.data.repositories
-
-import android.util.Log
-import com.example.reciclapp_bolivia.domain.entities.Categoria
-import com.example.reciclapp_bolivia.domain.repositories.CategoriaRepository
-========
 package com.nextmacrosystem.reciclapp.data.repositories
 
 import android.util.Log
+import com.google.firebase.firestore.FirebaseFirestore
 import com.nextmacrosystem.reciclapp.domain.entities.Categoria
 import com.nextmacrosystem.reciclapp.domain.repositories.CategoriaRepository
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/repositories/CategoriaRepositoryImpl.kt
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 

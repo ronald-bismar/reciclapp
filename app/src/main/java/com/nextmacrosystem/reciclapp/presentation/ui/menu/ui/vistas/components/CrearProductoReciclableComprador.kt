@@ -1,3 +1,6 @@
+package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas.components
+
+import ListOfCategorias
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
@@ -61,16 +64,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/vistas/components/CrearProductoReciclableComprador.kt
-import com.example.reciclapp_bolivia.domain.entities.Categoria
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-import com.example.reciclapp_bolivia.presentation.viewmodel.CompradoresViewModel
-========
 import com.nextmacrosystem.reciclapp.domain.entities.Categoria
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.CompradoresViewModel
-import com.nextmacrosystem.reciclapp.presentation.viewmodel.VendedoresViewModel
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/vistas/components/CrearProductoReciclableComprador.kt
 import kotlinx.coroutines.flow.collectLatest
 import java.util.Date
 import java.util.UUID

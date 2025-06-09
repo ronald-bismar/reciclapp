@@ -1,7 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/util/Tips.kt
-========
 import com.nextmacrosystem.reciclapp.domain.entities.Tip
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/util/Tips.kt
 
 object Tips {
     val tipsList = listOf(

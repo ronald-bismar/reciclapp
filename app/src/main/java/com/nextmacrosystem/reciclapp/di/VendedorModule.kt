@@ -1,21 +1,19 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/di/VendedorModule.kt
-package com.example.reciclapp_bolivia.di
-
-import com.example.reciclapp_bolivia.data.repositories.VendedorRepositoryImpl
-import com.example.reciclapp_bolivia.domain.repositories.VendedorRepository
-import com.example.reciclapp_bolivia.domain.usecases.comentario.CrearComentarioUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.RegistrarProductoUseCase
-import com.example.reciclapp_bolivia.domain.usecases.vendedor.*
-========
 package com.nextmacrosystem.reciclapp.di
 
+import com.google.firebase.firestore.FirebaseFirestore
 import com.nextmacrosystem.reciclapp.data.repositories.VendedorRepositoryImpl
 import com.nextmacrosystem.reciclapp.domain.repositories.VendedorRepository
-import com.nextmacrosystem.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
-import com.nextmacrosystem.reciclapp.domain.usecases.vendedor.*
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/di/VendedorModule.kt
-import com.google.firebase.firestore.FirebaseFirestore
 import com.nextmacrosystem.reciclapp.domain.usecases.comentario.CrearComentarioUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.vendedor.ComentarACompradorUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.vendedor.CompararPrecioEntreCompradoresUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.vendedor.EnviarMensajeACompradorUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.vendedor.GetVendedorUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.vendedor.GetVendedoresUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.vendedor.LlamarACompradorUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.vendedor.PublicarProductoUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.vendedor.VerListaDeCompradoresCercanosUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.vendedor.VerMapaConCompradoresCercanosUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

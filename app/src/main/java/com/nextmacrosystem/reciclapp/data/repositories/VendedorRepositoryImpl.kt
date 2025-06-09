@@ -1,19 +1,7 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/repositories/VendedorRepositoryImpl.kt
-package com.example.reciclapp_bolivia.data.repositories
-
-import android.util.Log
-import com.example.reciclapp_bolivia.domain.entities.Comentario
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-import com.example.reciclapp_bolivia.domain.entities.UbicacionGPS
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.domain.repositories.VendedorRepository
-import com.example.reciclapp_bolivia.domain.usecases.comentario.CrearComentarioUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.RegistrarProductoUseCase
-import com.example.reciclapp_bolivia.util.GenerateID
-========
 package com.nextmacrosystem.reciclapp.data.repositories
 
 import android.util.Log
+import com.google.firebase.firestore.FirebaseFirestore
 import com.nextmacrosystem.reciclapp.domain.entities.Comentario
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 import com.nextmacrosystem.reciclapp.domain.entities.UbicacionGPS
@@ -22,10 +10,9 @@ import com.nextmacrosystem.reciclapp.domain.repositories.VendedorRepository
 import com.nextmacrosystem.reciclapp.domain.usecases.comentario.CrearComentarioUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
 import com.nextmacrosystem.reciclapp.util.GenerateID
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/repositories/VendedorRepositoryImpl.kt
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import kotlin.collections.sortedByDescending
 
 private const val TAG = "VendedorRepositoryImpl"
 

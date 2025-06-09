@@ -1,19 +1,10 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/viewmodel/ClassifierViewModel.kt
-package com.example.reciclapp_bolivia.presentation.viewmodel
-========
 package com.nextmacrosystem.reciclapp.presentation.viewmodel
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/viewmodel/ClassifierViewModel.kt
 
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/viewmodel/ClassifierViewModel.kt
-import com.example.reciclapp_bolivia.BuildConfig
-import com.example.reciclapp_bolivia.presentation.states.ClassifierState
-========
-import com.nextmacrosystem.reciclapp.BuildConfig
+
 import com.nextmacrosystem.reciclapp.presentation.states.ClassifierState
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/viewmodel/ClassifierViewModel.kt
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
 import kotlinx.coroutines.Dispatchers
@@ -21,9 +12,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import com.nextmacrosystem.reciclapp.BuildConfig
 
 private const val TAG = "ClassifierViewModel"
+
 private const val PROMPT = """
+    
 Estoy desarrollando una app que ayuda a los usuarios a clasificar residuos reciclables mediante imágenes.
 
 Petición:

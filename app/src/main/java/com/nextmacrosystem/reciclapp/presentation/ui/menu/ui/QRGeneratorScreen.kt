@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/QRGeneratorScreen.kt
-package com.example.reciclapp_bolivia.presentation.ui.menu.ui
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/QRGeneratorScreen.kt
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
@@ -21,7 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -46,23 +42,16 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.set
 import androidx.navigation.NavHostController
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/QRGeneratorScreen.kt
-import com.example.reciclapp_bolivia.domain.entities.TransaccionPendiente
-import com.example.reciclapp_bolivia.presentation.viewmodel.MensajeViewModel
-import com.example.reciclapp_bolivia.presentation.viewmodel.TransaccionViewModel
-import com.example.reciclapp_bolivia.util.TipoDeUsuario.VENDEDOR
-========
-import com.nextmacrosystem.reciclapp.domain.entities.TransaccionPendiente
-import com.nextmacrosystem.reciclapp.presentation.viewmodel.MensajeViewModel
-import com.nextmacrosystem.reciclapp.presentation.viewmodel.TransaccionViewModel
-import com.nextmacrosystem.reciclapp.util.TipoDeUsuario.VENDEDOR
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/QRGeneratorScreen.kt
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.qrcode.QRCodeWriter
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
+import com.nextmacrosystem.reciclapp.domain.entities.TransaccionPendiente
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.MensajeViewModel
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.TransaccionViewModel
+import com.nextmacrosystem.reciclapp.util.TipoDeUsuario.VENDEDOR
 import kotlinx.coroutines.delay
 import java.time.LocalDateTime
 import java.util.UUID

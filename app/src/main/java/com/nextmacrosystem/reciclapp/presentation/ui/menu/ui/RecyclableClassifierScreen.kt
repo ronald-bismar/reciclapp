@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/RecyclableClassifierScreen.kt
-package com.example.reciclapp_bolivia.presentation.ui.menu.ui
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/RecyclableClassifierScreen.kt
 
 import ListOfCategorias
 import android.Manifest
@@ -70,19 +66,11 @@ import androidx.core.content.FileProvider
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/RecyclableClassifierScreen.kt
-import com.example.reciclapp_bolivia.R
-import com.example.reciclapp_bolivia.domain.entities.Categoria
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-import com.example.reciclapp_bolivia.presentation.states.ClassifierState
-import com.example.reciclapp_bolivia.presentation.viewmodel.ClassifierViewModel
-========
 import com.nextmacrosystem.reciclapp.R
 import com.nextmacrosystem.reciclapp.domain.entities.Categoria
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 import com.nextmacrosystem.reciclapp.presentation.states.ClassifierState
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.ClassifierViewModel
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/RecyclableClassifierScreen.kt
 import kotlinx.coroutines.delay
 import java.io.File
 import java.text.SimpleDateFormat

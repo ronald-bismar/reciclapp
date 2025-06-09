@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/BuyersScreen.kt
-package com.example.reciclapp_bolivia.presentation.ui.menu.ui
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/BuyersScreen.kt
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -49,17 +45,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/BuyersScreen.kt
-import com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas.initiateCall
-import com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas.openWhatsAppMessage
-import com.example.reciclapp_bolivia.presentation.viewmodel.UbicacionViewModel
-import com.example.reciclapp_bolivia.presentation.viewmodel.UserViewModel
-========
 import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas.initiateCall
 import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas.openWhatsAppMessage
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.UbicacionViewModel
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.UserViewModel
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/BuyersScreen.kt
 
 enum class BuyerFilterOption {
     ALL, PROXIMITY, RATING

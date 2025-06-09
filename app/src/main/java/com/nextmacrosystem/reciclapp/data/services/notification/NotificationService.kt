@@ -1,14 +1,6 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/services/notification/NotificationService.kt
-package com.example.reciclapp_bolivia.data.services.notification
-
-import android.util.Log
-import com.example.reciclapp_bolivia.domain.entities.Result
-========
 package com.nextmacrosystem.reciclapp.data.services.notification
 
 import android.util.Log
-import com.nextmacrosystem.reciclapp.domain.entities.Result
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/services/notification/NotificationService.kt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
@@ -18,6 +10,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.IOException
 import javax.inject.Inject
+import com.nextmacrosystem.reciclapp.domain.entities.Result
 
 class NotificationService @Inject constructor(
     private val client: OkHttpClient

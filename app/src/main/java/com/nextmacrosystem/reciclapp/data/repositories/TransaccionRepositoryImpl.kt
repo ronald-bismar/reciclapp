@@ -1,20 +1,11 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/repositories/TransaccionRepositoryImpl.kt
-package com.example.reciclapp_bolivia.data.repositories
-
-import android.util.Log
-import com.example.reciclapp_bolivia.domain.entities.EstadoTransaccion
-import com.example.reciclapp_bolivia.domain.entities.TransaccionPendiente
-import com.example.reciclapp_bolivia.domain.repositories.TransaccionRepository
-========
 package com.nextmacrosystem.reciclapp.data.repositories
 
 import android.util.Log
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.nextmacrosystem.reciclapp.domain.entities.EstadoTransaccion
 import com.nextmacrosystem.reciclapp.domain.entities.TransaccionPendiente
 import com.nextmacrosystem.reciclapp.domain.repositories.TransaccionRepository
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/repositories/TransaccionRepositoryImpl.kt
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 

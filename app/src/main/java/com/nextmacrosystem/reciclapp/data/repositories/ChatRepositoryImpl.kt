@@ -1,18 +1,10 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/repositories/ChatRepositoryImpl.kt
-package com.example.reciclapp_bolivia.data.repositories
-
-import android.util.Log
-import com.example.reciclapp_bolivia.domain.entities.Chat
-import com.example.reciclapp_bolivia.domain.repositories.ChatRepository
-========
 package com.nextmacrosystem.reciclapp.data.repositories
 
-import android.util.Log
-import com.nextmacrosystem.reciclapp.domain.entities.Chat
 import com.nextmacrosystem.reciclapp.domain.repositories.ChatRepository
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/repositories/ChatRepositoryImpl.kt
+import android.util.Log
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
+import com.nextmacrosystem.reciclapp.domain.entities.Chat
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await

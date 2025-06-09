@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/content/statistics/Statistics.kt
-package com.example.reciclapp_bolivia.presentation.ui.menu.ui.content.statistics
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.content.statistics
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/content/statistics/Statistics.kt
 
 import android.util.Log
 import androidx.compose.animation.core.RepeatMode
@@ -50,23 +46,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/content/statistics/Statistics.kt
-import com.example.reciclapp_bolivia.R
-import com.example.reciclapp_bolivia.domain.entities.Logro
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.presentation.viewmodel.UserViewModel
-========
 import com.nextmacrosystem.reciclapp.R
 import com.nextmacrosystem.reciclapp.domain.entities.Logro
-import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.UserViewModel
-import com.nextmacrosystem.reciclapp.util.ImpactoAmbientalUtil
-import com.nextmacrosystem.reciclapp.util.Logros
-import com.nextmacrosystem.reciclapp.util.NombreNivelUsuario
-import com.nextmacrosystem.reciclapp.util.ProductosReciclables
-import com.nextmacrosystem.reciclapp.util.ValidarLogros.actualizarLogrosUsuario
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/content/statistics/Statistics.kt
 
 private const val TAG = "PantallaPrincipal"
 

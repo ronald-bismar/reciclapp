@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/local/entities/MensajeEntity.kt
-package com.example.reciclapp_bolivia.data.local.entities
-========
 package com.nextmacrosystem.reciclapp.data.local.entities
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/local/entities/MensajeEntity.kt
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

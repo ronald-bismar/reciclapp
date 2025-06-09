@@ -1,16 +1,8 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/di/AppModule.kt
-package com.example.reciclapp_bolivia.di
-
-import android.app.Application
-import android.content.Context
-import com.example.reciclapp_bolivia.util.ImageRepository
-========
 package com.nextmacrosystem.reciclapp.di
 
 import android.app.Application
 import android.content.Context
 import com.nextmacrosystem.reciclapp.util.ImageRepository
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/di/AppModule.kt
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

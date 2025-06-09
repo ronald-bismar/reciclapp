@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/domain/entities/Categoria.kt
-package com.example.reciclapp_bolivia.domain.entities
-========
 package com.nextmacrosystem.reciclapp.domain.entities
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/domain/entities/Categoria.kt
 
 data class Categoria(
     val idCategoria: String = "",

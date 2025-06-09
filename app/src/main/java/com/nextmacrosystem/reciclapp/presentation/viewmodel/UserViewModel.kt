@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/viewmodel/UserViewModel.kt
-package com.example.reciclapp_bolivia.presentation.viewmodel
-========
 package com.nextmacrosystem.reciclapp.presentation.viewmodel
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/viewmodel/UserViewModel.kt
 
 import ListOfCategorias
 import RachaReciclaje
@@ -11,28 +7,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/viewmodel/UserViewModel.kt
-import com.example.reciclapp_bolivia.domain.entities.Logro
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.domain.usecases.comprador.GetCompradoresUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.ListarProductosDeVendedorUseCase
-import com.example.reciclapp_bolivia.domain.usecases.user_preferences.DeleteSessionUserPreferencesUseCase
-import com.example.reciclapp_bolivia.domain.usecases.user_preferences.GetUserPreferencesUseCase
-import com.example.reciclapp_bolivia.domain.usecases.usuario.ActualizarUsuarioUseCase
-import com.example.reciclapp_bolivia.domain.usecases.vendedor.GetVendedoresUseCase
-import com.example.reciclapp_bolivia.util.ImpactoAmbientalUtil
-import com.example.reciclapp_bolivia.util.Logros
-import com.example.reciclapp_bolivia.util.NombreNivelUsuario
-import com.example.reciclapp_bolivia.util.ProductosReciclables
-import com.example.reciclapp_bolivia.util.ValidarLogros.actualizarLogrosUsuario
-========
 import com.nextmacrosystem.reciclapp.domain.entities.Logro
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
 import com.nextmacrosystem.reciclapp.domain.usecases.comprador.GetCompradoresUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.producto.ListarProductosDeVendedorUseCase
-import com.nextmacrosystem.reciclapp.domain.usecases.ubicacionGPS.RegistrarUbicacionDeUsuarioUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.user_preferences.DeleteSessionUserPreferencesUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.usuario.ActualizarUsuarioUseCase
@@ -42,7 +21,6 @@ import com.nextmacrosystem.reciclapp.util.Logros
 import com.nextmacrosystem.reciclapp.util.NombreNivelUsuario
 import com.nextmacrosystem.reciclapp.util.ProductosReciclables
 import com.nextmacrosystem.reciclapp.util.ValidarLogros.actualizarLogrosUsuario
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/viewmodel/UserViewModel.kt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

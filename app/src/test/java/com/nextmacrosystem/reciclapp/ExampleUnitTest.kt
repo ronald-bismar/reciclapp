@@ -1,12 +1,7 @@
-<<<<<<<< HEAD:app/src/test/java/com/example/reciclapp_bolivia/ExampleUnitTest.kt
-package com.example.reciclapp_bolivia
-========
 package com.nextmacrosystem.reciclapp
->>>>>>>> origin/rama3_freddy:app/src/test/java/com/nextmacrosystem/reciclapp/ExampleUnitTest.kt
 
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).

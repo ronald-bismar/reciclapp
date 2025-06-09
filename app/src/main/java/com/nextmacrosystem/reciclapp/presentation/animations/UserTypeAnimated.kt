@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/animations/UserTypeAnimated.kt
-package com.example.reciclapp_bolivia.presentation.animations
-========
 package com.nextmacrosystem.reciclapp.presentation.animations
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/animations/UserTypeAnimated.kt
 
 import android.util.Log
 import androidx.compose.foundation.background

@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/local/UserPreferencesRepositoryImpl.kt
-package com.example.reciclapp_bolivia.data.local
-========
 package com.nextmacrosystem.reciclapp.data.local
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/local/UserPreferencesRepositoryImpl.kt
 
 import android.content.Context
 import android.util.Log
@@ -11,17 +7,27 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/local/UserPreferencesRepositoryImpl.kt
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.domain.repositories.UserPreferencesRepository
-========
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
 import com.nextmacrosystem.reciclapp.domain.repositories.UserPreferencesRepository
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/local/UserPreferencesRepositoryImpl.kt
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 private const val PREFERENCES_NAME = "user_preferences"
+
+private val ID_USUARIO_KEY = stringPreferencesKey("id_usuario")
+private val NOMBRE_KEY = stringPreferencesKey("nombre")
+private val APELLIDO_KEY = stringPreferencesKey("apellido")
+private val TELEFONO_KEY = longPreferencesKey("telefono")
+private val CORREO_KEY = stringPreferencesKey("correo")
+private val CONTRASENA_KEY = stringPreferencesKey("contrasena")
+private val DIRECCION_KEY = stringPreferencesKey("direccion")
+private val URL_IMAGEN_PERFIL_KEY = stringPreferencesKey("url_imagen_perfil")
+private val TIPO_USUARIO_KEY = stringPreferencesKey("tipo_usuario")
+private val PUNTAJE_KEY = intPreferencesKey("puntaje")
+private val NOMBRE_NIVEL_KEY = stringPreferencesKey("nombre_nivel")
+private val NIVEL_KEY = stringPreferencesKey("nivel")
+private val LOGROS_POR_ID_KEY = stringPreferencesKey("logros_por_id")
+private val TOKEN_NOTIFICACION_KEY = stringPreferencesKey("logros")
 
 val Context.dataStore by preferencesDataStore(name = PREFERENCES_NAME)
 
@@ -29,20 +35,7 @@ class UserPreferencesRepositoryImpl @Inject constructor(private val context: Con
     UserPreferencesRepository {
     private val dataStore = context.dataStore
 
-    private val ID_USUARIO_KEY = stringPreferencesKey("id_usuario")
-    private val NOMBRE_KEY = stringPreferencesKey("nombre")
-    private val APELLIDO_KEY = stringPreferencesKey("apellido")
-    private val TELEFONO_KEY = longPreferencesKey("telefono")
-    private val CORREO_KEY = stringPreferencesKey("correo")
-    private val CONTRASENA_KEY = stringPreferencesKey("contrasena")
-    private val DIRECCION_KEY = stringPreferencesKey("direccion")
-    private val URL_IMAGEN_PERFIL_KEY = stringPreferencesKey("url_imagen_perfil")
-    private val TIPO_USUARIO_KEY = stringPreferencesKey("tipo_usuario")
-    private val PUNTAJE_KEY = intPreferencesKey("puntaje")
-    private val NOMBRE_NIVEL_KEY = stringPreferencesKey("nombre_nivel")
-    private val NIVEL_KEY = stringPreferencesKey("nivel")
-    private val LOGROS_POR_ID_KEY = stringPreferencesKey("logros_por_id")
-    private val TOKEN_NOTIFICACION_KEY = stringPreferencesKey("logros")
+
 
     override suspend fun getUser(): Usuario {
         return try {

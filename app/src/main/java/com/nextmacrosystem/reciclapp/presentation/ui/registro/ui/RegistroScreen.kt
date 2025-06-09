@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/registro/ui/RegistroScreen.kt
-package com.example.reciclapp_bolivia.presentation.ui.registro.ui
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.registro.ui
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/registro/ui/RegistroScreen.kt
 
 import android.content.Context
 import android.widget.Toast
@@ -32,7 +28,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,19 +42,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/registro/ui/RegistroScreen.kt
-import com.example.reciclapp_bolivia.R
-import com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas.components.HeaderImageLogoReciclapp
-import com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas.components.LoadingButton
-import com.example.reciclapp_bolivia.util.NameRoutes.UPLOADIMAGEPROFILESCREEN
-========
 import com.nextmacrosystem.reciclapp.R
 import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas.components.HeaderImageLogoReciclapp
 import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas.components.LoadingButton
-import com.nextmacrosystem.reciclapp.presentation.ui.registro.ui.photo_profile.SinglePhotoPicker
-import com.nextmacrosystem.reciclapp.util.StorageUtil
-import kotlinx.coroutines.launch
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/registro/ui/RegistroScreen.kt
+import com.nextmacrosystem.reciclapp.util.NameRoutes.UPLOADIMAGEPROFILESCREEN
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

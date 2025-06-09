@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/androidTest/java/com/example/reciclapp_bolivia/ExampleInstrumentedTest.kt
-package com.example.reciclapp_bolivia
-========
 package com.nextmacrosystem.reciclapp
->>>>>>>> origin/rama3_freddy:app/src/androidTest/java/com/nextmacrosystem/reciclapp/ExampleInstrumentedTest.kt
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

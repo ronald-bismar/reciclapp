@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/vistas/Vendedor.kt
-package com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/vistas/Vendedor.kt
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -46,19 +42,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/vistas/Vendedor.kt
-import com.example.reciclapp_bolivia.R
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-import com.example.reciclapp_bolivia.presentation.viewmodel.MensajeViewModel
-import com.example.reciclapp_bolivia.presentation.viewmodel.TransaccionViewModel
-import com.example.reciclapp_bolivia.presentation.viewmodel.VendedoresViewModel
-========
 import com.nextmacrosystem.reciclapp.R
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.VendedoresViewModel
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/vistas/Vendedor.kt
 
 private const val TAG = "Vendedor"
 

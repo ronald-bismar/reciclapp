@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/states/ClassifierState.kt
-package com.example.reciclapp_bolivia.presentation.states
-========
 package com.nextmacrosystem.reciclapp.presentation.states
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/states/ClassifierState.kt
 
 /**
  * A sealed hierarchy describing the state of the text generation.

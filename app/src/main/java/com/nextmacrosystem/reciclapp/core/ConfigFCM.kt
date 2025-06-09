@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/core/ConfigFCM.kt
-package com.example.reciclapp_bolivia.core
-========
 package com.nextmacrosystem.reciclapp.core
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/core/ConfigFCM.kt
 
 object ConfigFCM {
     const val projectId = "backend-recyclapp" // Tu Project ID

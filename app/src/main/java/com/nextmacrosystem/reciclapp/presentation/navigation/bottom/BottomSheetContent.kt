@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/navigation/bottom/BottomSheetContent.kt
-package com.example.reciclapp_bolivia.presentation.navigation.bottom
-========
 package com.nextmacrosystem.reciclapp.presentation.navigation.bottom
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/navigation/bottom/BottomSheetContent.kt
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*

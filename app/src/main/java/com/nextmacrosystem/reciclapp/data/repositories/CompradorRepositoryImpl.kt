@@ -1,27 +1,16 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/repositories/CompradorRepositoryImpl.kt
-package com.example.reciclapp_bolivia.data.repositories
-
-import android.util.Log
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.domain.repositories.CompradorRepository
-import com.example.reciclapp_bolivia.domain.usecases.producto.ListarTodosLosProductosUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.RegistrarProductoUseCase
-========
 package com.nextmacrosystem.reciclapp.data.repositories
 
 import android.util.Log
-import com.nextmacrosystem.reciclapp.domain.entities.EstadoTransaccion
+import com.google.firebase.firestore.FirebaseFirestore
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
-import com.nextmacrosystem.reciclapp.domain.entities.TransaccionPendiente
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
 import com.nextmacrosystem.reciclapp.domain.repositories.CompradorRepository
 import com.nextmacrosystem.reciclapp.domain.usecases.producto.ListarTodosLosProductosUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/repositories/CompradorRepositoryImpl.kt
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import kotlin.collections.filter
+import kotlin.collections.map
 
 class CompradorRepositoryImpl @Inject constructor(
     private val service: FirebaseFirestore,

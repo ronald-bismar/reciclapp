@@ -1,17 +1,9 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/repositories/UsuarioRepositoryImpl.kt
-package com.example.reciclapp_bolivia.data.repositories
-
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.domain.repositories.UsuarioRepository
-import com.example.reciclapp_bolivia.domain.usecases.user_preferences.SaveUserPreferencesUseCase
-========
 package com.nextmacrosystem.reciclapp.data.repositories
 
+import com.google.firebase.firestore.FirebaseFirestore
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
 import com.nextmacrosystem.reciclapp.domain.repositories.UsuarioRepository
 import com.nextmacrosystem.reciclapp.domain.usecases.user_preferences.SaveUserPreferencesUseCase
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/repositories/UsuarioRepositoryImpl.kt
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 

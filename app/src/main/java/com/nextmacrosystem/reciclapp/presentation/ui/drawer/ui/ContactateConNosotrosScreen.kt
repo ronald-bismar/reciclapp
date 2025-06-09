@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/drawer/ui/ContactateConNosotrosScreen.kt
-package com.example.reciclapp_bolivia.presentation.ui.drawer.ui
-========
-package com.nextmacrosystem.reciclapp.presentation.ui.contactate
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/drawer/ui/ContactateConNosotrosScreen.kt
+package com.nextmacrosystem.reciclapp.presentation.ui.drawer.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -31,13 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/drawer/ui/ContactateConNosotrosScreen.kt
-import com.example.reciclapp_bolivia.R
-import com.example.reciclapp_bolivia.presentation.ui.CompartirScreen.ButtonWithIcon
-========
 import com.nextmacrosystem.reciclapp.R
-import com.nextmacrosystem.reciclapp.presentation.ui.CompartirScreen.ButtonWithIcon
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/drawer/ui/ContactateConNosotrosScreen.kt
 
 @Composable
 fun ContactateConNosotrosScreen() {
@@ -126,7 +116,7 @@ fun ContactateConNosotrosScreen() {
                 onClick = {
                     // Agregar el correo aquí
                     val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-                        data = Uri.parse("mailto:contacto@nextmacrosystem.com")
+                        setData(Uri.parse("mailto:contacto@nextmacrosystem.com"))
                     }
                     context.startActivity(Intent.createChooser(emailIntent, "Enviar correo"))
                 }

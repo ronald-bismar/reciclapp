@@ -1,7 +1,5 @@
 package com.nextmacrosystem.reciclapp.presentation.ui.registro.ui
 
-import RegistroButton
-import RegistroViewModel
 import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -28,8 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.navigation.NavHostController
-import com.example.reciclapp_bolivia.presentation.ui.registro.ui.photo_profile.SinglePhotoPicker
-import showToast
+import com.nextmacrosystem.reciclapp.presentation.ui.registro.ui.photo_profile.SinglePhotoPicker
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

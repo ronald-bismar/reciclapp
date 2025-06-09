@@ -1,6 +1,5 @@
 package com.nextmacrosystem.reciclapp.presentation.navigation.bottom
 
-import HistorialComprasScreen
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -9,8 +8,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.nextmacrosystem.reciclapp.domain.entities.Usuario
 import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.BuyersScreen
+import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.HistorialComprasScreen
 import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.RankingCompradoresScreen
 import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.SellersScreen
 import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.SocialMediaScreenVendedores

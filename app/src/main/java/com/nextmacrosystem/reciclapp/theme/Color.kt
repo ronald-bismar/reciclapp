@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/theme/Color.kt
-package com.example.reciclapp_bolivia.theme
-========
 package com.nextmacrosystem.reciclapp.theme
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/theme/Color.kt
 
 import androidx.compose.ui.graphics.Color
 

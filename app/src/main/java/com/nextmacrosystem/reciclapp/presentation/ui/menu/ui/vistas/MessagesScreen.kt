@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/vistas/MessagesScreen.kt
-package com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/vistas/MessagesScreen.kt
 
 import android.os.Build
 import android.util.Log
@@ -42,25 +38,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/vistas/MessagesScreen.kt
 import coil.compose.rememberAsyncImagePainter
-import com.example.reciclapp_bolivia.R
-import com.example.reciclapp_bolivia.domain.entities.Mensaje
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.presentation.states.MessagesScreenState
-import com.example.reciclapp_bolivia.presentation.viewmodel.MensajeViewModel
-import com.example.reciclapp_bolivia.util.FechaUtils.formatChatDateTime
-import com.example.reciclapp_bolivia.util.NameRoutes.CHATSCREEN
-
-private const val TAG = "MessagesScreen"
-========
+import com.nextmacrosystem.reciclapp.R
 import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.presentation.states.MessagesScreenState
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.nextmacrosystem.reciclapp.util.FechaUtils.formatChatDateTime
 import com.nextmacrosystem.reciclapp.util.NameRoutes.CHATSCREEN
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/vistas/MessagesScreen.kt
 
+private const val TAG = "MessagesScreen"
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

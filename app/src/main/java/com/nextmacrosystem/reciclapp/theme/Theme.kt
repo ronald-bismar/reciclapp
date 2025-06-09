@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/theme/Theme.kt
-package com.example.reciclapp_bolivia.theme
-========
 package com.nextmacrosystem.reciclapp.theme
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/theme/Theme.kt
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme

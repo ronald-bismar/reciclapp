@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/vistas/Inicio.kt
-package com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/vistas/Inicio.kt
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

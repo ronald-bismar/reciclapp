@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/ScreenProductosForSaleVendedor.kt
-package com.example.reciclapp_bolivia.presentation.ui.menu.ui
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/ScreenProductosForSaleVendedor.kt
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -40,19 +36,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/ScreenProductosForSaleVendedor.kt
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-import com.example.reciclapp_bolivia.presentation.viewmodel.MensajeViewModel
-import com.example.reciclapp_bolivia.presentation.viewmodel.TransaccionViewModel
-import com.example.reciclapp_bolivia.presentation.viewmodel.VendedoresViewModel
-import com.example.reciclapp_bolivia.util.NameRoutes.QRGENERATORSCREEN
-========
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.VendedoresViewModel
 import com.nextmacrosystem.reciclapp.util.NameRoutes.QRGENERATORSCREEN
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/ScreenProductosForSaleVendedor.kt
 
 @Composable
 fun ScreenProductsForSaleVendedor(

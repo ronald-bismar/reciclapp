@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/vistas/SendingProductsScreen.kt
-package com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/vistas/SendingProductsScreen.kt
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -74,17 +70,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/vistas/SendingProductsScreen.kt
-import com.example.reciclapp_bolivia.R
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.presentation.states.SendingProductsState
-import com.example.reciclapp_bolivia.presentation.ui.registro.ui.showToast
-import com.example.reciclapp_bolivia.presentation.viewmodel.MensajeViewModel
-import com.example.reciclapp_bolivia.presentation.viewmodel.TransaccionViewModel
-import com.example.reciclapp_bolivia.util.NameRoutes.PANTALLAPRINCIPAL
-import com.example.reciclapp_bolivia.util.TipoDeUsuario
-========
 import com.nextmacrosystem.reciclapp.R
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
@@ -94,7 +79,6 @@ import com.nextmacrosystem.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.TransaccionViewModel
 import com.nextmacrosystem.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
 import com.nextmacrosystem.reciclapp.util.TipoDeUsuario
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/vistas/SendingProductsScreen.kt
 
 @Composable
 fun SendingProductsScreen(

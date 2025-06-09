@@ -1,12 +1,6 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/di/NetworkModule.kt
-package com.example.reciclapp_bolivia.di
-
-import com.example.reciclapp_bolivia.data.services.notification.NotificationService
-========
 package com.nextmacrosystem.reciclapp.di
 
 import com.nextmacrosystem.reciclapp.data.services.notification.NotificationService
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/di/NetworkModule.kt
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

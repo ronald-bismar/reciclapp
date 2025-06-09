@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/vistas/Perfil.kt
-package com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/vistas/Perfil.kt
 
 import android.content.Context
 import android.net.Uri
@@ -60,27 +56,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/vistas/Perfil.kt
-import com.example.reciclapp_bolivia.R
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.presentation.animations.AnimatedTransitionDialog
-import com.example.reciclapp_bolivia.presentation.ui.registro.ui.photo_profile.SinglePhotoPicker
-import com.example.reciclapp_bolivia.presentation.ui.registro.ui.showToast
-import com.example.reciclapp_bolivia.presentation.viewmodel.UserViewModel
-import com.example.reciclapp_bolivia.presentation.viewmodel.VendedoresViewModel
-import com.example.reciclapp_bolivia.util.StorageUtil
-========
 import com.nextmacrosystem.reciclapp.R
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
 import com.nextmacrosystem.reciclapp.presentation.animations.AnimatedTransitionDialog
-import com.nextmacrosystem.reciclapp.presentation.animations.UserTypeAnimated
 import com.nextmacrosystem.reciclapp.presentation.ui.registro.ui.photo_profile.SinglePhotoPicker
 import com.nextmacrosystem.reciclapp.presentation.ui.registro.ui.showToast
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.UserViewModel
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.VendedoresViewModel
 import com.nextmacrosystem.reciclapp.util.StorageUtil
-import kotlinx.coroutines.delay
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/vistas/Perfil.kt
 import kotlinx.coroutines.launch
 import java.util.Locale
 

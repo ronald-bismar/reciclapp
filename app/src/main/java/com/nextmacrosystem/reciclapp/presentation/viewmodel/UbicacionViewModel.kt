@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/viewmodel/UbicacionViewModel.kt
-package com.example.reciclapp_bolivia.presentation.viewmodel
-========
 package com.nextmacrosystem.reciclapp.presentation.viewmodel
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/viewmodel/UbicacionViewModel.kt
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,24 +6,15 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/viewmodel/UbicacionViewModel.kt
-import com.example.reciclapp_bolivia.domain.entities.UbicacionGPS
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.domain.usecases.ubicacionGPS.GetLocationsAndCompradoresUseCase
-import com.example.reciclapp_bolivia.domain.usecases.ubicacionGPS.RegistrarUbicacionDeUsuarioUseCase
-import com.example.reciclapp_bolivia.util.GenerateID
-import com.example.reciclapp_bolivia.util.ImageRepository
-========
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.firebase.Timestamp
 import com.nextmacrosystem.reciclapp.domain.entities.UbicacionGPS
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
 import com.nextmacrosystem.reciclapp.domain.usecases.ubicacionGPS.GetLocationsAndCompradoresUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.ubicacionGPS.RegistrarUbicacionDeUsuarioUseCase
 import com.nextmacrosystem.reciclapp.util.GenerateID
 import com.nextmacrosystem.reciclapp.util.ImageRepository
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/viewmodel/UbicacionViewModel.kt
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

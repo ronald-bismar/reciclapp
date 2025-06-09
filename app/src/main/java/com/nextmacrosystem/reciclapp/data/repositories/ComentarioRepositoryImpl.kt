@@ -1,16 +1,8 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/repositories/ComentarioRepositoryImpl.kt
-package com.example.reciclapp_bolivia.data.repositories
-
-import com.example.reciclapp_bolivia.domain.entities.Comentario
-import com.example.reciclapp_bolivia.domain.repositories.ComentarioRepository
-========
 package com.nextmacrosystem.reciclapp.data.repositories
 
-import android.util.Log
+import com.google.firebase.firestore.FirebaseFirestore
 import com.nextmacrosystem.reciclapp.domain.entities.Comentario
 import com.nextmacrosystem.reciclapp.domain.repositories.ComentarioRepository
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/repositories/ComentarioRepositoryImpl.kt
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 

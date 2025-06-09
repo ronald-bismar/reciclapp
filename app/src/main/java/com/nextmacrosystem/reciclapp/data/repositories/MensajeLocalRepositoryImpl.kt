@@ -1,12 +1,3 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/repositories/MensajeLocalRepositoryImpl.kt
-package com.example.reciclapp_bolivia.data.repositories
-
-import android.util.Log
-import com.example.reciclapp_bolivia.data.local.dao.MensajeDao
-import com.example.reciclapp_bolivia.data.local.entities.MensajeEntity
-import com.example.reciclapp_bolivia.domain.entities.Mensaje
-import com.example.reciclapp_bolivia.domain.repositories.MensajeLocalRepository
-========
 package com.nextmacrosystem.reciclapp.data.repositories
 
 import android.util.Log
@@ -14,7 +5,6 @@ import com.nextmacrosystem.reciclapp.data.local.dao.MensajeDao
 import com.nextmacrosystem.reciclapp.data.local.entities.MensajeEntity
 import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
 import com.nextmacrosystem.reciclapp.domain.repositories.MensajeLocalRepository
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/repositories/MensajeLocalRepositoryImpl.kt
 import javax.inject.Inject
 
 private const val TAG = "MensajeLocalRepository"

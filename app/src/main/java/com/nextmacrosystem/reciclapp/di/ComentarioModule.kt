@@ -1,17 +1,6 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/di/ComentarioModule.kt
-package com.example.reciclapp_bolivia.di
-
-import com.example.reciclapp_bolivia.data.repositories.ComentarioRepositoryImpl
-import com.example.reciclapp_bolivia.domain.repositories.ComentarioRepository
-import com.example.reciclapp_bolivia.domain.usecases.comentario.ActualizarComentarioUseCase
-import com.example.reciclapp_bolivia.domain.usecases.comentario.CrearComentarioUseCase
-import com.example.reciclapp_bolivia.domain.usecases.comentario.EliminarComentarioUseCase
-import com.example.reciclapp_bolivia.domain.usecases.comentario.GetComentarioUseCase
-import com.example.reciclapp_bolivia.domain.usecases.comentario.GetComentariosUseCase
-import com.example.reciclapp_bolivia.domain.usecases.comentario.ListarComentariosDeCompradorUseCase
-========
 package com.nextmacrosystem.reciclapp.di
 
+import com.google.firebase.firestore.FirebaseFirestore
 import com.nextmacrosystem.reciclapp.data.repositories.ComentarioRepositoryImpl
 import com.nextmacrosystem.reciclapp.domain.repositories.ComentarioRepository
 import com.nextmacrosystem.reciclapp.domain.usecases.comentario.ActualizarComentarioUseCase
@@ -20,8 +9,6 @@ import com.nextmacrosystem.reciclapp.domain.usecases.comentario.EliminarComentar
 import com.nextmacrosystem.reciclapp.domain.usecases.comentario.GetComentarioUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.comentario.GetComentariosUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.comentario.ListarComentariosDeCompradorUseCase
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/di/ComentarioModule.kt
-import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

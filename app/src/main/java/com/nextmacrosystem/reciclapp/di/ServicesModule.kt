@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/di/ServicesModule.kt
-package com.example.reciclapp_bolivia.di
-========
 package com.nextmacrosystem.reciclapp.di
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/di/ServicesModule.kt
 
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module

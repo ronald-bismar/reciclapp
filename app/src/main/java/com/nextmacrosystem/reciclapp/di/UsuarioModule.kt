@@ -1,13 +1,16 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/di/UsuarioModule.kt
-package com.example.reciclapp_bolivia.di
-
-import com.nextmacrosystem.reciclapp.domain.usecases.usuario.ActualizarImagenPerfilUseCase
-
-========
 package com.nextmacrosystem.reciclapp.di
 
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/di/UsuarioModule.kt
 import com.google.firebase.firestore.FirebaseFirestore
+import com.nextmacrosystem.reciclapp.data.repositories.UsuarioRepositoryImpl
+import com.nextmacrosystem.reciclapp.domain.repositories.UsuarioRepository
+import com.nextmacrosystem.reciclapp.domain.usecases.user_preferences.SaveUserPreferencesUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.usuario.ActualizarImagenPerfilUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.usuario.ActualizarUsuarioUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.usuario.CambiarTipoDeUsuarioUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.usuario.EliminarUsuarioUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.usuario.GetAllUsersUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.usuario.GetUsuarioUseCase
+import com.nextmacrosystem.reciclapp.domain.usecases.usuario.RegistrarUsuarioUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

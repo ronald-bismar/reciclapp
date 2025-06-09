@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/vistas/components/LoadingButton.kt
-package com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas.components
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas.components
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/vistas/components/LoadingButton.kt
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height

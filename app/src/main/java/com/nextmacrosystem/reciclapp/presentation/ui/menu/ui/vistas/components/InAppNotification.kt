@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/vistas/components/InAppNotification.kt
-package com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas.components
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas.components
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/vistas/components/InAppNotification.kt
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
@@ -48,13 +44,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/vistas/components/InAppNotification.kt
-import com.example.reciclapp_bolivia.data.services.notification.NotificationEventBus
-import com.example.reciclapp_bolivia.domain.entities.Mensaje
-========
 import com.nextmacrosystem.reciclapp.data.services.notification.NotificationEventBus
 import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/vistas/components/InAppNotification.kt
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

@@ -1,14 +1,7 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/util/ProductosReciclables.kt
-package com.example.reciclapp_bolivia.util
-
-import android.util.Log
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-========
 package com.nextmacrosystem.reciclapp.util
 
 import android.util.Log
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/util/ProductosReciclables.kt
 
 // TODO: Realizar la investigación más precisa para los pesos por unidad
 object ProductosReciclables {

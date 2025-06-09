@@ -1,16 +1,8 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/util/ValidarLogros.kt
-package com.example.reciclapp_bolivia.util
-
-import android.util.Log
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-========
 package com.nextmacrosystem.reciclapp.util
 
 import android.util.Log
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/util/ValidarLogros.kt
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale

@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/content/newsandtips/NewsTipsScreen.kt
-package com.example.reciclapp_bolivia.presentation.ui.menu.ui.content.newsandtips
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.content.newsandtips
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/content/newsandtips/NewsTipsScreen.kt
 
 import android.util.Log
 import androidx.compose.foundation.layout.*

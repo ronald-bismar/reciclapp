@@ -1,12 +1,6 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/util/ImpactoAmbientalUtil.kt
-package com.example.reciclapp_bolivia.util
-
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-========
 package com.nextmacrosystem.reciclapp.util
 
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/util/ImpactoAmbientalUtil.kt
 import kotlin.math.roundToInt
 
 object ImpactoAmbientalUtil {

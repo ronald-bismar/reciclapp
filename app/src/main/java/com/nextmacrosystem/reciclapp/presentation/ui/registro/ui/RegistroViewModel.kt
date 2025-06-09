@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/registro/ui/RegistroViewModel.kt
-package com.example.reciclapp_bolivia.presentation.ui.registro.ui
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.registro.ui
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/registro/ui/RegistroViewModel.kt
 
 import android.content.Context
 import android.net.Uri
@@ -12,11 +8,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/registro/ui/RegistroViewModel.kt
+import com.nextmacrosystem.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.domain.usecases.user_preferences.SaveUserPreferencesUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.usuario.ActualizarImagenPerfilUseCase
-
-========
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/registro/ui/RegistroViewModel.kt
+import com.nextmacrosystem.reciclapp.domain.usecases.usuario.RegistrarUsuarioUseCase
+import com.nextmacrosystem.reciclapp.util.GenerateID
+import com.nextmacrosystem.reciclapp.util.StorageUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

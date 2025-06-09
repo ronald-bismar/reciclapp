@@ -1,21 +1,11 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/repositories/UbicacionGPSRepositoryImpl.kt
-package com.example.reciclapp_bolivia.data.repositories
-
-import com.example.reciclapp_bolivia.domain.entities.UbicacionGPS
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.domain.repositories.UbicacionGPSRepository
-import com.example.reciclapp_bolivia.domain.usecases.comprador.GetCompradoresUseCase
-import com.example.reciclapp_bolivia.domain.usecases.vendedor.GetVendedoresUseCase
-========
 package com.nextmacrosystem.reciclapp.data.repositories
 
+import com.google.firebase.firestore.FirebaseFirestore
 import com.nextmacrosystem.reciclapp.domain.entities.UbicacionGPS
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
 import com.nextmacrosystem.reciclapp.domain.repositories.UbicacionGPSRepository
 import com.nextmacrosystem.reciclapp.domain.usecases.comprador.GetCompradoresUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.vendedor.GetVendedoresUseCase
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/repositories/UbicacionGPSRepositoryImpl.kt
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 

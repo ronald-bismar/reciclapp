@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/vistas/mapa/MapsView.kt
-package com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas.mapa
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas.mapa
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/vistas/mapa/MapsView.kt
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -51,25 +47,14 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/vistas/mapa/MapsView.kt
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.presentation.animations.AnimatedTransitionDialog
-import com.example.reciclapp_bolivia.presentation.viewmodel.CompradoresViewModel
-import com.example.reciclapp_bolivia.presentation.viewmodel.MarkerData
-import com.example.reciclapp_bolivia.presentation.viewmodel.UbicacionViewModel
-========
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
-import com.nextmacrosystem.reciclapp.domain.entities.UbicacionGPS
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
 import com.nextmacrosystem.reciclapp.presentation.animations.AnimatedTransitionDialog
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.CompradoresViewModel
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.MarkerData
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.UbicacionViewModel
-import com.nextmacrosystem.reciclapp.presentation.viewmodel.UserViewModel
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/vistas/mapa/MapsView.kt
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberPermissionState
 import org.osmdroid.config.Configuration
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory

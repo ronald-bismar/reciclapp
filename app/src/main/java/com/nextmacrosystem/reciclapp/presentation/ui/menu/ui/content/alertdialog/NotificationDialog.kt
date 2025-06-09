@@ -1,3 +1,4 @@
+package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.content.alertdialog
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,11 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/content/alertdialog/NotificationDialog.kt
-import com.example.reciclapp_bolivia.domain.entities.Mensaje
-========
 import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/content/alertdialog/NotificationDialog.kt
 
 @Composable
 fun NotificationDialog(

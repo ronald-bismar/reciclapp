@@ -1,36 +1,10 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/viewmodel/MensajeViewModel.kt
-package com.example.reciclapp_bolivia.presentation.viewmodel
-========
 package com.nextmacrosystem.reciclapp.presentation.viewmodel
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/viewmodel/MensajeViewModel.kt
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/viewmodel/MensajeViewModel.kt
-import com.example.reciclapp_bolivia.domain.entities.Mensaje
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-import com.example.reciclapp_bolivia.domain.entities.TransaccionPendiente
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.domain.usecases.mensaje.CompradorEnviaContraOfertaAVendedorUseCase
-import com.example.reciclapp_bolivia.domain.usecases.mensaje.CompradorEnviaMensajeAVendedorUseCase
-import com.example.reciclapp_bolivia.domain.usecases.mensaje.EscucharNuevosMensajesUseCase
-import com.example.reciclapp_bolivia.domain.usecases.mensaje.GetMensajeUseCase
-import com.example.reciclapp_bolivia.domain.usecases.mensaje.GetMessagesByChatUseCase
-import com.example.reciclapp_bolivia.domain.usecases.mensaje.ObtenerUltimoMensajePorTransaccionUseCase
-import com.example.reciclapp_bolivia.domain.usecases.mensaje.VendedorEnviaContraOfertaACompradorUseCase
-import com.example.reciclapp_bolivia.domain.usecases.mensaje.VendedorEnviaMensajeACompradorUseCase
-import com.example.reciclapp_bolivia.domain.usecases.mensajes.SendMessageUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.CompradorAceptaOfertaUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.ObtenerProductosPorIdsUseCase
-import com.example.reciclapp_bolivia.domain.usecases.transaccion.CrearTransaccionPendienteUseCase
-import com.example.reciclapp_bolivia.domain.usecases.user_preferences.GetUserPreferencesUseCase
-import com.example.reciclapp_bolivia.domain.usecases.usuario.GetUsuarioUseCase
-import com.example.reciclapp_bolivia.presentation.states.MessagesScreenState
-import com.example.reciclapp_bolivia.presentation.states.SendingProductsState
-========
 import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 import com.nextmacrosystem.reciclapp.domain.entities.TransaccionPendiente
@@ -49,8 +23,8 @@ import com.nextmacrosystem.reciclapp.domain.usecases.producto.ObtenerProductosPo
 import com.nextmacrosystem.reciclapp.domain.usecases.transaccion.CrearTransaccionPendienteUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.usuario.GetUsuarioUseCase
+import com.nextmacrosystem.reciclapp.presentation.states.MessagesScreenState
 import com.nextmacrosystem.reciclapp.presentation.states.SendingProductsState
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/viewmodel/MensajeViewModel.kt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

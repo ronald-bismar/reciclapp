@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/vistas/Comprador.kt
-package com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/vistas/Comprador.kt
 
 import android.Manifest
 import android.app.Activity
@@ -78,16 +74,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/vistas/Comprador.kt
-import com.example.reciclapp_bolivia.R
-import com.example.reciclapp_bolivia.domain.entities.Comentario
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.presentation.ui.registro.ui.showToast
-import com.example.reciclapp_bolivia.presentation.viewmodel.CompradoresViewModel
-import com.example.reciclapp_bolivia.presentation.viewmodel.MensajeViewModel
-import com.example.reciclapp_bolivia.presentation.viewmodel.TransaccionViewModel
-========
 import com.nextmacrosystem.reciclapp.R
 import com.nextmacrosystem.reciclapp.domain.entities.Comentario
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
@@ -96,7 +82,6 @@ import com.nextmacrosystem.reciclapp.presentation.ui.registro.ui.showToast
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.CompradoresViewModel
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.MensajeViewModel
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.TransaccionViewModel
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/vistas/Comprador.kt
 
 private const val REQUEST_CALL_PERMISSION = 1
 

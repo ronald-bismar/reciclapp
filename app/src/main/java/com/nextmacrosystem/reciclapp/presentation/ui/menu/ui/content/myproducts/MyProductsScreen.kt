@@ -1,10 +1,5 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/content/myproducts/MyProductsScreen.kt
-package com.example.reciclapp_bolivia.presentation.ui.menu.ui.content.myproducts
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.content.myproducts
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/content/myproducts/MyProductsScreen.kt
 
-import Tips
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -26,7 +21,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
+import androidx.compose.material3.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ExpandLess
@@ -75,17 +70,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/content/myproducts/MyProductsScreen.kt
-import com.example.reciclapp_bolivia.R
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-import com.example.reciclapp_bolivia.presentation.viewmodel.VendedoresViewModel
-import com.example.reciclapp_bolivia.util.FechaUtils
-========
 import com.nextmacrosystem.reciclapp.R
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.VendedoresViewModel
 import com.nextmacrosystem.reciclapp.util.FechaUtils
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/content/myproducts/MyProductsScreen.kt
 import kotlinx.coroutines.flow.collectLatest
 
 private const val TAG = "MyProductsScreen"

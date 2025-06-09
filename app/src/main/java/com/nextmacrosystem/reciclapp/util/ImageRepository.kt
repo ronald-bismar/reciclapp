@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/util/ImageRepository.kt
-package com.example.reciclapp_bolivia.util
-========
 package com.nextmacrosystem.reciclapp.util
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/util/ImageRepository.kt
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -14,11 +10,7 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import coil.size.Scale
 import coil.transform.CircleCropTransformation
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/util/ImageRepository.kt
-import com.example.reciclapp_bolivia.R
-========
 import com.nextmacrosystem.reciclapp.R
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/util/ImageRepository.kt
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

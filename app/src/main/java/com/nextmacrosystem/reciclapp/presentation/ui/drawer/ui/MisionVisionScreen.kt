@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/drawer/ui/MisionVisionScreen.kt
-package com.example.reciclapp_bolivia.presentation.ui.drawer.ui
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.drawer.ui
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/drawer/ui/MisionVisionScreen.kt
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -18,11 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/drawer/ui/MisionVisionScreen.kt
-import com.example.reciclapp_bolivia.R
-========
 import com.nextmacrosystem.reciclapp.R
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/drawer/ui/MisionVisionScreen.kt
 
 @Composable
 fun MisionVisionScreen() {

@@ -1,25 +1,10 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/viewmodel/TransaccionViewModel.kt
-package com.example.reciclapp_bolivia.presentation.viewmodel
-========
 package com.nextmacrosystem.reciclapp.presentation.viewmodel
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/viewmodel/TransaccionViewModel.kt
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/viewmodel/TransaccionViewModel.kt
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-import com.example.reciclapp_bolivia.domain.entities.TransaccionPendiente
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.domain.usecases.producto.MarcarProductoComoVendidoUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.ObtenerProductosPorIdsUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.SumarPuntosDeProductosUseCase
-import com.example.reciclapp_bolivia.domain.usecases.transaccion.ConfirmarTransaccionPendienteUseCase
-import com.example.reciclapp_bolivia.domain.usecases.transaccion.GetTransaccionesPendientesUseCase
-import com.example.reciclapp_bolivia.domain.usecases.user_preferences.GetUserPreferencesUseCase
-========
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 import com.nextmacrosystem.reciclapp.domain.entities.TransaccionPendiente
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
@@ -29,7 +14,6 @@ import com.nextmacrosystem.reciclapp.domain.usecases.producto.SumarPuntosDeProdu
 import com.nextmacrosystem.reciclapp.domain.usecases.transaccion.ConfirmarTransaccionPendienteUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.transaccion.GetTransaccionesPendientesUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/viewmodel/TransaccionViewModel.kt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

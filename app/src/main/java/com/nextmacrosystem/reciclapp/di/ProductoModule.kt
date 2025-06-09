@@ -1,27 +1,6 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/di/ProductoModule.kt
-package com.example.reciclapp_bolivia.di
-
-import com.example.reciclapp_bolivia.data.repositories.ProductoRepositoryImpl
-import com.example.reciclapp_bolivia.domain.repositories.ProductoRepository
-import com.example.reciclapp_bolivia.domain.usecases.mensajes.SendMessageUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.ActualizarProductoUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.CompradorAceptaOfertaUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.EliminarProductoUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.GetProductoUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.ListarProductosDeVendedorUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.ListarProductosPorCompradorUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.ListarProductosPorUsuarioUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.ListarTodosLosProductosUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.MarcarProductoComoVendidoUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.ObtenerProductoVendedorUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.ObtenerProductosPorIdsUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.RegistrarProductoUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.SumarPuntosDeProductosUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.UpdateLikedProductoUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.VendedorAceptaOfertaUseCase
-========
 package com.nextmacrosystem.reciclapp.di
 
+import com.google.firebase.firestore.FirebaseFirestore
 import com.nextmacrosystem.reciclapp.data.repositories.ProductoRepositoryImpl
 import com.nextmacrosystem.reciclapp.domain.repositories.ProductoRepository
 import com.nextmacrosystem.reciclapp.domain.usecases.mensajes.SendMessageUseCase
@@ -40,8 +19,6 @@ import com.nextmacrosystem.reciclapp.domain.usecases.producto.RegistrarProductoU
 import com.nextmacrosystem.reciclapp.domain.usecases.producto.SumarPuntosDeProductosUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.producto.UpdateLikedProductoUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.producto.VendedorAceptaOfertaUseCase
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/di/ProductoModule.kt
-import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

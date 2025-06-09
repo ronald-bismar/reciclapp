@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/util/Logros.kt
-package com.example.reciclapp_bolivia.util
-========
 package com.nextmacrosystem.reciclapp.util
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/util/Logros.kt
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AcUnit
@@ -29,11 +25,7 @@ import androidx.compose.material.icons.filled.Tab
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material.icons.filled.WbSunny
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/util/Logros.kt
-import com.example.reciclapp_bolivia.domain.entities.Logro
-========
 import com.nextmacrosystem.reciclapp.domain.entities.Logro
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/util/Logros.kt
 
 object Logros {
     // Logros Basados en Cantidad y Frecuencia

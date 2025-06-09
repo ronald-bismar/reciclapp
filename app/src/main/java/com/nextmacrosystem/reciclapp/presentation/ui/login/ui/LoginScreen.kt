@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/login/ui/LoginScreen.kt
-package com.example.reciclapp_bolivia.presentation.ui.login.ui
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.login.ui
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/login/ui/LoginScreen.kt
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
@@ -50,21 +46,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/login/ui/LoginScreen.kt
-import com.example.reciclapp_bolivia.R
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas.components.HeaderImageLogoReciclapp
-import com.example.reciclapp_bolivia.presentation.ui.menu.ui.vistas.components.LoadingButton
-import com.example.reciclapp_bolivia.presentation.ui.registro.ui.showToast
-import com.example.reciclapp_bolivia.util.NameRoutes.PANTALLAPRINCIPAL
-========
 import com.nextmacrosystem.reciclapp.R
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
 import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas.components.HeaderImageLogoReciclapp
 import com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.vistas.components.LoadingButton
 import com.nextmacrosystem.reciclapp.presentation.ui.registro.ui.showToast
 import com.nextmacrosystem.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/login/ui/LoginScreen.kt
 import kotlinx.coroutines.launch
 
 @Composable

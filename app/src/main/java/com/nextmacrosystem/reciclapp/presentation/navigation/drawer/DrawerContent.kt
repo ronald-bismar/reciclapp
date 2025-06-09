@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/navigation/drawer/DrawerContent.kt
-package com.example.reciclapp_bolivia.presentation.navigation.drawer
-========
 package com.nextmacrosystem.reciclapp.presentation.navigation.drawer
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/navigation/drawer/DrawerContent.kt
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -41,18 +37,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/navigation/drawer/DrawerContent.kt
-import com.example.reciclapp_bolivia.R
-import com.example.reciclapp_bolivia.presentation.ui.registro.ui.showToast
-import com.example.reciclapp_bolivia.presentation.viewmodel.UserViewModel
-import com.example.reciclapp_bolivia.util.NameRoutes.PANTALLAPRINCIPAL
-
-private const val TAG = "DrawerContent"
-========
 import com.nextmacrosystem.reciclapp.R
 import com.nextmacrosystem.reciclapp.presentation.ui.registro.ui.showToast
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.UserViewModel
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/navigation/drawer/DrawerContent.kt
+import com.nextmacrosystem.reciclapp.util.NameRoutes.PANTALLAPRINCIPAL
+
+private const val TAG = "DrawerContent"
 
 @Composable
 fun DrawerContent(

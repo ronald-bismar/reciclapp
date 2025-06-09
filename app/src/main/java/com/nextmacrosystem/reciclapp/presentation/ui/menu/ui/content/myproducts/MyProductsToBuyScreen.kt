@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/content/myproducts/MyProductsToBuyScreen.kt
-package com.example.reciclapp_bolivia.presentation.ui.menu.ui.content.mypurchases
-========
-package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.content.mypurchases
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/content/myproducts/MyProductsToBuyScreen.kt
+package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui.content.myproducts
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,16 +41,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/content/myproducts/MyProductsToBuyScreen.kt
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-import com.example.reciclapp_bolivia.presentation.viewmodel.CompradoresViewModel
-========
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 import com.nextmacrosystem.reciclapp.presentation.viewmodel.CompradoresViewModel
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/content/myproducts/MyProductsToBuyScreen.kt
 
 private const val TAG = "MyPurchasesScreen"
 
@@ -253,24 +241,6 @@ private fun DetalleItem(
             text = text,
             style = MaterialTheme.typography.bodyMedium,
             color = color
-        )
-    }
-}
-
-@Composable
-fun ProductoEtiqueta(
-    texto: String,
-    color: Color
-) {
-    Surface(
-        color = color.copy(alpha = 0.1f),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Text(
-            text = texto,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-            color = color,
-            style = MaterialTheme.typography.labelMedium
         )
     }
 }

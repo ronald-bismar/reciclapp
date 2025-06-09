@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/viewmodel/CompradoresViewModel.kt
-package com.example.reciclapp_bolivia.presentation.viewmodel
-========
 package com.nextmacrosystem.reciclapp.presentation.viewmodel
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/viewmodel/CompradoresViewModel.kt
 
 import android.os.Build
 import android.util.Log
@@ -11,22 +7,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/viewmodel/CompradoresViewModel.kt
-import com.example.reciclapp_bolivia.domain.entities.Comentario
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.domain.usecases.comentario.ListarComentariosDeCompradorUseCase
-import com.example.reciclapp_bolivia.domain.usecases.comprador.GetCompradorUseCase
-import com.example.reciclapp_bolivia.domain.usecases.comprador.GetCompradoresUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.ActualizarProductoUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.CalcularCO2AhorradoEnKilos
-import com.example.reciclapp_bolivia.domain.usecases.producto.ListarProductosPorCompradorUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.ObtenerProductosPredeterminados
-import com.example.reciclapp_bolivia.domain.usecases.producto.RegistrarProductoUseCase
-import com.example.reciclapp_bolivia.domain.usecases.user_preferences.GetUserPreferencesUseCase
-import com.example.reciclapp_bolivia.domain.usecases.vendedor.ComentarACompradorUseCase
-import com.example.reciclapp_bolivia.util.GenerateID
-========
 import com.nextmacrosystem.reciclapp.domain.entities.Comentario
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
@@ -41,7 +21,6 @@ import com.nextmacrosystem.reciclapp.domain.usecases.producto.RegistrarProductoU
 import com.nextmacrosystem.reciclapp.domain.usecases.user_preferences.GetUserPreferencesUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.vendedor.ComentarACompradorUseCase
 import com.nextmacrosystem.reciclapp.util.GenerateID
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/viewmodel/CompradoresViewModel.kt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

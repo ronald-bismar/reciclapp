@@ -1,12 +1,6 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/domain/repositories/ChatRepository.kt
-package com.example.reciclapp_bolivia.domain.repositories
-
-import com.example.reciclapp_bolivia.domain.entities.Chat
-========
 package com.nextmacrosystem.reciclapp.domain.repositories
 
 import com.nextmacrosystem.reciclapp.domain.entities.Chat
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/domain/repositories/ChatRepository.kt
 
 interface ChatRepository {
     suspend fun saveChat(chat: Chat)

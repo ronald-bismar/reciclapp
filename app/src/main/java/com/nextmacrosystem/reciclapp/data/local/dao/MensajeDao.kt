@@ -1,18 +1,10 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/local/dao/MensajeDao.kt
-package com.example.reciclapp_bolivia.data.local.dao
-========
 package com.nextmacrosystem.reciclapp.data.local.dao
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/local/dao/MensajeDao.kt
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/local/dao/MensajeDao.kt
-import com.example.reciclapp_bolivia.data.local.entities.MensajeEntity
-========
 import com.nextmacrosystem.reciclapp.data.local.entities.MensajeEntity
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/local/dao/MensajeDao.kt
 
 @Dao
 interface MensajeDao {

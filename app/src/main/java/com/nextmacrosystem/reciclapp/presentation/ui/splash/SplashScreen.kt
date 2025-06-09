@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/splash/SplashScreen.kt
-package com.example.reciclapp_bolivia.presentation.ui.splash
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.splash
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/splash/SplashScreen.kt
 
 import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
@@ -27,13 +23,8 @@ import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/splash/SplashScreen.kt
-import com.example.reciclapp_bolivia.MainActivity
-import com.example.reciclapp_bolivia.R
-========
 import com.nextmacrosystem.reciclapp.MainActivity
 import com.nextmacrosystem.reciclapp.R
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/splash/SplashScreen.kt
 import kotlinx.coroutines.delay
 
 class SplashScreen : ComponentActivity() {

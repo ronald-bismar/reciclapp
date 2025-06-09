@@ -1,8 +1,5 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/registro/ui/photo_profile/SinglePhotoPicker.kt
-package com.example.reciclapp_bolivia.presentation.ui.registro.ui.photo_profile
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.registro.ui.photo_profile
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/registro/ui/photo_profile/SinglePhotoPicker.kt
+
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
@@ -45,13 +42,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/registro/ui/photo_profile/SinglePhotoPicker.kt
-import com.example.reciclapp_bolivia.R
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-========
-import com.nextmacrosystem.reciclapp.R
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/registro/ui/photo_profile/SinglePhotoPicker.kt
+import com.nextmacrosystem.reciclapp.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

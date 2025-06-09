@@ -1,22 +1,12 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/login/ui/LoginViewModel.kt
-package com.example.reciclapp_bolivia.presentation.ui.login.ui
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.login.ui
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/login/ui/LoginViewModel.kt
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/login/ui/LoginViewModel.kt
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.domain.usecases.user_preferences.SaveUserPreferencesUseCase
-import com.example.reciclapp_bolivia.domain.usecases.usuario.LoginUsuarioUseCase
-========
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
 import com.nextmacrosystem.reciclapp.domain.usecases.user_preferences.SaveUserPreferencesUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.usuario.LoginUsuarioUseCase
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/login/ui/LoginViewModel.kt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

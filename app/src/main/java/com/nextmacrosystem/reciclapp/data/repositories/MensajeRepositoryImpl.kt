@@ -1,32 +1,14 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/repositories/MensajeRepositoryImpl.kt
-package com.example.reciclapp_bolivia.data.repositories
-========
 package com.nextmacrosystem.reciclapp.data.repositories
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/repositories/MensajeRepositoryImpl.kt
 
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/data/repositories/MensajeRepositoryImpl.kt
-import com.example.reciclapp_bolivia.data.services.notification.NotificationService
-import com.example.reciclapp_bolivia.domain.entities.Chat
-import com.example.reciclapp_bolivia.domain.entities.Mensaje
-import com.example.reciclapp_bolivia.domain.entities.ProductoReciclable
-import com.example.reciclapp_bolivia.domain.entities.Usuario
-import com.example.reciclapp_bolivia.domain.repositories.MensajeRepository
-import com.example.reciclapp_bolivia.domain.usecases.chat.GetChatByUsersUseCase
-import com.example.reciclapp_bolivia.domain.usecases.chat.ObtenerChatsPorUsuarioUseCase
-import com.example.reciclapp_bolivia.domain.usecases.mensaje.GetMessagesByChatUseCaseLocal
-import com.example.reciclapp_bolivia.domain.usecases.mensaje.GetUltimoMensajePorChatUseCase
-import com.example.reciclapp_bolivia.domain.usecases.mensaje.SaveMensajeLocallyUseCase
-import com.example.reciclapp_bolivia.util.FechaUtils
-import com.example.reciclapp_bolivia.util.GenerateID
-========
+import com.google.firebase.firestore.FirebaseFirestore
 import com.nextmacrosystem.reciclapp.data.services.notification.NotificationService
-import com.nextmacrosystem.reciclapp.domain.entities.Chat
 import com.nextmacrosystem.reciclapp.domain.entities.Mensaje
 import com.nextmacrosystem.reciclapp.domain.entities.ProductoReciclable
 import com.nextmacrosystem.reciclapp.domain.entities.Usuario
+import com.nextmacrosystem.reciclapp.domain.entities.Chat
 import com.nextmacrosystem.reciclapp.domain.repositories.MensajeRepository
 import com.nextmacrosystem.reciclapp.domain.usecases.chat.GetChatByUsersUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.chat.ObtenerChatsPorUsuarioUseCase
@@ -35,13 +17,12 @@ import com.nextmacrosystem.reciclapp.domain.usecases.mensaje.GetUltimoMensajePor
 import com.nextmacrosystem.reciclapp.domain.usecases.mensaje.SaveMensajeLocallyUseCase
 import com.nextmacrosystem.reciclapp.util.FechaUtils
 import com.nextmacrosystem.reciclapp.util.GenerateID
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/data/repositories/MensajeRepositoryImpl.kt
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import kotlin.collections.distinctBy
 
 private const val TAG = "MensajeRepositoryImpl"
 

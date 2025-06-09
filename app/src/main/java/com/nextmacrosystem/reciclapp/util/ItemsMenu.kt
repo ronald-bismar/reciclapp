@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/util/ItemsMenu.kt
-package com.example.reciclapp_bolivia.util
-========
 package com.nextmacrosystem.reciclapp.util
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/util/ItemsMenu.kt
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call

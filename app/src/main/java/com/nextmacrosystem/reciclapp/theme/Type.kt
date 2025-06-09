@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/theme/Type.kt
-package com.example.reciclapp_bolivia.theme
-========
 package com.nextmacrosystem.reciclapp.theme
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/theme/Type.kt
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

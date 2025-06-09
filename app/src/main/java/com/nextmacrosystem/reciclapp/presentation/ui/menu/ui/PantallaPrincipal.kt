@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/PantallaPrincipal.kt
-package com.example.reciclapp_bolivia.presentation.ui.menu.ui
-========
 package com.nextmacrosystem.reciclapp.presentation.ui.menu.ui
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/PantallaPrincipal.kt
 
 import android.os.Build
 import android.util.Log
@@ -23,18 +19,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/presentation/ui/menu/ui/PantallaPrincipal.kt
-import com.example.reciclapp_bolivia.presentation.navigation.AppTopBar
-import com.nextmacrosystem.reciclapp.presentation.navigation.bottom.BottomNavHost
-
-========
-import com.nextmacrosystem.reciclapp.presentation.navigation.AppTopBar
-
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/presentation/ui/menu/ui/PantallaPrincipal.kt
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.firebase.messaging.FirebaseMessaging
+import com.nextmacrosystem.reciclapp.presentation.navigation.AppTopBar
+import com.nextmacrosystem.reciclapp.presentation.navigation.bottom.BottomNavHost
+import com.nextmacrosystem.reciclapp.presentation.navigation.drawer.DrawerContent
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.CompradoresViewModel
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.UbicacionViewModel
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.UserViewModel
+import com.nextmacrosystem.reciclapp.presentation.viewmodel.VendedoresViewModel
+import com.nextmacrosystem.reciclapp.util.ItemsMenu
+import com.nextmacrosystem.reciclapp.util.TipoDeUsuario
 import kotlinx.coroutines.launch
 
 /**

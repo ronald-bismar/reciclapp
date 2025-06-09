@@ -1,20 +1,6 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/reciclapp_bolivia/di/CompradorModule.kt
-package com.example.reciclapp_bolivia.di
-
-import com.example.reciclapp_bolivia.data.repositories.CompradorRepositoryImpl
-import com.example.reciclapp_bolivia.domain.repositories.CompradorRepository
-import com.example.reciclapp_bolivia.domain.usecases.comprador.ActualizarDatosCompradorUseCase
-import com.example.reciclapp_bolivia.domain.usecases.comprador.EliminarCompradorUseCase
-import com.example.reciclapp_bolivia.domain.usecases.comprador.GetCompradorUseCase
-import com.example.reciclapp_bolivia.domain.usecases.comprador.GetCompradoresUseCase
-import com.example.reciclapp_bolivia.domain.usecases.comprador.HacerOfertaPorMaterialesEnVentaUseCase
-import com.example.reciclapp_bolivia.domain.usecases.comprador.PublicarListaDeMaterialesQueCompraUseCase
-import com.example.reciclapp_bolivia.domain.usecases.comprador.VerListaDePublicacionesDeProductosEnVentaUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.ListarTodosLosProductosUseCase
-import com.example.reciclapp_bolivia.domain.usecases.producto.RegistrarProductoUseCase
-========
 package com.nextmacrosystem.reciclapp.di
 
+import com.google.firebase.firestore.FirebaseFirestore
 import com.nextmacrosystem.reciclapp.data.repositories.CompradorRepositoryImpl
 import com.nextmacrosystem.reciclapp.domain.repositories.CompradorRepository
 import com.nextmacrosystem.reciclapp.domain.usecases.comprador.ActualizarDatosCompradorUseCase
@@ -26,8 +12,6 @@ import com.nextmacrosystem.reciclapp.domain.usecases.comprador.PublicarListaDeMa
 import com.nextmacrosystem.reciclapp.domain.usecases.comprador.VerListaDePublicacionesDeProductosEnVentaUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.producto.ListarTodosLosProductosUseCase
 import com.nextmacrosystem.reciclapp.domain.usecases.producto.RegistrarProductoUseCase
->>>>>>>> origin/rama3_freddy:app/src/main/java/com/nextmacrosystem/reciclapp/di/CompradorModule.kt
-import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
