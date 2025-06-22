@@ -1,5 +1,6 @@
 package com.nextmacrosystem.reciclapp.di
 
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nextmacrosystem.reciclapp.data.repositories.UsuarioRepositoryImpl
 import com.nextmacrosystem.reciclapp.domain.repositories.UsuarioRepository
@@ -22,8 +23,8 @@ import javax.inject.Singleton
 object UsuarioModule {
     @Provides
     @Singleton
-    fun provideUsuarioRepository(service: FirebaseFirestore, saveUserPreferencesUseCase: SaveUserPreferencesUseCase): UsuarioRepository {
-        return UsuarioRepositoryImpl(service, saveUserPreferencesUseCase)
+    fun provideUsuarioRepository(service: FirebaseFirestore, saveUserPreferencesUseCase: SaveUserPreferencesUseCase, firebaseAuth: FirebaseAuth): UsuarioRepository {
+        return UsuarioRepositoryImpl(service, saveUserPreferencesUseCase, firebaseAuth)
     }
     @Provides
     fun provideGetUsuarioUseCase(usuarioRepository: UsuarioRepository): GetUsuarioUseCase {

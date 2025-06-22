@@ -1,5 +1,6 @@
 package com.nextmacrosystem.reciclapp.di
 
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -15,6 +16,12 @@ object ServicesModule {
     @Singleton
     fun provideService(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
     }
 
 }

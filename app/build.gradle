@@ -148,6 +148,10 @@ dependencies {
     implementation 'com.google.auth:google-auth-library-oauth2-http:1.3.0'
     implementation 'com.google.auth:google-auth-library-credentials:1.3.0'
 
+    // Firebase Authentication
+    implementation 'com.google.firebase:firebase-auth:22.3.0' // o la última versión disponible
+
+
     // Livedata
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.8.4'
 
