@@ -36,7 +36,7 @@ fun UploadImageScreen(viewModel: RegistroViewModel, navController: NavHostContro
     val registerState by viewModel.registerState.observeAsState()
     var recordEnable by remember { mutableStateOf(false) }
     val isLoading by viewModel.isLoading.observeAsState(false)
-    val defaultUri = "android.resource://com.example.reciclapp/drawable/perfil".toUri()
+    val defaultUri = "android.resource://com.nextmacrosystem.reciclapp/drawable/perfil".toUri()
     var imageUri by remember { mutableStateOf<Uri?>(defaultUri) }
 
     Box(

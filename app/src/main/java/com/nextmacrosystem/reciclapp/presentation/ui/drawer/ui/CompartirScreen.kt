@@ -139,7 +139,7 @@ fun CompartirScreen() {
                 icon = Icons.Filled.Share,
                 backgroundColor = Color(0xFF4285F4),
                 onClick = {
-                    val playStoreUri = Uri.parse("https://play.google.com/store/apps/details?id=com.example.reciclapp")
+                    val playStoreUri = Uri.parse("https://play.google.com/store/apps/details?id=com.nextmacrosystem.reciclapp")
                     val intent = Intent(Intent.ACTION_VIEW, playStoreUri)
                     context.startActivity(intent)
                 }
